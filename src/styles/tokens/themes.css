@@ -572,13 +572,10 @@
   --ui-paper-side-shade: rgba(70, 64, 49, 0.16);
   --ui-paper-bottom-shade: rgba(70, 64, 49, 0.14);
   /*
-    Light paper has no bright rim: a white cut edge read as a border
-    around the stacked sheets, so both edge tokens are transparent and
-    the stack is told apart by tone. Each older sheet deepens and yellows
-    a little, the deepest the most, like paper kept in a drawer.
+    No rim around the stacked sheets, on any paper: each older sheet
+    deepens and yellows a little, the deepest the most, like paper kept
+    in a drawer.
   */
-  --ui-paper-cut: transparent;
-  --ui-paper-seam: transparent;
   --ui-paper-sheet-back: color-mix(in srgb, var(--parch) 52%, var(--bronze) 48%);
   --ui-paper-sheet-back-2: color-mix(
     in srgb,
@@ -608,10 +605,7 @@
   --ui-paper-top-sheen: transparent;
   --ui-paper-side-shade: rgba(0, 0, 0, 0.28);
   --ui-paper-bottom-shade: rgba(0, 0, 0, 0.22);
-  /* On dark cardstock a stack reads by its cut edges catching light,
-     never by a halo around the sheet. */
-  --ui-paper-cut: color-mix(in srgb, var(--bone) 15%, transparent);
-  --ui-paper-seam: rgba(0, 0, 0, 0.62);
+  /* The stack deepens by tone, never by a lit edge or a halo. */
   --ui-paper-sheet-back: color-mix(in srgb, var(--parch) 82%, var(--stone-0) 18%);
   --ui-paper-sheet-back-2: color-mix(in srgb, var(--parch) 64%, var(--stone-0) 36%);
   --ui-paper-stain: rgba(0, 0, 0, 0.22);

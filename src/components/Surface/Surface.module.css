@@ -110,16 +110,11 @@
   /* Older sheets keep the same torn silhouette as the sheet on top. */
   clip-path: url(#ui-torn-clip);
   /*
-    Only the cut edge of a sheet is visible, so it carries colour and,
-    on dark cardstock, the hairline lit/shade seam, not a full tiling of
-    the grain: that was a second and third full-card texture painted
-    under every card. On light paper both edge tokens are transparent
-    and the stack reads by depth alone. The seams are inset because the
-    clip path removes anything painted outside the silhouette.
+    A flat sheet of colour: no lit edge and no seam on any theme. The
+    stack reads only by depth of tone. Tiling the grain here was a
+    second and third full-card texture painted under every card, and an
+    inset edge read as a border around the stack.
   */
-  box-shadow:
-    inset -2px -2px 0 var(--ui-paper-cut),
-    inset -3px -3px 0 var(--ui-paper-seam);
 }
 
 /* The deepest sheet is painted first; the one touching the card sits on top. */

@@ -210,11 +210,11 @@ No se toca ningún componente. Si el tema necesita un papel claro, `paper: 'ligh
 
 | Prop | Capa | Tokens |
 | --- | --- | --- |
-| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; se distinguen por tono, no por borde. | `--paper-sheet-*`, `--ui-paper-sheet-back*`, `--ui-paper-cut`, `--ui-paper-seam` |
+| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; se distinguen por tono, sin borde ni canto. | `--paper-sheet-*`, `--ui-paper-sheet-back*` |
 | `margin="rule"` | Margen de cuaderno de 38 px con línea vertical de acento. | `--paper-margin-*` |
 | `stains` | Manchas de agua y una marca de marea, sólo en el pie; el propio degradado las apaga fuera del texto, sin máscara. | `--ui-paper-stain*` |
 
-Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten la silueta rasgada del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima. **Sobre Pergamino no dibujan borde**: `--ui-paper-cut` y `--ui-paper-seam` son transparentes y la pila se lee por profundidad de tono, cada hoja más oscura que la anterior. Sobre cartulina oscura se mantiene el canto iluminado y la costura en sombra, que allí sí definen el filo. Del canto solo se ve el borde, así que no repite el grano: ese tile completo por hoja era otra capa cara sin diferencia visible.
+Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten la silueta rasgada del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima. **En ningún tema dibujan borde**: no hay canto iluminado ni costura en sombra, y la pila se lee solo por profundidad de tono, cada hoja más oscura que la anterior. Del canto solo se ve el borde, así que no repite el grano: ese tile completo por hoja era otra capa cara sin diferencia visible.
 
 El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
 
