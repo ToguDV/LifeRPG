@@ -18,8 +18,8 @@ export interface DemoCardProps {
 
 /**
  * The sheet that holds a demo. Same paper ornaments as `Card`: two
- * sheets underneath, a notebook gutter, tape on the top edge, a folded
- * corner and the folio pressed into a wax seal.
+ * torn sheets underneath, a notebook gutter, a sewn thread along the
+ * top edge and the folio pressed into a wax seal.
  */
 export function DemoCard({
   canvas,
@@ -42,8 +42,7 @@ export function DemoCard({
       stack={paper ? 'double' : 'none'}
       margin={paper ? 'rule' : 'none'}
       stains={paper}
-      tape={paper}
-      dogEar={paper}
+      stitch={paper}
       className={cx(styles.card, className)}
     >
       <header className={styles.head}>

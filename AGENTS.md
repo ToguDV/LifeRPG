@@ -148,7 +148,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 ### 3.2 Superficies y portales
 
 - Usa `Surface` para cualquier tarjeta o contenedor que necesite material; `Card` cuando además hace falta cabecera, lacre y lista.
-- Los ornamentos de papel (`stack`, `margin`, `dogEar`, `tape`, `stains`) son capas `aria-hidden` de `Surface`: sólo se pintan sobre `surface="paper"` y nunca debajo del texto.
+- Los ornamentos de papel (`stack`, `margin`, `stitch`, `stains`) son capas `aria-hidden` de `Surface`: sólo se pintan sobre `surface="paper"` y nunca debajo del texto.
 - La sombra del papel usa `--ui-paper-drop`; no vuelvas a `--ui-shadow-color` para el `drop-shadow` exterior: sobre cartulina oscura la tinta es clara y dibuja un halo.
 - Usa `useSurface()` en cualquier componente que renderice en un portal (`Popover`, tooltips, toasts, menús) y pon `data-surface` en el nodo flotante. Si no, el popover perderá el material al salir del árbol.
 - El `Surface` de papel usa una capa de textura con filtro; no apliques el filtro al contenido.

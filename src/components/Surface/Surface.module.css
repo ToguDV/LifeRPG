@@ -82,6 +82,8 @@
   inset: 0;
   z-index: var(--z-behind);
   pointer-events: none;
+  /* Older sheets keep the same torn silhouette as the sheet on top. */
+  filter: url(#ui-torn-soft);
 }
 
 .sheets::before,
@@ -90,8 +92,8 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-sm);
-  background-color: var(--ui-paper-sheet-back);
-  background-image: var(--ui-paper-grain);
+  /* A thin edge cannot carry the full grain: it would eat the seam. */
+  background-image: var(--texture-grain-light);
   background-size: var(--texture-size) var(--texture-size);
   background-blend-mode: var(--ui-paper-texture-blend);
   /*
@@ -101,17 +103,22 @@
   box-shadow:
     1px 1px 0 var(--ui-paper-cut),
     2px 2px 0 var(--ui-paper-seam);
-  transform: translate(var(--paper-sheet-offset-1), var(--paper-sheet-offset-1))
-    rotate(var(--paper-sheet-tilt-1));
 }
 
-.stack-double .sheets::after {
+/* The deepest sheet is painted first; the one touching the card sits on top. */
+.sheets::before {
   background-color: var(--ui-paper-sheet-back-2);
   transform: translate(var(--paper-sheet-offset-2), var(--paper-sheet-offset-2))
     rotate(var(--paper-sheet-tilt-2));
 }
 
-.stack-single .sheets::after {
+.sheets::after {
+  background-color: var(--ui-paper-sheet-back);
+  transform: translate(var(--paper-sheet-offset-1), var(--paper-sheet-offset-1))
+    rotate(var(--paper-sheet-tilt-1));
+}
+
+.stack-single .sheets::before {
   content: none;
 }
 
@@ -133,47 +140,51 @@
   mask-image: linear-gradient(180deg, transparent 64%, #000 100%);
 }
 
-/* ---------- folded corner ---------- */
-.dogEar {
+/* ---------- sewn thread along the top edge ---------- */
+.stitch {
   position: absolute;
-  inset-block-end: 0;
-  inset-inline-end: 0;
-  z-index: calc(var(--z-raised) + 1);
-  width: var(--paper-dogear-size);
-  height: var(--paper-dogear-size);
+  /* stays in the top padding, whatever the card padding is */
+  inset-block-start: min(var(--paper-stitch-inset), calc(var(--surface-pad) * 0.55));
+  inset-inline: var(--paper-stitch-inline);
+  z-index: var(--z-base);
+  height: var(--paper-stitch-height);
   pointer-events: none;
-  background-image:
-    /* the fold itself: the back of the sheet, a touch lighter */
-    linear-gradient(315deg, var(--ui-paper-fold) 0 49.4%, transparent 49.4%),
-    /* the crease itself, then the shadow it throws up-left over the page */
-    linear-gradient(315deg, transparent 0 49.1%, var(--ui-paper-seam) 49.6% 50.4%, transparent 58%);
+  transform: rotate(-0.09deg);
+  /* the thread sits on the sheet, not in it */
+  filter: drop-shadow(0 1px 0 var(--ui-paper-seam));
 }
 
-/* ---------- tape across the top edge ---------- */
-.tape {
+/* needle holes, one at the end of every stitch */
+.stitch::before {
+  content: "";
   position: absolute;
-  inset-block-start: var(--paper-tape-top);
-  inset-inline-start: var(--space-3);
-  z-index: calc(var(--z-raised) + 1);
-  width: var(--paper-tape-width);
-  height: var(--paper-tape-height);
-  pointer-events: none;
-  background-color: var(--ui-paper-tape);
-  background-image:
-    var(--ui-paper-grain),
-    linear-gradient(
-      100deg,
-      transparent,
-      color-mix(in srgb, var(--ui-text) 4%, transparent) 55%,
-      transparent
-    );
-  background-size: var(--texture-size) var(--texture-size), 100% 100%;
-  background-blend-mode: var(--ui-paper-texture-blend), normal;
-  box-shadow:
-    0 1px 2px var(--ui-paper-tape-edge),
-    inset 0 0 0 var(--border-width) color-mix(in srgb, var(--ui-paper-tape-edge) 55%, transparent);
-  transform: rotate(-2.4deg);
-  clip-path: polygon(0 8%, 5% 0, 94% 3%, 100% 12%, 98% 92%, 93% 100%, 6% 96%, 1% 88%);
+  inset-block: calc(var(--paper-stitch-height) * -2);
+  inset-inline: 0;
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    var(--ui-paper-stitch-hole) 0 var(--paper-stitch-hole),
+    transparent calc(var(--paper-stitch-hole) + 0.5px)
+  );
+  background-size: var(--paper-stitch-pitch) 100%;
+}
+
+/* the thread itself */
+.stitch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--ui-paper-stitch);
+  -webkit-mask-image: repeating-linear-gradient(
+    90deg,
+    #000 0 var(--paper-stitch-dash),
+    transparent var(--paper-stitch-dash) var(--paper-stitch-pitch)
+  );
+  mask-image: repeating-linear-gradient(
+    90deg,
+    #000 0 var(--paper-stitch-dash),
+    transparent var(--paper-stitch-dash) var(--paper-stitch-pitch)
+  );
 }
 
 /* ---------- notebook gutter ---------- */

@@ -41,8 +41,7 @@ export function Card({
   className,
   stack = 'double',
   margin = 'rule',
-  dogEar = false,
-  tape = false,
+  stitch = true,
   stains = true,
 }: CardProps) {
   const paper = surface === 'paper'
@@ -55,8 +54,7 @@ export function Card({
       torn={paper}
       stack={paper ? stack : 'none'}
       margin={paper ? margin : 'none'}
-      dogEar={paper && dogEar}
-      tape={paper && tape}
+      stitch={paper && stitch}
       stains={paper && stains}
       className={cx(styles.card, styles[`size-${size}`], className)}
     >

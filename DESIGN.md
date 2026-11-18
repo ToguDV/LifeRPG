@@ -207,13 +207,14 @@ No se toca ningún componente. Si el tema necesita un papel claro, `paper: 'ligh
 
 | Prop | Capa | Tokens |
 | --- | --- | --- |
-| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 7 y 14 px; cada canto iluminado y cada costura en sombra. | `--paper-sheet-*`, `--ui-paper-sheet-back*`, `--ui-paper-cut`, `--ui-paper-seam` |
+| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; cada canto iluminado y cada costura en sombra. | `--paper-sheet-*`, `--ui-paper-sheet-back*`, `--ui-paper-cut`, `--ui-paper-seam` |
 | `margin="rule"` | Margen de cuaderno de 38 px con línea vertical de acento. | `--paper-margin-*` |
-| `dogEar` | Esquina inferior derecha doblada, con cara posterior clara y pliegue en sombra. | `--paper-dogear-size`, `--ui-paper-fold` |
-| `tape` | Cinta translúcida sobre el borde superior izquierdo. | `--paper-tape-*`, `--ui-paper-tape*` |
+| `stitch` | Costura de hilo al borde superior: puntadas enmascaradas, agujeros de aguja y una sombra de 1 px. | `--paper-stitch-*`, `--ui-paper-stitch*` |
 | `stains` | Manchas de agua y una marca de marea, sólo en el pie y enmascaradas fuera del texto. | `--ui-paper-stain*` |
 
-El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`.
+Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten el filtro rasgado del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima, cada una con su canto iluminado (`--ui-paper-cut`) y su costura en sombra (`--ui-paper-seam`).
+
+El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
 
 **Contenedores.** `Card` es la hoja reutilizable: cabecera (kicker, título, descripción, lacre), filete, cuerpo y pie manuscrito. Tres alturas, con el mismo material y los mismos ornamentos:
 
@@ -327,7 +328,7 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
   - Papel: grano multiplicado o tamizado según `data-paper`.
   - Panel: grano con mezcla `overlay`.
   - Bordes rasgados: filtros `#ui-torn`, `#ui-torn-soft`, `#ui-torn-edge` definidos una vez en `TornFilters`.
-  - Papel físico: hojas apiladas, margen de cuaderno, cinta, esquina doblada y manchas de borde, con geometría en `primitives.css` y color en `themes.css`.
+  - Papel físico: hojas apiladas y envejecidas, margen de cuaderno, costura de hilo y manchas de borde, con geometría en `primitives.css` y color en `themes.css`.
 - Los iconos son paths propios de 24×24 con `currentColor`, trazo 1.5 y extremos redondeados.
 
 ---
