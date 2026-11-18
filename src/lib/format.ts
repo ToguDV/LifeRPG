@@ -9,6 +9,11 @@ const monthFormatter = new Intl.DateTimeFormat('es-ES', {
   year: 'numeric',
 })
 
+const shortDateFormatter = new Intl.DateTimeFormat('es-ES', {
+  day: '2-digit',
+  month: 'short',
+})
+
 const sizeFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 1,
   minimumFractionDigits: 0,
@@ -20,6 +25,11 @@ export function formatDate(date: Date): string {
 
 export function formatMonth(date: Date): string {
   return monthFormatter.format(date)
+}
+
+/** Compact date for rails and chips: «12 ene». Never carries the year. */
+export function formatShortDate(date: Date): string {
+  return shortDateFormatter.format(date).replace(/\.$/, '')
 }
 
 export function formatTimeParts(hours: number, minutes: number): string {

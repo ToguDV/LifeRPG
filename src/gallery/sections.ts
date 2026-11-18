@@ -81,8 +81,16 @@ export const SECTIONS = [
     components: ['TaskList', 'TaskRow', 'EmptyState'],
   },
   {
-    id: 'contenedores',
+    id: 'travesia',
     number: '10',
+    title: 'La travesía',
+    kicker: 'Ruta',
+    note: 'Un camino, varios hitos, una meta.',
+    components: ['Questline', 'QuestNode', 'QuestTask'],
+  },
+  {
+    id: 'contenedores',
+    number: '11',
     title: 'Contenedores',
     kicker: 'Soportes',
     note: 'El papel que guarda al papel.',

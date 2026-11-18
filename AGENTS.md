@@ -65,6 +65,7 @@ pnpm test:run     # Vitest una vez, sin watch
 | `tests/use-controllable-state.test.tsx` | Dos actualizaciones funcionales en el mismo tick y `onChange` con el valor resuelto. |
 | `tests/task-row.test.tsx` | Prioridad y vencimiento en la descripción del checkbox; Marcar / Desmarcar. |
 | `tests/card-title.test.tsx` | El título de `Card` sigue siendo el encabezado con la cinta; el panel conserva el encabezado plano. |
+| `tests/questline.test.tsx` | Bloqueo y desbloqueo encadenados, CRUD de hitos y tareas, anuncio de cierre, `aria-expanded`/`aria-controls`, foco devuelto y el plazo vencido. |
 
 ### Referencia estática
 
@@ -117,6 +118,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 | Field | `src/components/Field/Field.tsx`, `Field.module.css` |
 | Popover | `src/components/Popover/Popover.tsx`, `Popover.module.css` |
 | Card | `src/components/Card/Card.tsx`, `Card.module.css`, `RibbonTitle.tsx`, `RibbonTitle.module.css` |
+| Questline | `src/components/Questline/Questline.tsx`, `QuestNodePanel.tsx`, `questline-model.ts`, `useQuestTrail.ts` + módulos CSS |
 | WaxSeal | `src/components/Ornaments/WaxSeal.tsx`, `WaxSeal.module.css` |
 | TornSilhouette | `src/components/Ornaments/TornSilhouette.tsx` (silueta rasgada compartida) |
 
@@ -127,7 +129,7 @@ Las hojas de demo no tienen contenedor propio: son `Card size="lg"` con el nombr
 | Archivo | Rol |
 | --- | --- |
 | `src/gallery/GalleryPage.tsx` + `.module.css` | Página única, topbar, masthead, índice, scroll-spy, toggle Papel/Panel y footer. |
-| `src/gallery/sections.ts` | Metadata de las diez secciones. |
+| `src/gallery/sections.ts` | Metadata de las once secciones. |
 | `src/gallery/Demo.tsx` + `.module.css` | `DemoGrid`, `DemoGroup`, `DemoRow`, `DemoStack`, `DemoNote` y `SectionHeading`. |
 | `src/gallery/sections/ActionsSection.tsx` | Button y Tooltip. |
 | `src/gallery/sections/SelectionSection.tsx` | Checkbox, Radio, Switch y estados. |
@@ -138,6 +140,7 @@ Las hojas de demo no tienen contenedor propio: son `Card size="lg"` con el nombr
 | `src/gallery/sections/FilesSection.tsx` | FileUploader con archivos de demo. |
 | `src/gallery/sections/ExtrasSection.tsx` | Badge, ProgressBar, Divider y Toast. |
 | `src/gallery/sections/ContextSection.tsx` | Mini todo-list con TaskList, TaskRow, EmptyState y formulario. |
+| `src/gallery/sections/QuestlineSection.tsx` | Questline completo con plazos relativos a hoy, CRUD y reinicio del parte. |
 | `src/gallery/sections/ContainersSection.tsx` | `Card` en sus tres tamaños con la lista de componentes de otras secciones. |
 | `src/gallery/sections/sections.module.css` | Layouts específicos de secciones (task app, sizeFields, badge de componente, etc.). |
 | `src/gallery/Atmosphere.tsx` + `.module.css` | Capas fijas de grano, viñeta, mapa y motas. |

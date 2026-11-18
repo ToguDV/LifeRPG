@@ -125,6 +125,10 @@
   --stepper-button-width: 2.125rem;
   --stepper-value-min-width: 2.75rem;
 
+  --quest-marker-size: 2.5rem;
+  --quest-stop-min-width: 6.5rem;
+  --quest-stop-max-width: 10rem;
+
   --calendar-width: 19.5rem;
   --calendar-cell-size: 2rem;
   --calendar-gap: 0.125rem;

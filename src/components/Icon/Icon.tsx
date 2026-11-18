@@ -48,6 +48,7 @@ export type IconName =
   | 'sprig'
   | 'shield'
   | 'flag'
+  | 'lock'
   | 'bookmark'
   | 'edit'
   | 'drag'
@@ -282,6 +283,12 @@ const icons: Record<IconName, ReactNode> = {
     </>
   ),
   bookmark: <path d="M6.4 3.4h11.2v17.2L12 16.4l-5.6 4.2V3.4Z" />,
+  lock: (
+    <>
+      <rect x="4.6" y="10.4" width="14.8" height="10.2" rx="1.6" />
+      <path d="M8.2 10.4V8a3.8 3.8 0 0 1 7.6 0v2.4" />
+    </>
+  ),
   edit: (
     <>
       <path d="M4.2 19.8h3.2L19.6 7.6a2.3 2.3 0 0 0-3.2-3.2L4.2 16.6v3.2Z" />

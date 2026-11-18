@@ -438,13 +438,26 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
 - El viewport es una región `aria-live="polite"` con etiqueta.
 - No se persisten; son estado de sesión.
 
+### 10.9 Questline
+
+- Organismo de ruta: una cadena de hitos (`QuestNode`) y, dentro de cada uno, tareas (`QuestTask`). El modelo es independiente de la UI: ids estables, `title`, `note`, `deadline` y `tasks`.
+- **El estado no se guarda.** `getQuestNodeStates` lo deriva del cierre de los hitos anteriores. Un hito se cierra cuando tiene al menos una tarea y todas están marcadas; un hito vacío es un borrador y no abre la puerta siguiente. Un hito ya cerrado sigue editable aunque se reabra uno anterior, para que la cadena no se trague trabajo hecho.
+- **El plazo vive en el hito, no en la tarea** (decisión de producto). `deadline` es una clave local `YYYY-MM-DD`; se compara con el día de hoy y se muestra corta en el raíl («12 ene») y larga en el panel. Vencer no bloquea: solo tiñe el hito de peligro. La comparación se hace con fechas locales, nunca con `toISOString`.
+- **Interacción**: el hito es un botón de divulgación (`aria-expanded` / `aria-controls`) que abre un panel acordeón **debajo de todo el raíl**. Se eligió el acordeón y no un popover anclado porque el CRUD completo —fechas, tareas, confirmación de borrado— no cabe en un menú flotante y en móvil taparía la ruta. El panel se nombra con su `<h4>` y se comporta como `region`.
+- **CRUD**: crear, renombrar, fechar y eliminar hitos; crear, renombrar y eliminar tareas. Al añadir un hito se abre su editor con el foco en el nombre. El borrado del hito pide confirmación en dos pasos: al abrirla el foco va a «Cancelar» y al cancelar vuelve a «Eliminar hito». Al cerrar el panel el foco vuelve al disparador.
+- **Un hito bloqueado se abre** y sus tareas se pueden crear, editar y borrar, pero no marcar: el checkbox es el único gesto cerrado. La nota del candado explica qué hito falta. Se evita `description` en el `Checkbox` porque su descripción vive dentro del `<label>` y ampliaría el nombre accesible; el motivo se muestra en la nota y el estado en texto oculto.
+- **API controlada/no controlada** con `useControllableState`: `nodes` + `onChange`, o `defaultNodes`. Cada mutación emite el array completo; el componente no persiste nada.
+- **El sendero** es un SVG decorativo (`aria-hidden`, `pointer-events: none`) detrás del raíl. `useQuestTrail` mide marcadores y stops con un `ResizeObserver` y dibuja segmentos entre ellos; si una fila envuelve, la ruta baja, recorre el hueco de fila y vuelve a entrar por el primer hito de la siguiente. Así la línea sigue conectada sin `overflow-x` ni scroll horizontal. El tramo que sale de un hito cerrado se entinta con `--ui-accent`; el pendiente usa `--ui-border-strong`. El radio de las esquinas y el `stroke-dasharray` son geometría de arte y se quedan locales.
+- **jsdom no mide ni implementa `ResizeObserver`**: el hook no pinta nada y el componente sigue funcionando. La continuidad del sendero es una comprobación manual en navegador.
+- **La meta** es el último hito: su línea de estado lleva «Meta» y el icono de bandera. Es una lectura del final de la ruta, no un campo del modelo, y se mueve si se añade o elimina el último hito.
+
 ---
 
 ## 11. Galería
 
 La galería es la superficie de revisión del sistema; no se usa Storybook.
 
-- Una sola página, diez secciones.
+- Una sola página, once secciones.
 - Índice lateral sticky en escritorio; índice horizontal desplazable en móvil.
 - Scroll-spy con `IntersectionObserver`.
 - Selector de tema dialog con muestras, metadatos y navegación por teclado.
@@ -452,6 +465,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - Las hojas de demo son `Card size="lg"` sin envoltorio propio: el badge con el nombre del componente entra por `kicker`, el título va en la cinta sobre papel y el folio en lacre. Así la galería enseña el contenedor real y no un clon.
 - Cada demo incluye notas manuscritas con el estado actual para que el comportamiento sea visible sin abrir las devtools.
 - La sección “En contexto” usa todos los patrones en una mini todo-list real.
+- La sección “La travesía” demuestra los tres estados de un hito (cerrado, vencido y bloqueado), el CRUD completo y el sendero que se entinta. Sus plazos son relativos a hoy para que los estados sigan siendo ciertos al abrir la galería.
 - La sección “Contenedores” muestra `Card` en sus tres alturas con la lista de componentes de otras secciones.
 - El primer elemento enfocable es “Saltar al contenido”, que apunta a `main#contenido` (`tabIndex={-1}`) y vive fuera del flujo con `position: fixed` para no mover la topbar.
 - El selector de tema mantiene una palabra visible (“Tema”) cuando el nombre completo no cabe; el toggle de superficie conserva “Papel”/“Panel” como nombre explícito aunque sus etiquetas se oculten visualmente en móvil.
@@ -468,6 +482,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - ≤ 860 px: masthead en dos filas; estadísticas e intro se apilan.
 - ≤ 720 px: las rejillas de demos pasan a una columna.
 - ≤ 640 px: topbar compacta; las etiquetas del toggle de superficie se ocultan visualmente pero siguen en el árbol de accesibilidad; el selector de tema muestra “Tema” en lugar del nombre completo; el crest del masthead desaparece para dar ancho al título.
+- `Questline` envuelve en filas: la ruta se mide y se dibuja en un SVG que baja y vuelve a entrar en la fila siguiente, y el panel se coloca bajo el raíl completo. Sin scroll horizontal a 320 px.
 - La página no debe producir scroll horizontal en ningún ancho entre 320 y 1440 px. Se verificó en 320, 375, 480, 768, 1024 y 1440 px (y 640 px en la revisión anterior). No se usa `body { overflow-x: hidden }`: bajo 640 px las hojas apiladas se reescalan con `--paper-sheet-offset-*` y, si algo se sale, se corrige el elemento, no se oculta.
 
 ---
@@ -490,6 +505,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - `ProgressBar` exige nombre por tipos: `label` visible o `aria-label`; el porcentaje es texto de valor y no puede ser el nombre.
 - `TaskRow` replica prioridad y vencimiento en texto `visually-hidden`, enlazado con `aria-describedby`; el color deja de ser la única señal (WCAG 1.4.1).
 - Los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1); el viewport sigue siendo una única región `aria-live="polite"` para no duplicar anuncios.
+- `Questline` expone `aria-expanded` / `aria-controls` en cada hito, nombra el panel con su encabezado y devuelve el foco al disparador al cerrar. Cada hito lleva su número y su estado en texto `visually-hidden`; el cierre de un hito se anuncia en una región `status` («Se ha desbloqueado…»).
+- Los hitos bloqueados deshabilitan el checkbox (no el CRUD de preparación) y explican el motivo en una nota visible; el estado no depende del color: el marcador cambia de forma y la nota lleva candado.
 
 ---
 
@@ -498,7 +515,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - **Sin backend**: FileUploader y Toast son locales; no hay red.
 - **Sin router**: la galería es una sola página con anclas.
 - **Sin Storybook**: la página de galería cumple ese rol y es el entregable de revisión.
-- **Sin suite de tests automatizada**: la verificación actual es typecheck, build, auditoría axe y pruebas manuales de teclado/overlays/responsive.
+- **Tests de interacción, no de layout**: Vitest + Testing Library cubren el comportamiento; jsdom no mide, así que el sendero de `Questline` y los anchos siguen siendo comprobación manual.
+- **Questline sin reordenación**: el orden de hitos y tareas es narrativo; no hay arrastrar y soltar.
 - **Papel y rendimiento**: la silueta rasgada es geometría compartida y la sombra es una `box-shadow`. No se vuelve a un filtro de turbulencia por hoja ni a un `drop-shadow` sobre el subárbol: medido en la galería, eso multiplicaba por más de dos el coste de raster y hacía perder fotogramas al hacer scroll. El grano sí sigue siendo un SVG `feTurbulence`, pero se rasteriza una vez como imagen de fondo, no por elemento.
 - **Breakpoints y arte**: los valores de media queries y la geometría de los SVG no están tokenizados porque CSS no permite variables en media queries y el arte es geometría, no diseño de sistema.
 - **Temas**: no hay un “modo claro/oscuro” global separado; el tipo de papel es parte de cada tema.
@@ -518,6 +536,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 | Propagación de superficie a portales | `src/components/Popover/`, `useSurface` |
 | Tema, persistencia y selector | `src/theme/` |
 | Botón de cera y estados | `src/components/Button/` |
+| Questline: modelo, estados y plazos | `src/components/Questline/questline-model.ts` |
+| Sendero medido del Questline | `src/components/Questline/useQuestTrail.ts` |
 | Campos y mensajes | `src/components/Field/`, `TextInput`, `Textarea` |
 | Calendario y rueda | `src/components/DatePicker/`, `TimePicker/` |
 | Galería y tarjetas de muestra | `src/gallery/` |

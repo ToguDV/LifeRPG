@@ -42,6 +42,7 @@ Una sola página con todas las piezas, navegación por secciones, selector de te
 - **Primitivas de apoyo**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider y Toast.
 - **Contenedores**: `Card` con tres alturas (ficha, pliego, página), ornamentos de papel (hojas apiladas y envejecidas, margen de cuaderno y lacre) y, sobre papel, el título en una cinta de cera que cruza el borde superior.
 - **Compuestos de tarea**: TaskRow, TaskList, EmptyState y una demo final “El diario en marcha” que usa todo junto.
+- **La travesía**: `Questline` encadena hitos con tareas y plazo; el sendero se entinta al cerrar un hito y la línea sigue conectada cuando el raíl envuelve. Hitos y tareas se crean, editan y eliminan en el sitio.
 
 Todo es interactivo: escribe, filtra, abre calendarios y ruedas, arrastra archivos, marca tareas, elimina, cambia de tema y alterna papel/panel.
 
@@ -90,6 +91,7 @@ No hay que tocar ningún componente ni `index.html`: el script de arranque se ge
 - Prioridad y vencimiento de `TaskRow` no dependen del color; `ProgressBar` exige `label` o `aria-label`; `RangeSlider` se anuncia como grupo.
 - Foco visible y devuelto al disparador al cerrar con `Escape`.
 - Cierre por clic fuera y por pérdida de foco.
+- `Questline` deriva el bloqueo y el vencimiento del estado de las tareas; los hitos bloqueados se abren para preparar la lista, pero sus checkboxes están deshabilitados. El cierre de un hito se anuncia en una región `status`.
 - `prefers-reduced-motion` desactiva animaciones y transiciones.
 - Auditoría axe-core WCAG 2 A/AA y buenas prácticas sobre el estado inicial de la galería: **0 violaciones**. La auditoría fue externa; el control automático que queda en el repositorio es `pnpm lint` (`jsx-a11y`) más la suite de `tests/`, que cubre nombre accesible del listbox, `aria-controls`, `required` y las descripciones de `TaskRow`.
 
@@ -119,7 +121,8 @@ LifeRPG/
       Button/ Checkbox/ Radio/ Switch/ TextInput/ Textarea/
       Select/ Combobox/ Slider/ Stepper/ DatePicker/ TimePicker/
       FileUploader/ Surface/ Card/ Icon/ Badge/ ProgressBar/ Tooltip/
-      Divider/ Toast/ EmptyState/ TaskList/ Field/ Popover/ Ornaments/
+      Divider/ Toast/ EmptyState/ TaskList/ Questline/ Field/ Popover/
+      Ornaments/
     gallery/
       GalleryPage.tsx        página única con índice, temas y superficies
       sections/              una sección por familia de componentes
@@ -134,6 +137,7 @@ LifeRPG/
 - **DatePicker / TimePicker** son implementaciones propias: no hay `input type="date"` ni dependencias de calendario. El calendario empieza en lunes y respeta `min`, `max` y fechas deshabilitadas. La rueda de hora trabaja en pasos configurables.
 - **FileUploader** valida tipo y tamaño, permite arrastrar y soltar, muestra miniaturas de imágenes y lista de archivos. No sube nada a un servidor: la demo es 100% local.
 - **Toast** es una demo en memoria; los avisos se apilan, se pausan al pasar el cursor y mientras el foco de teclado está dentro, y se cierran solos.
+- **Questline** no guarda estados de bloqueo: se derivan de las tareas. El plazo vive en el hito (`deadline` como `YYYY-MM-DD`), no en la tarea. El sendero es un SVG decorativo medido en el navegador; en jsdom no se pinta, así que su continuidad se revisa a mano.
 - El mockup original sigue en `design/mockup.html`, con `design/fonts/local.css` apuntando a las fuentes locales de `public/fonts`.
 
 ## Documentación de diseño

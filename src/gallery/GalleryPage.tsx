@@ -15,6 +15,7 @@ import { DateTimeSection } from './sections/DateTimeSection'
 import { FilesSection } from './sections/FilesSection'
 import { ExtrasSection } from './sections/ExtrasSection'
 import { ContextSection } from './sections/ContextSection'
+import { QuestlineSection } from './sections/QuestlineSection'
 import { ContainersSection } from './sections/ContainersSection'
 import type { SectionProps } from './SectionProps'
 import { useActiveSection } from './useActiveSection'
@@ -30,6 +31,7 @@ const SECTION_COMPONENTS: Record<SectionId, ComponentType<SectionProps>> = {
   archivos: FilesSection,
   complementos: ExtrasSection,
   contexto: ContextSection,
+  travesia: QuestlineSection,
   contenedores: ContainersSection,
 }
 
@@ -164,7 +166,7 @@ export function GalleryPage() {
                 <span>Controles</span>
               </li>
               <li>
-                <b>10</b>
+                <b>{String(SECTIONS.length).padStart(2, '0')}</b>
                 <span>Secciones</span>
               </li>
             </ul>

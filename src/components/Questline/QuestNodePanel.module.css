@@ -1,0 +1,294 @@
+/* ============================================================
+   QUEST NODE PANEL — the drawer under the route
+   One milestone at a time: header, inline editor, quests, add row
+   and the two-step delete. Every measure comes from tokens.
+   ============================================================ */
+
+.panel {
+  position: relative;
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--ui-surface-sunken);
+  box-shadow: var(--shadow-sm);
+  animation: panel-in var(--duration-base) var(--ease-out);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-1) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- header ---------- */
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2) var(--space-3);
+}
+
+.headMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.panel[data-state="overdue"] .kicker {
+  color: var(--ui-danger);
+}
+
+.panel[data-state="complete"] .kicker {
+  color: var(--ui-success);
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wider);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-caps);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-book);
+  line-height: var(--leading-tight);
+  color: var(--ui-text);
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--ui-text-muted);
+}
+
+.tally {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  color: var(--ui-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tools {
+  display: flex;
+  gap: var(--space-0-5);
+}
+
+/* ---------- inline editor ---------- */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--ui-field-bg);
+}
+
+.deadlineRow {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+
+.deadlineField {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.editorActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ---------- lock notice ---------- */
+
+.lockNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: var(--border-width-strong) solid var(--ui-warning);
+  border-radius: var(--radius-xs);
+  background-color: var(--ui-warning-soft);
+  font-family: var(--font-hand);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--ui-text-soft);
+}
+
+.lockIcon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  padding-top: var(--space-0-5);
+  color: var(--ui-warning);
+}
+
+/* ---------- quests ---------- */
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-1);
+  border-bottom: var(--border-width) solid var(--ui-divider-soft);
+}
+
+.task:last-child {
+  border-bottom: 0;
+}
+
+.taskTools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-0-5);
+}
+
+.taskToolsIdle {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.task:hover .taskToolsIdle,
+.task:focus-within .taskToolsIdle {
+  opacity: 1;
+}
+
+.taskEdit {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.taskEditField {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.emptyTasks {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-hand);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--ui-text-muted);
+}
+
+@media (hover: none) {
+  .taskToolsIdle {
+    opacity: 1;
+  }
+}
+
+/* ---------- add quest ---------- */
+
+.addTask {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.addTaskField {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+/* ---------- footer ---------- */
+
+.foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--ui-divider-soft);
+}
+
+.footNote {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  color: var(--ui-text-muted);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.confirmText {
+  flex: 1 1 14rem;
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--ui-text-soft);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 560px) {
+  .panel {
+    padding: var(--space-3);
+  }
+
+  .deadlineRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .deadlineField {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
