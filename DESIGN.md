@@ -195,24 +195,26 @@ No se toca ningún componente. Si el tema necesita un papel claro, `paper: 'ligh
 ### 5.1 Papel
 
 - Color base `--parch`, gradientes de luz y sombra, grano SVG.
-- Borde irregular mediante el filtro SVG `#ui-torn-soft` en la capa de textura, no en el contenido.
-- Sombra exterior **siempre oscura**: `drop-shadow` con `--ui-paper-drop` (tinta cálida sobre papel claro, negro sobre cartulina oscura).
+- Borde irregular mediante la silueta fija `#ui-torn-clip` (un `clipPath` en `objectBoundingBox`) sobre la capa de textura, nunca sobre el contenido.
+- Sombra exterior **siempre oscura**: `box-shadow` con `--ui-paper-drop` (tinta cálida sobre papel claro, negro sobre cartulina oscura), no un `drop-shadow` que rasterice la tarjeta entera.
 - Sombra interior de viñeta, sin brillos perimetrales.
+- La luz, la sombra y el grano se apilan en **una sola** capa de textura: los degradados de borde viven en el mismo `background-image`, no en un pseudo-elemento extra.
 - `tilt` opcional muy leve (`±0.22deg`) para que las hojas no parezcan tarjetas perfectas.
 - La capa de textura queda por debajo del contenido (`z-index`) y el `Surface` aísla el stacking context.
 
 **Sin halo.** La cartulina oscura no proyecta luz: sobre `data-paper="dark"` no hay filo interior luminoso, ni velo superior, ni sombra clara. El borde se define con una viñeta oscura y una sombra negra, y la única luz es la del propio papel. Las siete paletas oscuras comparten ese comportamiento; Pergamino conserva su sombra cálida porque su tinta es oscura.
 
+**Coste de pintura.** El papel es la parte más cara de la interfaz y por eso se pinta con capas baratas: un `clip-path` de geometría compartido en vez de un `feDisplacementMap` por hoja, una `box-shadow` en vez de un `drop-shadow` sobre el subárbol, y sin `mix-blend-mode` a pantalla completa. Las máscaras (`mask-image`) solo se usan cuando la geometría no puede sustituirlas. Cualquier capa nueva debe medirse con el rendimiento en mente: la concatenación de filtros por tarjeta fue la causa de que la galería tardara segundos en pintar.
+
 **Ornamentos.** `Surface` acepta capas físicas opcionales. Todas son decorativas (`aria-hidden`), se pintan bajo el contenido y se apagan con una prop; sólo existen sobre papel.
 
 | Prop | Capa | Tokens |
 | --- | --- | --- |
-| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; cada canto iluminado y cada costura en sombra. | `--paper-sheet-*`, `--ui-paper-sheet-back*`, `--ui-paper-cut`, `--ui-paper-seam` |
+| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; se distinguen por tono, no por borde. | `--paper-sheet-*`, `--ui-paper-sheet-back*`, `--ui-paper-cut`, `--ui-paper-seam` |
 | `margin="rule"` | Margen de cuaderno de 38 px con línea vertical de acento. | `--paper-margin-*` |
-| `stitch` | Costura de hilo al borde superior: puntadas enmascaradas, agujeros de aguja y una sombra de 1 px. | `--paper-stitch-*`, `--ui-paper-stitch*` |
-| `stains` | Manchas de agua y una marca de marea, sólo en el pie y enmascaradas fuera del texto. | `--ui-paper-stain*` |
+| `stains` | Manchas de agua y una marca de marea, sólo en el pie; el propio degradado las apaga fuera del texto, sin máscara. | `--ui-paper-stain*` |
 
-Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten el filtro rasgado del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima, cada una con su canto iluminado (`--ui-paper-cut`) y su costura en sombra (`--ui-paper-seam`).
+Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten la silueta rasgada del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima. **Sobre Pergamino no dibujan borde**: `--ui-paper-cut` y `--ui-paper-seam` son transparentes y la pila se lee por profundidad de tono, cada hoja más oscura que la anterior. Sobre cartulina oscura se mantiene el canto iluminado y la costura en sombra, que allí sí definen el filo. Del canto solo se ve el borde, así que no repite el grano: ese tile completo por hoja era otra capa cara sin diferencia visible.
 
 El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
 
@@ -327,8 +329,8 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
   - Grano general: SVG `feTurbulence` con dos variantes (normal y tenue).
   - Papel: grano multiplicado o tamizado según `data-paper`.
   - Panel: grano con mezcla `overlay`.
-  - Bordes rasgados: filtros `#ui-torn`, `#ui-torn-soft`, `#ui-torn-edge` definidos una vez en `TornFilters`.
-  - Papel físico: hojas apiladas y envejecidas, margen de cuaderno, costura de hilo y manchas de borde, con geometría en `primitives.css` y color en `themes.css`.
+  - Bordes rasgados: silueta normalizada `#ui-torn-clip` definida una vez en `TornSilhouette`. Es un `clipPath` con `clipPathUnits="objectBoundingBox"`, determinista y compartido por todas las hojas; sustituye a los antiguos filtros `feTurbulence`, que se reevaluaban por tarjeta en cada pintado.
+  - Papel físico: hojas apiladas y envejecidas, margen de cuaderno y manchas de borde, con geometría en `primitives.css` y color en `themes.css`.
 - Los iconos son paths propios de 24×24 con `currentColor`, trazo 1.5 y extremos redondeados.
 
 ---
@@ -463,7 +465,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - **Sin router**: la galería es una sola página con anclas.
 - **Sin Storybook**: la página de galería cumple ese rol y es el entregable de revisión.
 - **Sin suite de tests automatizada**: la verificación actual es typecheck, build, auditoría axe y pruebas manuales de teclado/overlays/responsive.
-- **Filtros SVG**: los bordes rasgados y el grano son costosos en GPUs modestas; se limitan a capas de fondo y no se aplican al contenido.
+- **Papel y rendimiento**: la silueta rasgada es geometría compartida y la sombra es una `box-shadow`. No se vuelve a un filtro de turbulencia por hoja ni a un `drop-shadow` sobre el subárbol: medido en la galería, eso multiplicaba por más de dos el coste de raster y hacía perder fotogramas al hacer scroll. El grano sí sigue siendo un SVG `feTurbulence`, pero se rasteriza una vez como imagen de fondo, no por elemento.
 - **Breakpoints y arte**: los valores de media queries y la geometría de los SVG no están tokenizados porque CSS no permite variables en media queries y el arte es geometría, no diseño de sistema.
 - **Temas**: no hay un “modo claro/oscuro” global separado; el tipo de papel es parte de cada tema.
 - **Grenze Gotisch**: está disponible como familia, pero todavía no se usa en componentes.

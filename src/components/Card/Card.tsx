@@ -41,7 +41,6 @@ export function Card({
   className,
   stack = 'double',
   margin = 'rule',
-  stitch = true,
   stains = true,
 }: CardProps) {
   const paper = surface === 'paper'
@@ -54,7 +53,6 @@ export function Card({
       torn={paper}
       stack={paper ? stack : 'none'}
       margin={paper ? margin : 'none'}
-      stitch={paper && stitch}
       stains={paper && stains}
       className={cx(styles.card, styles[`size-${size}`], className)}
     >

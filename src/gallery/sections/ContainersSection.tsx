@@ -28,7 +28,6 @@ export function ContainersSection({ canvas }: SectionProps) {
             title={meta.title}
             description={meta.note}
             folio={meta.number}
-            stitch
             footer={
               size === 'lg'
                 ? 'Misma hoja, tres alturas: ficha, pliego y página.'
@@ -51,8 +50,8 @@ export function ContainersSection({ canvas }: SectionProps) {
 
       <DemoNote muted className={styles.shelfNote}>
         Tres contenedores: ficha de 21 rem, pliego de 30 rem y página completa. Las hojas
-        apiladas, el margen de cuaderno, la costura de hilo y las manchas de borde son capas
-        decorativas: viven bajo el contenido y se marcan como <b>aria-hidden</b>.
+        apiladas, el margen de cuaderno y las manchas de borde son capas decorativas: viven
+        bajo el contenido y se marcan como <b>aria-hidden</b>.
       </DemoNote>
     </div>
   )

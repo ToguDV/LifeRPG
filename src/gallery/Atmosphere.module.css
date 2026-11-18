@@ -6,6 +6,28 @@
   z-index: var(--z-base);
   overflow: hidden;
   pointer-events: none;
+  /*
+    The page canvas used to live on `body` with `background-attachment:
+    fixed`. Painting it here keeps it in the one fixed layer that is
+    already composited, so scrolling never re-rasterises the backdrop.
+  */
+  background:
+    radial-gradient(
+      1100px 720px at 12% -8%,
+      color-mix(in srgb, var(--bone) 4.5%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      850px 620px at 92% 2%,
+      color-mix(in srgb, var(--bronze) 3%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse at 50% 118%,
+      color-mix(in srgb, var(--stone-0) 92%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(180deg, var(--stone-2) 0%, var(--stone-1) 40%, var(--stone-0) 100%);
 }
 
 .atmosphere::before {
@@ -14,8 +36,13 @@
   inset: 0;
   background-image: var(--texture-grain);
   background-size: var(--texture-size) var(--texture-size);
-  opacity: 0.34;
-  mix-blend-mode: soft-light;
+  /*
+    No `mix-blend-mode: soft-light`: blending a fixed full-viewport layer
+    with the page forces the whole document into one blend group, which is
+    re-composited on every scroll frame. A low-opacity grain in normal
+    compositing reads the same over the dark canvas.
+  */
+  opacity: 0.12;
 }
 
 .atmosphere::after {

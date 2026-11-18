@@ -14,9 +14,12 @@
   top: 0;
   z-index: var(--z-sticky);
   border-bottom: var(--border-width) solid var(--ui-divider);
-  background-color: color-mix(in srgb, var(--stone-1) 88%, transparent);
-  -webkit-backdrop-filter: blur(var(--backdrop-blur)) saturate(1.1);
-  backdrop-filter: blur(var(--backdrop-blur)) saturate(1.1);
+  /*
+    No backdrop blur: a sticky bar with a backdrop filter re-blurs the
+    layer below it on every scroll frame. A near-opaque ink reads the
+    same over the dark canvas (and matches the "no glassmorphism" rule).
+  */
+  background-color: color-mix(in srgb, var(--stone-1) 95%, transparent);
 }
 
 .topbarInner {

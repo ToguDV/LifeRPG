@@ -1,5 +1,5 @@
 import { ToastProvider } from './components/Toast/Toast'
-import { TornFilters } from './components/Ornaments/TornFilters'
+import { TornSilhouette } from './components/Ornaments/TornSilhouette'
 import { GalleryPage } from './gallery/GalleryPage'
 import { ThemeProvider } from './theme/ThemeProvider'
 
@@ -7,7 +7,7 @@ export function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <TornFilters />
+        <TornSilhouette />
         <GalleryPage />
       </ToastProvider>
     </ThemeProvider>

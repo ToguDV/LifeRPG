@@ -571,18 +571,20 @@
   --ui-paper-top-sheen: rgba(255, 253, 246, 0.26);
   --ui-paper-side-shade: rgba(70, 64, 49, 0.16);
   --ui-paper-bottom-shade: rgba(70, 64, 49, 0.14);
-  /* physical paper: cut edges, sheets, thread, stains, drop shadow */
-  --ui-paper-cut: color-mix(in srgb, var(--paper-raised) 74%, #fffdf4);
-  --ui-paper-seam: rgba(64, 58, 44, 0.42);
-  /* the older sheets deepen and yellow a touch, like paper kept in a drawer */
-  --ui-paper-sheet-back: color-mix(in srgb, var(--paper-raised) 33%, var(--bronze) 67%);
+  /*
+    Light paper has no bright rim: a white cut edge read as a border
+    around the stacked sheets, so both edge tokens are transparent and
+    the stack is told apart by tone. Each older sheet deepens and yellows
+    a little, the deepest the most, like paper kept in a drawer.
+  */
+  --ui-paper-cut: transparent;
+  --ui-paper-seam: transparent;
+  --ui-paper-sheet-back: color-mix(in srgb, var(--parch) 52%, var(--bronze) 48%);
   --ui-paper-sheet-back-2: color-mix(
     in srgb,
-    color-mix(in srgb, var(--paper-raised) 15%, var(--bronze) 85%),
-    var(--ink) 4%
+    color-mix(in srgb, var(--parch) 8%, var(--bronze) 92%),
+    var(--ink) 12%
   );
-  --ui-paper-stitch: color-mix(in srgb, var(--accent-paper) 78%, var(--ink) 22%);
-  --ui-paper-stitch-hole: rgba(48, 43, 34, 0.5);
   --ui-paper-stain: rgba(96, 84, 58, 0.12);
   --ui-paper-stain-ring: rgba(96, 84, 58, 0.17);
   --ui-paper-drop: rgba(34, 30, 22, 0.34);
@@ -612,8 +614,6 @@
   --ui-paper-seam: rgba(0, 0, 0, 0.62);
   --ui-paper-sheet-back: color-mix(in srgb, var(--parch) 82%, var(--stone-0) 18%);
   --ui-paper-sheet-back-2: color-mix(in srgb, var(--parch) 64%, var(--stone-0) 36%);
-  --ui-paper-stitch: color-mix(in srgb, var(--accent-paper) 64%, var(--parch) 36%);
-  --ui-paper-stitch-hole: rgba(0, 0, 0, 0.66);
   --ui-paper-stain: rgba(0, 0, 0, 0.22);
   --ui-paper-stain-ring: rgba(0, 0, 0, 0.3);
   --ui-paper-drop: rgba(0, 0, 0, 0.62);

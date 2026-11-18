@@ -22,24 +22,14 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--ui-text);
-  background:
-    radial-gradient(
-      1100px 720px at 12% -8%,
-      color-mix(in srgb, var(--bone) 4.5%, transparent),
-      transparent 62%
-    ),
-    radial-gradient(
-      850px 620px at 92% 2%,
-      color-mix(in srgb, var(--bronze) 3%, transparent),
-      transparent 62%
-    ),
-    radial-gradient(
-      ellipse at 50% 118%,
-      color-mix(in srgb, var(--stone-0) 92%, transparent),
-      transparent 62%
-    ),
-    linear-gradient(180deg, var(--stone-2) 0%, var(--stone-1) 40%, var(--stone-0) 100%);
-  background-attachment: fixed;
+  /*
+    The canvas no longer paints here with `background-attachment: fixed`:
+    a fixed attachment makes the browser re-rasterise the full background
+    on every scroll frame. `.atmosphere` is already a fixed layer, so the
+    gradient lives there (Atmosphere.module.css) and body keeps only the
+    colour that shows behind it.
+  */
+  background-color: var(--stone-1);
 }
 
 h1,

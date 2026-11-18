@@ -15,7 +15,6 @@ export type PaperMargin = 'none' | 'rule'
 export interface PaperOrnamentProps {
   stack?: PaperStack
   margin?: PaperMargin
-  stitch?: boolean
   stains?: boolean
 }
 
@@ -45,7 +44,6 @@ export function Surface({
   tilt = 'none',
   stack = 'none',
   margin = 'none',
-  stitch = false,
   stains = false,
   as,
   className,
@@ -81,7 +79,6 @@ export function Surface({
           aria-hidden="true"
         />
         {paper && stains ? <span className={styles.stains} aria-hidden="true" /> : null}
-        {paper && stitch ? <span className={styles.stitch} aria-hidden="true" /> : null}
         <div className={styles.content}>{children}</div>
       </Tag>
     </SurfaceContext.Provider>

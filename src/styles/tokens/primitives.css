@@ -161,7 +161,6 @@
   --demo-column-min: 13rem;
   --form-field-min: 14rem;
   --task-progress-max: 24rem;
-  --backdrop-blur: 12px;
   --popover-offset: 0.375rem;
   --popover-padding: 0.375rem;
   --tooltip-max-width: 16rem;
@@ -216,12 +215,6 @@
   --paper-sheet-tilt-2: -0.22deg;
   --paper-margin-width: 2.375rem; /* notebook gutter */
   --paper-margin-line-offset: 0.75rem; /* rule stays near the paper edge */
-  --paper-stitch-inset: 1.25rem;
-  --paper-stitch-inline: 0.875rem;
-  --paper-stitch-height: 0.1875rem; /* thread thickness */
-  --paper-stitch-dash: 0.375rem; /* one stitch */
-  --paper-stitch-pitch: 0.9375rem; /* stitch + gap */
-  --paper-stitch-hole: 0.0625rem;
   --seal-size-sm: 2rem;
   --seal-size-md: 2.375rem;
 

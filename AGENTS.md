@@ -43,7 +43,7 @@ pnpm preview      # sirve dist/
 | `vite.config.ts` | Vite + plugin React. |
 | `index.html` | Entrada de Vite, favicon y script que aplica el tema guardado antes del primer paint. |
 | `src/main.tsx` | Imports de estilos globales y montaje de `<App />`. |
-| `src/App.tsx` | `ThemeProvider` → `ToastProvider` → `TornFilters` → `GalleryPage`. |
+| `src/App.tsx` | `ThemeProvider` → `ToastProvider` → `TornSilhouette` → `GalleryPage`. |
 | `src/vite-env.d.ts` | Tipos de Vite para CSS Modules y assets. |
 
 ### Referencia estática
@@ -98,7 +98,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 | Popover | `src/components/Popover/Popover.tsx`, `Popover.module.css` |
 | Card | `src/components/Card/Card.tsx`, `Card.module.css` |
 | WaxSeal | `src/components/Ornaments/WaxSeal.tsx`, `WaxSeal.module.css` |
-| TornFilters | `src/components/Ornaments/TornFilters.tsx` |
+| TornSilhouette | `src/components/Ornaments/TornSilhouette.tsx` (silueta rasgada compartida) |
 
 ### Galería
 
@@ -238,7 +238,9 @@ Antes de dar un cambio por terminado:
 - **Colores primary**: el texto del botón primario debe quedar sobre la banda oscura del gradiente; no aclares `--ui-primary-bg` sin comprobar contraste.
 - **Contraste muted**: el papel claro usa una mezcla más oscura que `--ink-3`; no vuelvas a `--ink-3` directo sin medir contraste.
 - **Festival de 1 px**: los patrones `visually-hidden` y los bordes de arte usan 1 px; no los conviertas en “tokens de spacing” sin necesidad.
-- **Filtros SVG**: los bordes rasgados y el grano son caros. No los apliques a cada control.
+- **Filtros SVG por hoja**: el borde rasgado es un `clip-path` compartido (`#ui-torn-clip`), no `feTurbulence`. Un filtro de turbulencia por tarjeta multiplica el raster y vuelve a pintarse al hacer scroll. La sombra del papel es `box-shadow`, no `drop-shadow` sobre el subárbol.
+- **Mezclas a pantalla completa**: `mix-blend-mode` en capas `fixed` y `backdrop-filter` en la topbar fuerzan a recomponer el documento en cada scroll. Evítalos.
+- **Grano**: el tile de 220 px se rasteriza una vez como imagen de fondo y se comparte; no lo conviertas en un filtro por elemento.
 - **`design/mockup.html`**: es la referencia original. Si necesitas ajustarlo, hazlo solo para mantenerlo funcional (por ejemplo, fuentes), no para reflejar la app React.
 - **Sin Storybook**: la galería es la superficie de revisión; no añadas Storybook sin pedirlo.
 

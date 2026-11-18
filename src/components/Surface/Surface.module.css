@@ -20,8 +20,14 @@
     The shadow is always darker than the sheet. On dark cardstock the
     old `--ui-shadow-color` (a light ink) drew a halo around every card;
     `--ui-paper-drop` is black there and warm ink on light paper.
+
+    It is a box-shadow, not a drop-shadow filter: a filter here rasterised
+    the whole card (text and controls included) into an offscreen buffer
+    before blurring it, and every hover or edit inside the card paid for
+    it again. A blurred box behind the sheet reads the same, because the
+    torn notches are smaller than the blur radius.
   */
-  filter: drop-shadow(0 var(--space-2) var(--space-5) var(--ui-paper-drop));
+  box-shadow: 0 var(--space-2) var(--space-5) var(--ui-paper-drop);
 }
 
 .texture {
@@ -34,22 +40,12 @@
 
 .paper .texture {
   background-color: var(--ui-surface);
+  /*
+    One background stack instead of a pseudo-element on top: the same
+    pixels, one less paint layer per sheet. The edge shading is listed
+    first so it still sits over the light and shade washes.
+  */
   background-image:
-    radial-gradient(115% 95% at 16% 2%, var(--ui-paper-light), transparent 58%),
-    radial-gradient(95% 82% at 88% 98%, var(--ui-paper-shade), transparent 64%),
-    var(--ui-paper-grain);
-  background-size: auto, auto, var(--texture-size) var(--texture-size);
-  background-repeat: no-repeat, no-repeat, repeat;
-  background-blend-mode: normal, normal, var(--ui-paper-texture-blend);
-  box-shadow: var(--ui-paper-inner-shadow);
-}
-
-.paper .texture::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-sm);
-  background:
     linear-gradient(
       90deg,
       var(--ui-paper-side-shade),
@@ -63,11 +59,32 @@
       transparent 13%,
       transparent 86%,
       var(--ui-paper-bottom-shade)
-    );
+    ),
+    radial-gradient(115% 95% at 16% 2%, var(--ui-paper-light), transparent 58%),
+    radial-gradient(95% 82% at 88% 98%, var(--ui-paper-shade), transparent 64%),
+    var(--ui-paper-grain);
+  background-size:
+    100% 100%,
+    100% 100%,
+    auto,
+    auto,
+    var(--texture-size) var(--texture-size);
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-blend-mode:
+    normal,
+    normal,
+    normal,
+    normal,
+    var(--ui-paper-texture-blend);
+  box-shadow: var(--ui-paper-inner-shadow);
 }
 
+/*
+  The torn silhouette is a shared static clip path, not a live noise
+  filter: geometry is cheap to apply and does not re-run per sheet.
+*/
 .paper[data-torn="true"] .texture {
-  filter: url(#ui-torn-soft);
+  clip-path: url(#ui-torn-clip);
 }
 
 .paper[data-torn="false"] .texture {
@@ -82,8 +99,6 @@
   inset: 0;
   z-index: var(--z-behind);
   pointer-events: none;
-  /* Older sheets keep the same torn silhouette as the sheet on top. */
-  filter: url(#ui-torn-soft);
 }
 
 .sheets::before,
@@ -92,17 +107,19 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-sm);
-  /* A thin edge cannot carry the full grain: it would eat the seam. */
-  background-image: var(--texture-grain-light);
-  background-size: var(--texture-size) var(--texture-size);
-  background-blend-mode: var(--ui-paper-texture-blend);
+  /* Older sheets keep the same torn silhouette as the sheet on top. */
+  clip-path: url(#ui-torn-clip);
   /*
-    A stack reads through its cut edges: one hairline of lit paper,
-    one hairline of shade where the next sheet begins.
+    Only the cut edge of a sheet is visible, so it carries colour and,
+    on dark cardstock, the hairline lit/shade seam, not a full tiling of
+    the grain: that was a second and third full-card texture painted
+    under every card. On light paper both edge tokens are transparent
+    and the stack reads by depth alone. The seams are inset because the
+    clip path removes anything painted outside the silhouette.
   */
   box-shadow:
-    1px 1px 0 var(--ui-paper-cut),
-    2px 2px 0 var(--ui-paper-seam);
+    inset -2px -2px 0 var(--ui-paper-cut),
+    inset -3px -3px 0 var(--ui-paper-seam);
 }
 
 /* The deepest sheet is painted first; the one touching the card sits on top. */
@@ -135,56 +152,6 @@
     /* a single tide mark, half off the corner */
     radial-gradient(4.5rem 2.75rem at 97% 101%, transparent 54%, var(--ui-paper-stain-ring) 62%, transparent 74%);
   opacity: 0.75;
-  /* The mask is an alpha stencil, not a palette colour. */
-  -webkit-mask-image: linear-gradient(180deg, transparent 64%, #000 100%);
-  mask-image: linear-gradient(180deg, transparent 64%, #000 100%);
-}
-
-/* ---------- sewn thread along the top edge ---------- */
-.stitch {
-  position: absolute;
-  /* stays in the top padding, whatever the card padding is */
-  inset-block-start: min(var(--paper-stitch-inset), calc(var(--surface-pad) * 0.55));
-  inset-inline: var(--paper-stitch-inline);
-  z-index: var(--z-base);
-  height: var(--paper-stitch-height);
-  pointer-events: none;
-  transform: rotate(-0.09deg);
-  /* the thread sits on the sheet, not in it */
-  filter: drop-shadow(0 1px 0 var(--ui-paper-seam));
-}
-
-/* needle holes, one at the end of every stitch */
-.stitch::before {
-  content: "";
-  position: absolute;
-  inset-block: calc(var(--paper-stitch-height) * -2);
-  inset-inline: 0;
-  background-image: radial-gradient(
-    circle at 50% 50%,
-    var(--ui-paper-stitch-hole) 0 var(--paper-stitch-hole),
-    transparent calc(var(--paper-stitch-hole) + 0.5px)
-  );
-  background-size: var(--paper-stitch-pitch) 100%;
-}
-
-/* the thread itself */
-.stitch::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-pill);
-  background-color: var(--ui-paper-stitch);
-  -webkit-mask-image: repeating-linear-gradient(
-    90deg,
-    #000 0 var(--paper-stitch-dash),
-    transparent var(--paper-stitch-dash) var(--paper-stitch-pitch)
-  );
-  mask-image: repeating-linear-gradient(
-    90deg,
-    #000 0 var(--paper-stitch-dash),
-    transparent var(--paper-stitch-dash) var(--paper-stitch-pitch)
-  );
 }
 
 /* ---------- notebook gutter ---------- */
