@@ -71,9 +71,14 @@ export function useFloating({
     const availableAbove = anchorRect.top - gap - viewportPadding
     const needed = Math.min(measuredHeight, 320)
 
-    const canFitBelow = availableBelow >= needed
-    const side: FloatingSide = canFitBelow
-      ? 'bottom'
+    /*
+      The requested side wins whenever it has room. Flipping is only a
+      fallback, and then the roomier side takes over.
+    */
+    const preferredFits =
+      preferredSide === 'bottom' ? availableBelow >= needed : availableAbove >= needed
+    const side: FloatingSide = preferredFits
+      ? preferredSide
       : availableAbove > availableBelow
         ? 'top'
         : 'bottom'
@@ -127,7 +132,19 @@ export function useFloating({
   useEffect(() => {
     if (!open) return
 
-    const onScroll = () => update()
+    /*
+      The capture-phase listener also reports scrolling *inside* the floating
+      surface: a long wheel or menu scrolls without moving the anchor. Those
+      events would only cost a `getBoundingClientRect` and a state update, so
+      they are skipped. Window/document scrolls and scrollable ancestors of
+      the anchor still reposition.
+    */
+    const onScroll = (event: Event) => {
+      const floating = floatingRef.current
+      const target = event.target
+      if (floating && target instanceof Node && floating.contains(target)) return
+      update()
+    }
     window.addEventListener('scroll', onScroll, true)
     window.addEventListener('resize', onScroll)
     window.visualViewport?.addEventListener('resize', onScroll)
@@ -147,7 +164,7 @@ export function useFloating({
       window.visualViewport?.removeEventListener('scroll', onScroll)
       observer?.disconnect()
     }
-  }, [floatingRef, open, update])
+  }, [anchorRef, floatingRef, open, update])
 
   return state
 }

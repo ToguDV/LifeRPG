@@ -7,7 +7,7 @@ import {
   type TextareaHTMLAttributes,
 } from 'react'
 import { cx } from '../../lib/cx'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldMessageIds } from '../Field/Field'
 import styles from './Textarea.module.css'
 
 export interface TextareaProps
@@ -53,12 +53,8 @@ export function Textarea({
   const current = isControlled ? String(value ?? '') : internal
   const count = current.length
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
-  const describedBy = cx(ariaDescribedBy, messageId) || undefined
+  const messageIds = getFieldMessageIds(fieldId, { hint, error })
+  const describedBy = cx(ariaDescribedBy, ...messageIds) || undefined
 
   useLayoutEffect(() => {
     if (!autoGrow || !textareaRef.current) return

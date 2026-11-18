@@ -21,7 +21,7 @@ import {
 import { formatDate, formatMonth, isSameDay, startOfDay } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
 import { Button } from '../Button/Button'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import { Popover } from '../Popover/Popover'
 import styles from './DatePicker.module.css'
@@ -98,11 +98,14 @@ export function DatePicker({
   const [viewDate, setViewDate] = useState(() => startOfMonth(currentDate ?? today))
   const [focusedDate, setFocusedDate] = useState(() => currentDate ?? today)
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  /*
+    `aria-required` is not allowed on `role="button"` (ARIA 1.2 and the
+    `aria-allowed-attr` check), so the required state is announced as a
+    description. The hidden input cannot take part in native validation
+    either: consumers validate on submit.
+  */
+  const requiredId = required ? `${fieldId}-required` : undefined
+  const describedBy = cx(...getFieldMessageIds(fieldId, { hint, error }), requiredId) || undefined
 
   const isDisabledDate = (date: Date) => {
     const day = startOfDay(date)
@@ -228,6 +231,11 @@ export function DatePicker({
       labelAside={labelAside}
       className={fieldClassName}
     >
+      {/*
+        ARIA 1.2 dropped `aria-invalid` from the button role table, but it is
+        still the only way to expose the error state on this trigger.
+      */}
+      {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
       <button
         ref={triggerRef}
         type="button"
@@ -241,9 +249,9 @@ export function DatePicker({
         )}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-controls={dialogId}
+        aria-controls={open ? dialogId : undefined}
         aria-invalid={error ? true : undefined}
-        aria-describedby={messageId}
+        aria-describedby={describedBy}
         disabled={disabled}
         onClick={() => (open ? close(true) : openCalendar())}
       >
@@ -255,6 +263,12 @@ export function DatePicker({
         </span>
         <Icon name="chevron-down" size="sm" className={styles.chevron} />
       </button>
+
+      {requiredId ? (
+        <span id={requiredId} className="visually-hidden">
+          Campo obligatorio
+        </span>
+      ) : null}
 
       {name ? (
         <input type="hidden" name={name} value={currentDate ? dateKey(currentDate) : ''} />

@@ -4,10 +4,10 @@ export interface GallerySectionMeta {
   title: string
   kicker: string
   note: string
-  components: string[]
+  components: readonly string[]
 }
 
-export const SECTIONS: readonly GallerySectionMeta[] = [
+export const SECTIONS = [
   {
     id: 'acciones',
     number: '01',
@@ -88,4 +88,7 @@ export const SECTIONS: readonly GallerySectionMeta[] = [
     note: 'El papel que guarda al papel.',
     components: ['Surface', 'Card', 'WaxSeal'],
   },
-] as const
+] as const satisfies readonly GallerySectionMeta[]
+
+/** Literal ids of `SECTIONS`; the gallery map cannot drift from this list. */
+export type SectionId = (typeof SECTIONS)[number]['id']

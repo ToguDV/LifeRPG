@@ -9,15 +9,30 @@
 }
 
 html {
+  /* Dark until `data-paper` says otherwise; the boot script sets it before paint. */
   color-scheme: dark;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
+/*
+  Native chrome (caret, autofill, scrollbars, form controls) follows the
+  paper of the palette, not a fixed dark scheme. Pergamino is the only
+  light paper and its desk is still dark; the themed scrollbar rules below
+  keep that edge consistent, so only the caret and autofill background
+  lighten noticeably.
+*/
+html[data-paper='light'] {
+  color-scheme: light;
+}
+
+html[data-paper='dark'] {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
   font-family: var(--font-body);
   font-size: var(--text-base);
   line-height: var(--leading-normal);

@@ -5,10 +5,9 @@ import styles from './ProgressBar.module.css'
 
 export type ProgressVariant = 'accent' | 'xp' | 'success' | 'warning' | 'danger'
 
-export interface ProgressBarProps {
+export interface ProgressBarBaseProps {
   value: number
   max?: number
-  label?: ReactNode
   hint?: ReactNode
   showValue?: boolean
   variant?: ProgressVariant
@@ -17,17 +16,31 @@ export interface ProgressBarProps {
   className?: string
 }
 
-export function ProgressBar({
-  value,
-  max = 100,
-  label,
-  hint,
-  showValue = true,
-  variant = 'accent',
-  size = 'sm',
-  valueText,
-  className,
-}: ProgressBarProps) {
+/**
+ * A `progressbar` needs an accessible name. The union makes that a
+ * compile-time requirement: either a visible `label` (which also names the
+ * bar through `aria-labelledby`) or an explicit `aria-label`, never neither.
+ * The percentage is the value text, so it cannot stand in for the name.
+ */
+export type ProgressBarProps = ProgressBarBaseProps &
+  (
+    | { label: ReactNode; 'aria-label'?: undefined }
+    | { label?: undefined; 'aria-label': string }
+  )
+
+export function ProgressBar(props: ProgressBarProps) {
+  const {
+    value,
+    max = 100,
+    hint,
+    showValue = true,
+    variant = 'accent',
+    size = 'sm',
+    valueText,
+    className,
+  } = props
+  const label = props.label
+  const ariaLabel = props['aria-label']
   const id = useId()
   const safeMax = max <= 0 ? 1 : max
   const safeValue = clamp(value, 0, safeMax)
@@ -56,6 +69,7 @@ export function ProgressBar({
         className={cx(styles.track, styles[size])}
         role="progressbar"
         aria-labelledby={label ? `${id}-label` : undefined}
+        aria-label={ariaLabel}
         aria-valuemin={0}
         aria-valuemax={safeMax}
         aria-valuenow={safeValue}

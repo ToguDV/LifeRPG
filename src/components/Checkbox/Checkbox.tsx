@@ -96,11 +96,18 @@ export function CheckboxGroup({
   const id = useId()
   const message = error ?? hint
   const messageId = message ? `checkbox-group-${id}-message` : undefined
+  /*
+    `aria-required` is not supported by the `group` role that a fieldset maps
+    to (ARIA 1.2 and the `aria-allowed-attr` check), so the required state is
+    announced as a description instead.
+  */
+  const requiredId = required ? `checkbox-group-${id}-required` : undefined
+  const describedBy = [messageId, requiredId].filter(Boolean).join(' ') || undefined
 
   return (
     <fieldset
       className={cx(styles.group, className)}
-      aria-describedby={messageId}
+      aria-describedby={describedBy}
       aria-invalid={error ? true : undefined}
       data-orientation={orientation}
     >
@@ -114,6 +121,11 @@ export function CheckboxGroup({
           ) : null}
           {optional ? <span className={styles.optional}>opcional</span> : null}
         </legend>
+      ) : null}
+      {requiredId ? (
+        <span id={requiredId} className="visually-hidden">
+          Campo obligatorio
+        </span>
       ) : null}
       <div className={styles.items}>{children}</div>
       {message ? (

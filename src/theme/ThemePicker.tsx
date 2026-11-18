@@ -68,6 +68,8 @@ export function ThemePicker() {
           <i style={{ backgroundColor: definition.swatches[3] }} />
         </span>
         <span className={styles.triggerLabel}>{definition.label}</span>
+        {/* A short visible affordance: the swatches read as decoration, not as a theme control. */}
+        <span className={styles.triggerShort}>Tema</span>
         <Icon
           name="chevron-down"
           size="xs"
@@ -84,7 +86,7 @@ export function ThemePicker() {
         ariaLabelledby={titleId}
         className={styles.menu}
       >
-        <header className={styles.header}>
+        <div className={styles.header}>
           <div>
             <p className={styles.title} id={titleId}>
               Temas del diario
@@ -99,7 +101,7 @@ export function ThemePicker() {
           >
             <Icon name="close" size="sm" />
           </button>
-        </header>
+        </div>
 
         <div className={styles.grid} role="radiogroup" aria-label="Temas disponibles">
           {themes.map((item, index) => {

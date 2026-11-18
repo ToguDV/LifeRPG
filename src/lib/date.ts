@@ -49,10 +49,6 @@ export function dateKey(date: Date): string {
   ).padStart(2, '0')}`
 }
 
-export function isoDate(date: Date): string {
-  return dateKey(date)
-}
-
 /** Six weeks starting on Monday, including leading/trailing days. */
 export function getCalendarDays(viewDate: Date): Date[] {
   const first = startOfMonth(viewDate)

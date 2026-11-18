@@ -43,7 +43,17 @@ function ToastItem({
   toast: ToastRecord
   onDismiss: (id: number) => void
 }) {
-  const [paused, setPaused] = useState(false)
+  /*
+    Hover and keyboard focus are tracked separately and ORed together: the
+    pointer can leave while the close button keeps the focus, and neither
+    reason may cancel the other. One state feeds one timer, so there is no
+    double count. Resuming deliberately grants the full duration again; a
+    toast that pauses must not expire on the frame the pointer or the focus
+    leaves (WCAG 2.2.1).
+  */
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const paused = hovered || focused
   const variant = toast.variant ?? 'info'
   const duration = toast.duration ?? 4200
 
@@ -57,8 +67,14 @@ function ToastItem({
     <div
       className={cx(styles.toast, styles[variant])}
       data-surface="panel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={(event) => {
+        const next = event.relatedTarget
+        if (next instanceof Node && event.currentTarget.contains(next)) return
+        setFocused(false)
+      }}
     >
       <span className={styles.icon} aria-hidden="true">
         <Icon name={ICONS[variant]} size="sm" />

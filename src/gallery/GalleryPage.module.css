@@ -8,6 +8,37 @@
   z-index: var(--z-raised);
 }
 
+/* ---------- skip link ---------- */
+.skipLink {
+  position: fixed;
+  top: var(--space-2);
+  left: var(--space-2);
+  /* Above the sticky topbar; the tooltip step is the tallest one defined. */
+  z-index: var(--z-tooltip);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--ui-accent);
+  border-radius: var(--radius-xs);
+  background-color: var(--ui-surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--ui-text);
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-none);
+  text-transform: uppercase;
+  text-decoration: none;
+  /* Parked off-screen until focused; fixed, so it never shifts the topbar. */
+  transform: translateY(calc(-100% - var(--space-4)));
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.skipLink:focus {
+  transform: none;
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
 /* ---------- topbar ---------- */
 .topbar {
   position: sticky;
@@ -514,6 +545,8 @@
   flex-direction: column;
   gap: var(--section-gap);
   min-width: 0;
+  /* The skip link targets this node; keep its first row clear of the topbar. */
+  scroll-margin-top: calc(var(--topbar-height) + var(--space-5));
 }
 
 .section {
@@ -672,8 +705,22 @@
     display: inline;
   }
 
+  /*
+    The icon alone would leave an unnamed control, so the label stays in
+    the accessibility tree. It is hidden with the same recipe as
+    `.visually-hidden` in base.css because CSS Modules cannot compose a
+    global utility inside a breakpoint; the explicit `aria-label` on the
+    buttons keeps the name stable either way.
+  */
   .surfaceLabel {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .surfaceToggle {

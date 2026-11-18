@@ -11,7 +11,7 @@ import {
 } from 'react'
 import { cx } from '../../lib/cx'
 import { useControllableState } from '../../lib/useControllableState'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldLabelId, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import { Popover } from '../Popover/Popover'
 import styles from './Combobox.module.css'
@@ -80,6 +80,7 @@ export function Combobox({
 }: ComboboxProps) {
   const autoId = useId()
   const fieldId = id ?? `combobox-${autoId}`
+  const labelId = getFieldLabelId(fieldId)
   const listboxId = `${fieldId}-listbox`
   const inputRef = useRef<HTMLInputElement>(null)
   const controlRef = useRef<HTMLDivElement>(null)
@@ -92,6 +93,12 @@ export function Combobox({
   })
   const selected = options.find((option) => option.value === current)
   const selectedLabel = selected?.label ?? ''
+  const hasLabel = Boolean(label)
+  /*
+    Without a `Field` label the input is named by its placeholder, so the
+    popup inherits that text instead of pointing at an id that is not there.
+  */
+  const popupName = placeholder || 'Opciones'
 
   const [query, setQuery] = useState(selectedLabel)
   const [open, setOpen] = useState(false)
@@ -102,11 +109,7 @@ export function Combobox({
     ? options.filter((option) => normalize(option.label).includes(normalize(query)))
     : options
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   useEffect(() => {
     if (!open) setQuery(selectedLabel)
@@ -262,7 +265,7 @@ export function Combobox({
           role="combobox"
           aria-autocomplete="list"
           aria-expanded={open}
-          aria-controls={listboxId}
+          aria-controls={open ? listboxId : undefined}
           aria-activedescendant={
             activeOption ? `${fieldId}-option-${activeIndex}` : undefined
           }
@@ -320,11 +323,15 @@ export function Combobox({
         onClose={close}
         matchWidth
         className={styles.menu}
+        role="region"
+        ariaLabelledby={hasLabel ? labelId : undefined}
+        ariaLabel={hasLabel ? undefined : popupName}
       >
         <ul
           id={listboxId}
           role="listbox"
-          aria-labelledby={fieldId}
+          aria-labelledby={hasLabel ? labelId : undefined}
+          aria-label={hasLabel ? undefined : popupName}
           className={styles.listbox}
           tabIndex={-1}
         >
@@ -332,6 +339,8 @@ export function Combobox({
             const isSelected = option.value === current
             const isActive = index === activeIndex
             return (
+              // The listbox owns the keyboard through aria-activedescendant.
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
               <li
                 key={option.value}
                 ref={(node) => {

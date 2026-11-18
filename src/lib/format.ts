@@ -4,19 +4,9 @@ const dateFormatter = new Intl.DateTimeFormat('es-ES', {
   year: 'numeric',
 })
 
-const dateShortFormatter = new Intl.DateTimeFormat('es-ES', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-})
-
 const monthFormatter = new Intl.DateTimeFormat('es-ES', {
   month: 'long',
   year: 'numeric',
-})
-
-const weekdayFormatter = new Intl.DateTimeFormat('es-ES', {
-  weekday: 'short',
 })
 
 const sizeFormatter = new Intl.NumberFormat('es-ES', {
@@ -28,20 +18,8 @@ export function formatDate(date: Date): string {
   return dateFormatter.format(date)
 }
 
-export function formatDateShort(date: Date): string {
-  return dateShortFormatter.format(date)
-}
-
 export function formatMonth(date: Date): string {
   return monthFormatter.format(date)
-}
-
-export function formatWeekday(date: Date): string {
-  return weekdayFormatter.format(date).replace('.', '')
-}
-
-export function formatTime(date: Date): string {
-  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
 }
 
 export function formatTimeParts(hours: number, minutes: number): string {

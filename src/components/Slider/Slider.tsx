@@ -6,7 +6,7 @@ import {
 import { cx } from '../../lib/cx'
 import { clamp } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldLabelId, getFieldMessageIds } from '../Field/Field'
 import styles from './Slider.module.css'
 
 export interface SliderMark {
@@ -29,6 +29,11 @@ interface SliderBaseProps {
   formatValue?: (value: number) => string
   name?: string
   id?: string
+  /**
+   * Extra classes for the range input. `RangeSlider` shares them between both
+   * thumbs, so styling one thumb differently needs a wrapper or a custom
+   * selector: use `fieldClassName` for the field around the control.
+   */
   className?: string
   fieldClassName?: string
 }
@@ -171,11 +176,7 @@ export function Slider({
     onChange,
   })
   const safeValue = clamp(current, min, max)
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
   const valueLabel = formatValue(safeValue)
 
   return (
@@ -255,11 +256,7 @@ export function RangeSlider({
   const lowLabel = formatValue(low)
   const highLabel = formatValue(high)
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const updateLow = (next: number) => {
     setCurrent([clamp(Math.min(next, high), min, max), high])
@@ -288,49 +285,58 @@ export function RangeSlider({
       }
       className={fieldClassName}
     >
-      <SliderRail
-        min={min}
-        max={max}
-        start={low}
-        end={high}
-        marks={marks}
-        formatValue={formatValue}
-        showBubbles
-        inputStart={
-          <input
-            id={fieldId}
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            value={low}
-            disabled={disabled}
-            aria-label="Valor mínimo"
-            aria-invalid={error ? true : undefined}
-            aria-describedby={messageId}
-            aria-valuetext={lowLabel}
-            onChange={(event) => updateLow(event.target.valueAsNumber)}
-            className={cx(styles.input, styles.rangeInput, className)}
-            style={{ zIndex: low >= high ? 3 : 2 }}
-          />
-        }
-        inputEnd={
-          <input
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            value={high}
-            disabled={disabled}
-            aria-label="Valor máximo"
-            aria-describedby={messageId}
-            aria-valuetext={highLabel}
-            onChange={(event) => updateHigh(event.target.valueAsNumber)}
-            className={cx(styles.input, styles.rangeInput, className)}
-            style={{ zIndex: 2 }}
-          />
-        }
-      />
+      {/*
+        Two thumbs, one name: the group borrows the Field label so the range
+        is announced as "Guardias de la noche" before each thumb's own label.
+        The minimum input keeps `id={fieldId}` so the Field label's `for` stays
+        valid; its `aria-label` (like the maximum's) wins as the control name.
+      */}
+      <div role="group" aria-labelledby={label ? getFieldLabelId(fieldId) : undefined}>
+        <SliderRail
+          min={min}
+          max={max}
+          start={low}
+          end={high}
+          marks={marks}
+          formatValue={formatValue}
+          showBubbles
+          inputStart={
+            <input
+              id={fieldId}
+              type="range"
+              min={min}
+              max={max}
+              step={step}
+              value={low}
+              disabled={disabled}
+              aria-label="Valor mínimo"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={messageId}
+              aria-valuetext={lowLabel}
+              onChange={(event) => updateLow(event.target.valueAsNumber)}
+              className={cx(styles.input, styles.rangeInput, className)}
+              style={{ zIndex: low >= high ? 3 : 2 }}
+            />
+          }
+          inputEnd={
+            <input
+              type="range"
+              min={min}
+              max={max}
+              step={step}
+              value={high}
+              disabled={disabled}
+              aria-label="Valor máximo"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={messageId}
+              aria-valuetext={highLabel}
+              onChange={(event) => updateHigh(event.target.valueAsNumber)}
+              className={cx(styles.input, styles.rangeInput, className)}
+              style={{ zIndex: 2 }}
+            />
+          }
+        />
+      </div>
       {name ? (
         <>
           <input type="hidden" name={`${name}-min`} value={low} />

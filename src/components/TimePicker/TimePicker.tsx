@@ -13,7 +13,7 @@ import { cx } from '../../lib/cx'
 import { formatTimeParts } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
 import { Button } from '../Button/Button'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import { Popover } from '../Popover/Popover'
 import styles from './TimePicker.module.css'
@@ -33,9 +33,28 @@ function parseTime(value: string | null | undefined): TimeParts | null {
   return { hours, minutes }
 }
 
+const MINUTE_STEP_FALLBACK = 5
+
+/**
+ * Policy: round **down** to the previous step.
+ * Rounding up is not a clock carry — at 09:58 with a 5 minute step it would
+ * need to become 10:00, and the old clamp returned 09:00 instead. Rounding
+ * down keeps the selected hour and always yields a valid minute.
+ */
 function roundToStep(minutes: number, step: number): number {
-  const rounded = Math.round(minutes / step) * step
-  return rounded >= 60 ? 0 : rounded
+  return Math.floor(minutes / step) * step
+}
+
+/**
+ * `minuteStep` is public API: `0` or a negative value never finishes the
+ * minute loop, and more than an hour collapses the wheel to one option.
+ * Normalise once, fall back to the default for invalid input.
+ */
+function normalizeMinuteStep(step: number): number {
+  if (!Number.isFinite(step)) return MINUTE_STEP_FALLBACK
+  const whole = Math.floor(step)
+  if (whole < 1) return MINUTE_STEP_FALLBACK
+  return Math.min(whole, 60)
 }
 
 interface TimeWheelProps {
@@ -167,6 +186,9 @@ function TimeWheel({
           onKeyDown={handleKeyDown}
         >
           {options.map((option, index) => (
+            // The wheel owns the focus and the keyboard: options follow the
+            // aria-activedescendant pattern and are not tabbable themselves.
+            // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
             <div
               key={option}
               id={`${idPrefix}-option-${index}`}
@@ -233,36 +255,38 @@ export function TimePicker({
   const dialogId = `${fieldId}-dialog`
   const triggerRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
+  const step = normalizeMinuteStep(minuteStep)
 
   const [current, setCurrent] = useControllableState<string | null>({
     value,
     defaultValue,
     onChange,
   })
-  const currentParts = parseTime(current)
+  const currentParts = useMemo(() => parseTime(current), [current])
   const now = new Date()
   const fallback = {
     hours: now.getHours(),
-    minutes: roundToStep(now.getMinutes(), minuteStep),
+    minutes: roundToStep(now.getMinutes(), step),
   }
+  /* One draft for both wheels: the minutes used to live in a second state. */
   const [draft, setDraft] = useState<TimeParts>(currentParts ?? fallback)
-  const [draftMinutes, setDraftMinutes] = useState<number>(
-    currentParts?.minutes ?? fallback.minutes,
-  )
 
   const hourOptions = useMemo(() => Array.from({ length: 24 }, (_, index) => index), [])
   const minuteOptions = useMemo(() => {
     const values = new Set<number>()
-    for (let minute = 0; minute < 60; minute += minuteStep) values.add(minute)
+    for (let minute = 0; minute < 60; minute += step) values.add(minute)
     if (currentParts) values.add(currentParts.minutes)
     return [...values].sort((a, b) => a - b)
-  }, [currentParts, minuteStep])
+  }, [currentParts, step])
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  /*
+    `aria-required` is not allowed on `role="button"` (ARIA 1.2 and the
+    `aria-allowed-attr` check), so the required state is announced as a
+    description. The hidden input cannot take part in native validation
+    either: consumers validate on submit.
+  */
+  const requiredId = required ? `${fieldId}-required` : undefined
+  const describedBy = cx(...getFieldMessageIds(fieldId, { hint, error }), requiredId) || undefined
 
   const close = (restoreFocus = true) => {
     setOpen(false)
@@ -271,14 +295,12 @@ export function TimePicker({
 
   const openPicker = () => {
     if (disabled) return
-    const next = currentParts ?? fallback
-    setDraft(next)
-    setDraftMinutes(next.minutes)
+    setDraft(currentParts ?? fallback)
     setOpen(true)
   }
 
   const apply = () => {
-    setCurrent(formatTimeParts(draft.hours, draftMinutes))
+    setCurrent(formatTimeParts(draft.hours, draft.minutes))
     close(true)
   }
 
@@ -307,6 +329,11 @@ export function TimePicker({
       labelAside={labelAside}
       className={fieldClassName}
     >
+      {/*
+        ARIA 1.2 dropped `aria-invalid` from the button role table, but it is
+        still the only way to expose the error state on this trigger.
+      */}
+      {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
       <button
         ref={triggerRef}
         type="button"
@@ -320,9 +347,9 @@ export function TimePicker({
         )}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-controls={dialogId}
+        aria-controls={open ? dialogId : undefined}
         aria-invalid={error ? true : undefined}
-        aria-describedby={messageId}
+        aria-describedby={describedBy}
         disabled={disabled}
         onClick={() => (open ? close(true) : openPicker())}
       >
@@ -334,6 +361,12 @@ export function TimePicker({
         </span>
         <Icon name="chevron-down" size="sm" className={styles.chevron} />
       </button>
+
+      {requiredId ? (
+        <span id={requiredId} className="visually-hidden">
+          Campo obligatorio
+        </span>
+      ) : null}
 
       {name ? (
         <input
@@ -352,10 +385,10 @@ export function TimePicker({
         ariaLabel="Elegir hora"
         className={styles.picker}
       >
-        <header className={styles.header}>
+        <div className={styles.header}>
           <p className={styles.title}>Hora del día</p>
           <p className={styles.subtitle}>Las campanas no esperan.</p>
-        </header>
+        </div>
 
         <div className={styles.columns}>
           <TimeWheel
@@ -371,8 +404,8 @@ export function TimePicker({
           <TimeWheel
             label="Minuto"
             options={minuteOptions}
-            value={draftMinutes}
-            onChange={setDraftMinutes}
+            value={draft.minutes}
+            onChange={(minutes) => setDraft((previous) => ({ ...previous, minutes }))}
             onSubmit={apply}
             idPrefix={`${fieldId}-minute`}
             format={(minute) => String(minute).padStart(2, '0')}

@@ -44,7 +44,8 @@ export function DemoCard({
       stains={paper}
       className={cx(styles.card, className)}
     >
-      <header className={styles.head}>
+      {/* `<div>`, not `<header>`: the demo sheet must not emit a landmark. */}
+      <div className={styles.head}>
         <div className={styles.titleBlock}>
           <Badge variant="outline" size="sm" className={styles.componentBadge}>
             {component}
@@ -53,7 +54,7 @@ export function DemoCard({
           {description ? <p className={styles.description}>{description}</p> : null}
         </div>
         <WaxSeal folio={folio} label={`Folio ${folio}`} />
-      </header>
+      </div>
       <div className={styles.rule} aria-hidden="true" />
       <div className={styles.body}>{children}</div>
     </Surface>

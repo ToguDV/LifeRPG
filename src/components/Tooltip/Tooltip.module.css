@@ -17,8 +17,31 @@
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
   text-align: left;
-  pointer-events: none;
+  /*
+    WCAG 1.4.13: the tooltip must be hoverable, and a click on it must not
+    reach whatever sits behind it. `useFloating` leaves an 8px gap to the
+    anchor, so the bridge below keeps the pointer inside the floating node
+    on its way from the trigger.
+  */
+  pointer-events: auto;
   animation: tooltip-in var(--duration-fast) var(--ease-out);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 45%;
+  height: var(--space-2);
+  transform: translateX(-50%);
+}
+
+.tooltip[data-side="top"]::before {
+  top: 100%;
+}
+
+.tooltip[data-side="bottom"]::before {
+  bottom: 100%;
 }
 
 .tooltip::after {

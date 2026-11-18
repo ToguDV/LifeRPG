@@ -10,7 +10,7 @@ import {
 import { cx } from '../../lib/cx'
 import { formatFileSize } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldLabelId, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import styles from './FileUploader.module.css'
 
@@ -36,15 +36,23 @@ export interface FileUploaderProps {
 
 function matchesAccept(file: File, accept?: string): boolean {
   if (!accept) return true
-  return accept
+  const rules = accept
     .split(',')
     .map((rule) => rule.trim().toLowerCase())
     .filter(Boolean)
-    .some((rule) => {
-      if (rule.startsWith('.')) return file.name.toLowerCase().endsWith(rule)
-      if (rule.endsWith('/*')) return file.type.toLowerCase().startsWith(rule.slice(0, -1))
-      return file.type.toLowerCase() === rule
-    })
+  if (!rules.length) return true
+  /* The any-file wildcard (star slash star) and a bare star accept
+     everything. The old prefix test turned the wildcard into "star slash",
+     a prefix no MIME type ever starts with. */
+  if (rules.includes('*/*') || rules.includes('*')) return true
+  const type = file.type.toLowerCase()
+  const name = file.name.toLowerCase()
+  return rules.some((rule) => {
+    if (rule.startsWith('.')) return name.endsWith(rule)
+    /* A file with no MIME type only matches by extension. */
+    if (rule.endsWith('/*')) return type.startsWith(rule.slice(0, -1))
+    return type === rule
+  })
 }
 
 function fileKey(file: File): string {
@@ -109,11 +117,7 @@ export function FileUploader({
   })
 
   const limit = multiple ? (maxFiles ?? 10) : 1
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const autoHint = [
     accept ? `Formatos: ${accept}` : null,
@@ -248,10 +252,23 @@ export function FileUploader({
         }}
       />
 
+      {/*
+        ARIA 1.2 dropped `aria-invalid` from the button role table, but the
+        dropzone is the control that goes invalid, not the hidden input.
+      */}
+      {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
       <div
         role="button"
         tabIndex={disabled ? -1 : 0}
         aria-disabled={disabled || undefined}
+        aria-invalid={error ? true : undefined}
+        /*
+          The visible label names the control the user actually operates.
+          The hidden file input is out of the tab order, so pointing `for` at
+          it does not name the dropzone; the visible instruction text inside
+          the zone still describes the action on its own.
+        */
+        aria-labelledby={label ? getFieldLabelId(fieldId) : undefined}
         aria-describedby={messageId}
         data-drag={dragActive ? 'active' : undefined}
         data-disabled={disabled ? 'true' : undefined}
@@ -263,9 +280,6 @@ export function FileUploader({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        {typeof label === 'string' ? (
-          <span className="visually-hidden">{label}. </span>
-        ) : null}
         <span className={styles.zoneIcon} aria-hidden="true">
           <Icon name="upload" size="lg" />
         </span>

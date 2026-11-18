@@ -58,7 +58,8 @@
   height: 50%;
 }
 
-.triggerLabel {
+.triggerLabel,
+.triggerShort {
   max-width: var(--space-24);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,6 +70,10 @@
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-none);
   text-transform: uppercase;
+}
+
+.triggerShort {
+  display: none;
 }
 
 .triggerChevron {
@@ -255,5 +260,11 @@
 @media (max-width: 720px) {
   .triggerLabel {
     display: none;
+  }
+
+  /* The theme name is too long for the topbar; a short word keeps the control
+     self-explanatory without depending on `title`. */
+  .triggerShort {
+    display: inline;
   }
 }

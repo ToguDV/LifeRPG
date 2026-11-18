@@ -128,6 +128,7 @@ Viven en `src/styles/tokens/primitives.css`:
 
 - **Regla**: en `src/components/**/*.module.css` no se escriben colores crudos, ni tamaños de tipografía, ni espaciados principales. Se usan tokens.
 - **Excepción intencional**: `ProgressBar variant="xp"` usa `--xp-1` y `--xp-2` directamente, porque la experiencia es un color del mundo, no un color de superficie.
+- **Excepción documentada**: `src/theme/themes.ts` repite cuatro hexadecimales por tema en `swatches` para el selector de temas. El selector muestra paletas que **no** están aplicadas, así que no puede leer las custom properties en runtime; la copia es el contrato. Las muestras son, en orden, `--stone-0` (escritorio; `--panel-1` en Pergamino), `--parch`, `--ink` y el acento titular del tema (`--crimson`, `--chalk-rouge`, `--bronze` o `--bronze-soft`), y cada entrada nombra sus tokens en el código. Retocar una paleta obliga a tocar los dos archivos en el mismo cambio.
 - **Excepción práctica**: los breakpoints de `@media`, la geometría de los SVG decorativos, el patrón `visually-hidden` de 1 px y algunos detalles de arte no pueden o no deben tokenizarse. Están documentados en los módulos correspondientes.
 - El texto de la interfaz está en español; los nombres de API y props están en inglés.
 
@@ -154,7 +155,8 @@ La diferencia entre Pergamino y el resto no es “claro vs. oscuro” sin más: 
 
 - `<html data-theme="…" data-paper="light|dark">`.
 - `ThemeProvider` escribe ambos atributos y guarda la clave en `localStorage` (`liferpg-ui-theme`).
-- El script inline de `index.html` aplica el tema antes del primer pintado para evitar un flash de Pergamino.
+- El script inline de `index.html` aplica el tema antes del primer pintado para evitar un flash de Pergamino. `src/theme/themes.ts` es la única lista de temas: el plugin `liferpg-theme-manifest` de `vite.config.ts` serializa las claves y su `paper` dentro del script en `serve` y en `build`. No hay una segunda lista escrita a mano.
+- `color-scheme` se deriva de `data-paper` en `base.css`, no de la paleta: `html[data-paper="light"]` da esquema claro y el resto, oscuro. Así el caret, el autofill y los controles nativos siguen el papel desde el primer pintado. En Pergamino el cambio se nota sobre todo en el caret y el fondo del autofill: la barra de scroll conserva su `scrollbar-color` temático, así que no se aclara sobre el escritorio oscuro (solo un navegador que ignore esa propiedad dibujaría un carril claro).
 - `data-paper` permite ajustar la textura del papel sin duplicar selectores por tema:
   - `light`: gradientes claros, grano con `multiply`.
   - `dark`: grano tenue con `screen`, sombras más profundas.
@@ -184,9 +186,8 @@ Decisiones concretas para mantener legibilidad sin perder la estética:
 
 1. Añadir la entrada en `src/theme/themes.ts` con clave, etiqueta, meta, `paper` y las cuatro muestras.
 2. Añadir la paleta y los acentos semánticos en `src/styles/tokens/themes.css`.
-3. Añadir la clave a la lista permitida del script de `index.html`.
 
-No se toca ningún componente. Si el tema necesita un papel claro, `paper: 'light'`; si no, `paper: 'dark'`.
+No se toca ningún componente ni `index.html`: el script de arranque se regenera desde `THEMES`. Si el tema necesita un papel claro, `paper: 'light'`; si no, `paper: 'dark'`.
 
 ---
 
@@ -216,6 +217,8 @@ No se toca ningún componente. Si el tema necesita un papel claro, `paper: 'ligh
 
 Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten la silueta rasgada del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima. **En ningún tema dibujan borde**: no hay canto iluminado ni costura en sombra, y la pila se lee solo por profundidad de tono, cada hoja más oscura que la anterior. Del canto solo se ve el borde, así que no repite el grano: ese tile completo por hoja era otra capa cara sin diferencia visible.
 
+Por debajo de 640 px el desplazamiento de la pila baja a 4 y 9 px. El margen de página en móvil es de 16 px y una hoja que asomaba 19 px ensanchaba el documento, no solo la tarjeta; con el desplazamiento reducido la decoración cabe en el margen y la pila sigue leyéndose por tono. Es geometría de arte, así que vive con el resto de los tokens de ornamento (`primitives.css`).
+
 El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
 
 **Contenedores.** `Card` es la hoja reutilizable: cabecera (kicker, título, descripción, lacre), filete, cuerpo y pie manuscrito. Tres alturas, con el mismo material y los mismos ornamentos:
@@ -225,6 +228,8 @@ El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la ac
 - `lg`: página completa, padding grande, título `--text-2xl`.
 
 Por debajo de 720 px los tres colapsan al ancho de la columna y el margen de cuaderno se desactiva para no comerse el contenido.
+
+La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior sigue nombrándolo. Lo mismo vale para `DemoCard`.
 
 ### 5.2 Panel
 
@@ -258,6 +263,8 @@ Los popovers se renderizan en un portal al `body`, fuera del árbol visual. Para
 | `--font-gothic` | Grenze Gotisch | Disponible para acentos góticos; actualmente no se usa en componentes. |
 
 Todas las familias se sirven localmente desde `public/fonts` (subconjuntos latin de Google Fonts, SIL Open Font License). `@font-face` está en `src/styles/fonts.css`.
+
+`index.html` precarga con `crossorigin` las dos familias que se pintan en el primer viewport: `im-fell-english-400.woff2` (cuerpo) y `cinzel-400-700.woff2` (marca, navegación y kicker de la topbar y el masthead). El resto se carga bajo demanda. Renombrar esos archivos obliga a actualizar el `href` del preload; si no coincide con el `src` del `@font-face`, el navegador descarga la fuente dos veces.
 
 ### 6.2 Escala y jerarquía
 
@@ -351,7 +358,10 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
 ### 10.1 Formularios
 
 - Todos los campos complejos usan `Field`: label, label aside, hint, error y ids `-hint`/`-error`.
+- El `<label>` lleva id `${id}-label` (`getFieldLabelId`) y es lo que nombra a los popups portaleados; `hideLabel` lo oculta con `visually-hidden`, nunca lo omite.
 - Los mensajes se conectan con `aria-describedby`; el error usa `role="alert"`.
+- `hint` y `error` conviven: el error se pinta primero y el hint después, y `aria-describedby` lista `-error` y `-hint` en ese orden (`getFieldMessageIds`). El error nunca hace desaparecer la pista, así que un control que pase ambos sigue explicando cómo corregir.
+- Limpiar `TextInput` es una edición real: el foco vuelve al input y `onChange` recibe `''` tanto en controlado como en no controlado. `onClear` es trabajo extra (`onChange` ya se ha disparado), no la única vía para vaciar el campo.
 - Los controles aceptan controlado/no controlado mediante `useControllableState`.
 - Los inputs nativos conservan semántica nativa siempre que sea posible.
 - Checkbox/Radio/Switch usan inputs nativos visualmente ocultos y un “box” estilizado; el foco se dibuja sobre el box, no sobre el input invisible.
@@ -359,11 +369,16 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
 ### 10.2 Popovers
 
 - `Popover` + `useFloating` + `useDismiss`.
-- Posición fija calculada contra el trigger; voltea arriba/abajo si no cabe.
+- Posición fija calculada contra el trigger; `side` se respeta siempre que quepa y el volteo arriba/abajo es solo el recurso cuando la preferencia no tiene sitio.
 - Se portalea al `body` para escapar de `overflow` y filtros del papel.
 - Se cierra con clic fuera, `Escape` y pérdida de foco.
 - `Escape` devuelve el foco al trigger.
 - La superficie se propaga con `useSurface`.
+- El popup portaleado también es contenido de página: o es un landmark por sí mismo o va dentro de uno. `Select` y `Combobox` marcan el nodo flotante como `region` nombrada por el campo; los pickers y el selector de temas usan `role="dialog"`.
+- El tooltip conserva `role="tooltip"` en el nodo medido y el nodo portaleado vive dentro de una `region` nombrada por el trigger: así el aviso no queda fuera de todo landmark y el tooltip sigue conteniendo solo texto.
+- El tooltip es hoverable (WCAG 1.4.13): recibe puntero mientras está abierto, un puente invisible cruza el hueco de 8 px hasta el ancla y un clic sobre el aviso no alcanza lo que hay detrás. `Escape` lo descarta sin mover el foco.
+- `aria-controls` solo se emite mientras el popup está abierto (`open ? id : undefined`): `Popover` se desmonta al cerrar y no se renderizan popups ocultos.
+- Un `<header>` dentro de un popup portaleado crearía un segundo `banner`; las cabeceras de overlays y pickers son `<div>`.
 
 ### 10.3 Select y Combobox
 
@@ -387,6 +402,8 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
 - Formato 24 h; minutos en pasos configurables.
 - Dos listboxes con scroll-snap y una banda central de selección.
 - El scroll actualiza el borrador; “Ahora”, “Limpiar” (opcional) y “Aplicar”.
+- “Ahora” baja los minutos al paso anterior (`Math.floor`), de modo que nunca salta a la hora siguiente: a las 09:58 con paso de 5 da 09:55.
+- `minuteStep` se normaliza una vez a un entero entre 1 y 60; `0`, los negativos y los valores no finitos caen a 5 para no bloquear la rueda ni repetir una sola opción.
 - El foco inicial va a la rueda de horas después del montaje del portal.
 - La rueda se maneja con flechas, PageUp/PageDown, Home/End, Enter y Escape.
 
@@ -395,20 +412,23 @@ No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, b
 - 100 % local: no hay subida a servidor.
 - Acepta clic, drag & drop y teclado (Enter/Espacio).
 - Valida `accept`, `maxSize` y `maxFiles` con mensajes explicativos.
+- `accept` entiende el comodín total (`*/*` o `*`), comodines de tipo (`image/*`), tipos MIME y extensiones (`.pdf`), sin distinguir mayúsculas ni espacios.
 - Miniaturas de imágenes mediante `URL.createObjectURL` con limpieza.
-- La lista permite eliminar; el input de archivo permanece oculto y fuera del orden de tabulación, mientras el dropzone es el control accesible.
+- La lista permite eliminar; el input de archivo permanece oculto y fuera del orden de tabulación, mientras el dropzone es el control accesible: se nombra con el `<label>` visible del `Field` (`getFieldLabelId`) más la instrucción de arrastrar, se describe con el hint y expone `aria-invalid` cuando hay error.
 
 ### 10.7 Slider y Stepper
 
 - Slider y RangeSlider usan inputs nativos superpuestos; la estética se aplica al thumb y al track.
 - El rango usa dos pulgares y mantiene el orden bajo/alto.
+- `RangeSlider` agrupa los dos pulgares en un `role="group"` nombrado con el `<label>` del `Field`; cada pulgar conserva su `aria-label` (“Valor mínimo”/“Valor máximo”) y ambos reciben `aria-invalid` cuando hay error.
+- `className` se comparte entre los dos inputs del rango; para el contenedor se usa `fieldClassName`.
 - Las marcas en los extremos alinean la etiqueta hacia dentro para no salirse del control.
 - Stepper usa un input numérico nativo con extremos deshabilitados al llegar a los límites.
 
 ### 10.8 Toast
 
 - Contexto + portal, viewport abajo a la derecha.
-- Apila hasta cuatro avisos; se pausan al pasar el cursor y se cierran solos.
+- Apila hasta cuatro avisos; se pausan al pasar el cursor y mientras el foco de teclado está dentro, y se cierran solos. Al reanudar se concede de nuevo la duración completa, nunca el resto de un temporizador ya vencido.
 - El viewport es una región `aria-live="polite"` con etiqueta.
 - No se persisten; son estado de sesión.
 
@@ -427,6 +447,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - Cada demo incluye notas manuscritas con el estado actual para que el comportamiento sea visible sin abrir las devtools.
 - La sección “En contexto” usa todos los patrones en una mini todo-list real.
 - La sección “Contenedores” muestra `Card` en sus tres alturas con la lista de componentes de otras secciones.
+- El primer elemento enfocable es “Saltar al contenido”, que apunta a `main#contenido` (`tabIndex={-1}`) y vive fuera del flujo con `position: fixed` para no mover la topbar.
+- El selector de tema mantiene una palabra visible (“Tema”) cuando el nombre completo no cabe; el toggle de superficie conserva “Papel”/“Panel” como nombre explícito aunque sus etiquetas se oculten visualmente en móvil.
 
 ---
 
@@ -439,8 +461,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - ≤ 980 px: las rejillas de tres columnas pasan a dos.
 - ≤ 860 px: masthead en dos filas; estadísticas e intro se apilan.
 - ≤ 720 px: las rejillas de demos pasan a una columna.
-- ≤ 640 px: topbar compacta; se ocultan etiquetas del toggle de superficie y del tema; el crest del masthead desaparece para dar ancho al título.
-- La página no debe producir scroll horizontal en 320 px. Se verificó en 320, 360, 768, 1024, 1280 y 1440 px.
+- ≤ 640 px: topbar compacta; las etiquetas del toggle de superficie se ocultan visualmente pero siguen en el árbol de accesibilidad; el selector de tema muestra “Tema” en lugar del nombre completo; el crest del masthead desaparece para dar ancho al título.
+- La página no debe producir scroll horizontal en ningún ancho entre 320 y 1440 px. Se verificó en 320, 375, 480, 768, 1024 y 1440 px (y 640 px en la revisión anterior). No se usa `body { overflow-x: hidden }`: bajo 640 px las hojas apiladas se reescalan con `--paper-sheet-offset-*` y, si algo se sale, se corrige el elemento, no se oculta.
 
 ---
 
@@ -456,6 +478,12 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - `prefers-reduced-motion` respetado.
 - Auditoría axe-core WCAG 2 A/AA + buenas prácticas sobre el estado inicial: **0 violaciones**.
 - El foco inicial de los popovers se retrasa un frame para que el portal esté montado antes de mover el foco y no se cierre por “focus fuera”.
+- Los listboxes portaleados se nombran con el `<label>` del `Field` (`getFieldLabelId`), no con el trigger: un `combobox` no se nombra por contenido.
+- `required` se expone con `aria-required` donde el rol lo admite (`Select`, `Combobox`); en los triggers de `DatePicker`/`TimePicker` y en los grupos se anuncia como descripción «Campo obligatorio», porque `aria-required` no es válido en `role="button"` ni en `role="group"`. Los pickers no participan en la validación nativa (input oculto): el consumidor valida en el submit.
+- El skip link es el primer elemento enfocable y mueve el foco a `main#contenido`; el foco programático no depende de que el navegador mueva la secuencia.
+- `ProgressBar` exige nombre por tipos: `label` visible o `aria-label`; el porcentaje es texto de valor y no puede ser el nombre.
+- `TaskRow` replica prioridad y vencimiento en texto `visually-hidden`, enlazado con `aria-describedby`; el color deja de ser la única señal (WCAG 1.4.1).
+- Los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1); el viewport sigue siendo una única región `aria-live="polite"` para no duplicar anuncios.
 
 ---
 

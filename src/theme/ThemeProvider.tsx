@@ -47,7 +47,6 @@ function writeThemeAttributes(key: ThemeKey) {
   const root = document.documentElement
   root.setAttribute('data-theme', definition.key)
   root.setAttribute('data-paper', definition.paper)
-  root.style.colorScheme = 'dark'
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

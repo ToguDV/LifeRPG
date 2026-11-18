@@ -2,7 +2,7 @@ import { useId, type ReactNode } from 'react'
 import { cx } from '../../lib/cx'
 import { clamp } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import styles from './Stepper.module.css'
 
@@ -58,11 +58,7 @@ export function Stepper({
   const canDecrease = !disabled && current > min
   const canIncrease = !disabled && current < max
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const setValue = (next: number) => setCurrent(clamp(next, min, max))
   const decrement = () => setValue(current - step)

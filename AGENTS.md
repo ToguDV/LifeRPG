@@ -13,9 +13,13 @@ pnpm dev          # http://localhost:5173
 pnpm typecheck    # TypeScript, sin emitir
 pnpm build        # typecheck + build de producción
 pnpm preview      # sirve dist/
+pnpm lint         # ESLint: correctitud y accesibilidad
+pnpm test         # Vitest en modo watch
+pnpm test:run     # Vitest una vez, sin watch
 ```
 
 - Stack: **Vite + React 19 + TypeScript + CSS Modules**.
+- Herramientas de desarrollo: **ESLint** (flat config, `jsx-a11y`, `typescript-eslint`) y **Vitest + Testing Library** sobre jsdom. No imponen estilo de código.
 - Sin framework de UI, sin Tailwind, sin librería de fechas.
 - Las fuentes son locales (no hay CDN).
 - `pnpm-workspace.yaml` aprueba el build de `esbuild`; no lo elimines sin motivo.
@@ -38,13 +42,28 @@ pnpm preview      # sirve dist/
 | --- | --- |
 | `package.json` | Dependencias y scripts. No añadir librerías de UI sin justificarlo. |
 | `pnpm-lock.yaml` | Lockfile. |
-| `pnpm-workspace.yaml` | Aprobación de build de `esbuild`. |
-| `tsconfig.json` | TypeScript estricto, `noUnusedLocals`, `noUnusedParameters`. |
+| `pnpm-workspace.yaml` | Aprobación de build de `esbuild` y `minimumReleaseAgeExclude` de las versiones recién publicadas que usa la suite. |
+| `tsconfig.json` | TypeScript estricto, `noUnusedLocals`, `noUnusedParameters`. Incluye `src`, `tests` y las configuraciones de Vite y Vitest. |
 | `vite.config.ts` | Vite + plugin React. |
+| `vitest.config.ts` | Vitest con entorno jsdom, `tests/setup.ts` y `tests/**/*.test.tsx`. Sin globals: se importa de `vitest`. |
+| `eslint.config.js` | Flat config: `@eslint/js`, `typescript-eslint`, `jsx-a11y` y las reglas de hooks. Sin reglas de estilo. |
 | `index.html` | Entrada de Vite, favicon y script que aplica el tema guardado antes del primer paint. |
 | `src/main.tsx` | Imports de estilos globales y montaje de `<App />`. |
 | `src/App.tsx` | `ThemeProvider` → `ToastProvider` → `TornSilhouette` → `GalleryPage`. |
 | `src/vite-env.d.ts` | Tipos de Vite para CSS Modules y assets. |
+
+### Tests
+
+| Archivo | Rol |
+| --- | --- |
+| `tests/setup.ts` | Matchers de `jest-dom`, `cleanup` de Testing Library y stubs de jsdom (`scrollIntoView`, `scrollTo`, `URL.createObjectURL`). |
+| `tests/time-picker.test.tsx` | «Ahora» con reloj fijo (paso 5 y 15), `minuteStep={0}`, Escape y retorno de foco. |
+| `tests/file-uploader.test.tsx` | `accept` con `*/*`, `image/*`, extensión y lista de MIME. |
+| `tests/tooltip.test.tsx` | `side` respetado con espacio y volteo cuando no cabe; descripción del disparador. |
+| `tests/listbox.test.tsx` | Select y Combobox: nombre del listbox, `aria-controls` solo abierto, teclado. |
+| `tests/required.test.tsx` | «Campo obligatorio» anunciado en DatePicker, TimePicker, CheckboxGroup y RadioGroup. |
+| `tests/use-controllable-state.test.tsx` | Dos actualizaciones funcionales en el mismo tick y `onChange` con el valor resuelto. |
+| `tests/task-row.test.tsx` | Prioridad y vencimiento en la descripción del checkbox; Marcar / Desmarcar. |
 
 ### Referencia estática
 
@@ -181,11 +200,11 @@ Antes de dar un cambio por terminado:
 - ¿El foco es visible y vuelve a un lugar lógico?
 - ¿Los nuevos estados tienen texto/aria además de color?
 - ¿Respeta `prefers-reduced-motion`?
-- ¿Sigue pasando una auditoría axe WCAG 2 A/AA + best practices? La última verificación del estado inicial dio **0 violaciones**.
+- ¿Sigue pasando una auditoría axe WCAG 2 A/AA + best practices? La última verificación del estado inicial dio **0 violaciones**. En el repositorio, `pnpm lint` (jsx-a11y) es el control automático; los tests de `tests/` cubren nombre de listbox, `aria-controls`, `required` y las descripciones de `TaskRow`.
 
 ### 3.6 Responsive
 
-- No debe haber scroll horizontal a 320 px.
+- No debe haber scroll horizontal a 320 px, ni en ningún ancho hasta 1440 px. No se tapa con `overflow-x: hidden`: si algo se sale, se corrige el elemento.
 - Las rejillas de demo usan `DemoGrid` con `columns={2}` o `columns={3}`; no vuelvas al `auto-fit` con spans porque crea tracks vacíos.
 - Las tarjetas y campos deben mantener `min-width: 0` para permitir truncado.
 - Los textos largos de componente en el badge de `DemoCard` deben poder envolver.
@@ -202,7 +221,8 @@ Antes de dar un cambio por terminado:
 4. Exportar el componente y sus tipos desde el archivo.
 5. Añadirlo a la sección de galería adecuada (o crear una sección en `sections.ts` y `GalleryPage`).
 6. Verificar teclado, foco, papel y panel.
-7. Actualizar `README.md` y `DESIGN.md` si cambia el sistema.
+7. Añadir un test en `tests/` si el componente tiene interacción propia.
+8. Actualizar `README.md` y `DESIGN.md` si cambia el sistema.
 
 ### Añadir un tema
 
@@ -211,6 +231,14 @@ Antes de dar un cambio por terminado:
 3. `index.html`: añadir la clave al array permitido del script de arranque.
 4. Revisar contraste (texto, muted, primary, estados) en papel y panel.
 5. Probar el selector de tema, la persistencia y los popovers.
+
+### Añadir un test
+
+1. Un archivo por asunto en `tests/<asunto>.test.tsx`; importa `describe`, `it`, `expect` de `vitest` (no hay globals).
+2. Renderiza el componente real y busca por rol, nombre accesible, descripción y texto visible.
+3. Usa `userEvent.setup()` para interacciones; si el test depende del reloj, fija solo `Date` con `vi.useFakeTimers({ toFake: ['Date'] })`.
+4. jsdom no tiene layout: si el componente mide rectángulos, documenta el stub o deja el caso como comprobación manual.
+5. Evita snapshots de árboles completos y asserts sobre clases CSS o estructura interna.
 
 ### Añadir una sección a la galería
 
@@ -234,7 +262,8 @@ Antes de dar un cambio por terminado:
 
 - **Foco inicial en overlays**: si mueves el foco en un `useLayoutEffect`/`useEffect` inmediato, el portal puede no estar en el DOM y el evento `focusin` cierra el popover. Usa `requestAnimationFrame`.
 - **`data-surface` en portales**: sin propagar la superficie, un calendario sobre papel se vuelve panel. Usa `useSurface`.
-- **Tema antes del paint**: `ThemeProvider` y el script de `index.html` comparten la clave `liferpg-ui-theme` y la lista de temas. Si añades un tema, actualiza ambos.
+- **Tema antes del paint**: `src/theme/themes.ts` es la única lista de temas. El plugin `liferpg-theme-manifest` de `vite.config.ts` inyecta las claves y su `paper` en el script inline de `index.html` para `serve` y `build`; no escribas esa lista a mano en el HTML. Añadir un tema solo toca `themes.ts` y `themes.css`. Mantén `themes.ts` sin dependencias de navegador: lo importa `vite.config.ts`.
+- **Preload de fuentes**: `index.html` precarga `im-fell-english-400.woff2` y `cinzel-400-700.woff2` con `crossorigin`. Si cambias la fuente del cuerpo o renombras el archivo, actualiza el `href` o el navegador descargará la fuente dos veces.
 - **Colores primary**: el texto del botón primario debe quedar sobre la banda oscura del gradiente; no aclares `--ui-primary-bg` sin comprobar contraste.
 - **Contraste muted**: el papel claro usa una mezcla más oscura que `--ink-3`; no vuelvas a `--ink-3` directo sin medir contraste.
 - **Festival de 1 px**: los patrones `visually-hidden` y los bordes de arte usan 1 px; no los conviertas en “tokens de spacing” sin necesidad.
@@ -251,6 +280,8 @@ Antes de dar un cambio por terminado:
 ```bash
 pnpm typecheck
 pnpm build
+pnpm lint
+pnpm test:run
 ```
 
 Además, revisar manualmente en la galería:
@@ -262,4 +293,6 @@ Además, revisar manualmente en la galería:
 - Consola sin errores.
 - Contraste y `prefers-reduced-motion` si se tocaron tokens.
 
-No hay suite de tests en el repositorio. La auditoría axe se realizó de forma externa sobre el estado inicial; si se añade una dependencia de test, documentarlo y actualizar los scripts.
+Los tests cubren las interacciones que originaron los bugs de la revisión (redondeo de minutos, `accept`, `side`, nombre del listbox, `aria-controls`, `required`, estado controlado y `TaskRow`). **El overflow horizontal no se puede medir en jsdom**: 320/375/480 px sigue siendo una comprobación manual en navegador. La auditoría axe se realizó de forma externa sobre el estado inicial (0 violaciones); `eslint-plugin-jsx-a11y` es el control automático que queda en el repositorio.
+
+Los tests se escriben contra roles, nombres accesibles, descripciones y resultados visibles; evita los snapshots de árboles completos y las aserciones sobre clases o estructura interna.

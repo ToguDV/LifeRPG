@@ -20,6 +20,22 @@ export interface TooltipProps {
   id?: string
 }
 
+/**
+ * A tooltip portaled to `body` is page content outside every landmark, so axe
+ * flags it with `region`. The tooltip node keeps its role; its text lives in a
+ * nameable `region` wrapper. Naming it after the trigger keeps the landmark
+ * list meaningful and unique.
+ */
+function getTriggerLabel(children: ReactNode): string | undefined {
+  if (!isValidElement(children)) return undefined
+  const props = children.props as { 'aria-label'?: unknown; children?: ReactNode }
+  if (typeof props['aria-label'] === 'string' && props['aria-label'].trim()) {
+    return props['aria-label']
+  }
+  if (typeof props.children === 'string' && props.children.trim()) return props.children
+  return undefined
+}
+
 export function Tooltip({ content, children, side = 'top', delay = 240, id }: TooltipProps) {
   const anchorRef = useRef<HTMLSpanElement>(null)
   const floatingRef = useRef<HTMLDivElement>(null)
@@ -28,6 +44,9 @@ export function Tooltip({ content, children, side = 'top', delay = 240, id }: To
   const autoId = useId()
   const tooltipId = id ?? `tooltip-${autoId}`
   const [open, setOpen] = useState(false)
+  const landmarkLabel =
+    getTriggerLabel(children) ??
+    (typeof content === 'string' && content.trim() ? content : 'Información adicional')
 
   const floating = useFloating({
     open,
@@ -94,15 +113,24 @@ export function Tooltip({ content, children, side = 'top', delay = 240, id }: To
       </span>
       {open && typeof document !== 'undefined'
         ? createPortal(
-            <div
-              ref={floatingRef}
-              id={tooltipId}
-              role="tooltip"
-              data-side={floating.side}
-              className={styles.tooltip}
-              style={floating.style}
-            >
-              {content}
+            /*
+              The landmark wraps the floating node instead of sitting inside
+              it: the tooltip keeps only its text content, while the portaled
+              subtree still belongs to a landmark (`region`).
+            */
+            <div role="region" aria-label={landmarkLabel}>
+              <div
+                ref={floatingRef}
+                id={tooltipId}
+                role="tooltip"
+                data-side={floating.side}
+                className={styles.tooltip}
+                style={floating.style}
+                onMouseEnter={show}
+                onMouseLeave={hide}
+              >
+                {content}
+              </div>
             </div>,
             document.body,
           )

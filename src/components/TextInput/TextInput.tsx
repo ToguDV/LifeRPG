@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react'
 import { cx } from '../../lib/cx'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import styles from './TextInput.module.css'
 
@@ -22,7 +22,13 @@ export interface TextInputProps
   trailingIcon?: ReactNode
   prefix?: ReactNode
   suffix?: ReactNode
+  /** Shows a clear button once the field has a value. */
   clearable?: boolean
+  /**
+   * Extra work after a clear. Clearing is a real edit: focus returns to the
+   * input and `onChange` fires with `''` before this runs, so the standard
+   * `value`/`onChange` consumer needs nothing else.
+   */
   onClear?: () => void
   fieldClassName?: string
 }
@@ -59,17 +65,32 @@ export function TextInput({
   const current = isControlled ? String(value ?? '') : internal
   const hasValue = current.length > 0
 
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
-  const describedBy = cx(ariaDescribedBy, messageId) || undefined
+  const messageIds = getFieldMessageIds(fieldId, { hint, error })
+  const describedBy = cx(ariaDescribedBy, ...messageIds) || undefined
+
+  /*
+    Clearing has to look exactly like typing an empty value: `onChange` must
+    run with `''` in both the controlled and the uncontrolled case. React only
+    emits `onChange` when the node value differs from the last one it wrote,
+    and assigning `input.value` updates that record through React's patched
+    setter. Writing through the prototype setter keeps the record stale, so the
+    dispatched `input` event reaches the normal `onChange` path.
+  */
+  const setNativeValue = (input: HTMLInputElement, next: string) => {
+    const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+    if (descriptor?.set) descriptor.set.call(input, next)
+    else input.value = next
+  }
 
   const handleClear = () => {
-    if (!isControlled) setInternal('')
+    const input = inputRef.current
+    if (input) {
+      // Focus first: clearing unmounts the button that currently owns the focus.
+      input.focus()
+      setNativeValue(input, '')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    }
     onClear?.()
-    inputRef.current?.focus()
   }
 
   return (

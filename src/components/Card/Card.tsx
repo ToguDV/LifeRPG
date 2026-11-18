@@ -56,14 +56,19 @@ export function Card({
       stains={paper && stains}
       className={cx(styles.card, styles[`size-${size}`], className)}
     >
-      <header className={styles.head}>
+      {/*
+        A `<div>`, not a `<header>`: a card dropped straight into the body
+        would emit a second `banner` landmark, and a container must not create
+        landmarks by accident. The heading inside still gives it its name.
+      */}
+      <div className={styles.head}>
         <div className={styles.titleBlock}>
           {kicker ? <p className={styles.kicker}>{kicker}</p> : null}
           {title ? <h3 className={styles.title}>{title}</h3> : null}
           {description ? <p className={styles.description}>{description}</p> : null}
         </div>
         {folio ? <WaxSeal folio={folio} size={size === 'sm' ? 'sm' : 'md'} /> : null}
-      </header>
+      </div>
       {children ? (
         <>
           <div className={styles.rule} aria-hidden="true" />

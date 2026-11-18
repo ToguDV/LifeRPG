@@ -123,6 +123,13 @@ export function RadioGroup({
   })
   const message = error ?? hint
   const messageId = message ? `${groupName}-message` : undefined
+  /*
+    `aria-required` is not supported by the `group` role that a fieldset maps
+    to (ARIA 1.2 and the `aria-allowed-attr` check), so the required state is
+    announced as a description instead.
+  */
+  const requiredId = required ? `${groupName}-required` : undefined
+  const describedBy = [messageId, requiredId].filter(Boolean).join(' ') || undefined
 
   return (
     <RadioGroupContext.Provider
@@ -131,7 +138,7 @@ export function RadioGroup({
       <fieldset
         className={cx(styles.group, className)}
         data-orientation={orientation}
-        aria-describedby={messageId}
+        aria-describedby={describedBy}
         aria-invalid={error ? true : undefined}
         disabled={disabled}
       >
@@ -145,6 +152,11 @@ export function RadioGroup({
             ) : null}
             {optional ? <span className={styles.optional}>opcional</span> : null}
           </legend>
+        ) : null}
+        {requiredId ? (
+          <span id={requiredId} className="visually-hidden">
+            Campo obligatorio
+          </span>
         ) : null}
         <div className={styles.items}>{children}</div>
         {message ? (

@@ -238,6 +238,21 @@
     0 4px 10px -4px color-mix(in srgb, var(--ui-primary-bg) 60%, transparent);
 }
 
+/*
+  Below 640px the page gutter is only 16px and the 9/19px shift of the
+  stacked sheets pushed the decoration past the viewport: the document
+  reported 328px of scroll width at 320px, and `body { overflow-x: hidden }`
+  only clipped the sheet. The stack keeps both sheets and its tilt, at a
+  scale that fits inside the gutter (plus the ~5px the tilt adds on a full
+  card) without the decoration growing the document.
+*/
+@media (max-width: 640px) {
+  :root {
+    --paper-sheet-offset-1: 0.25rem; /* 4px · first sheet under the card */
+    --paper-sheet-offset-2: 0.5625rem; /* 9px · second sheet */
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-instant: 0ms;

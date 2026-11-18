@@ -33,6 +33,15 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
   const autoId = useId()
   const inputId = `task-${task.id}-${autoId}`
   const priority = task.priority ?? 'normal'
+  const priorityId = `${inputId}-priority`
+  const overdueId = `${inputId}-overdue`
+  /*
+    The diamond and the red date encode priority and lateness on their own,
+    so the same facts are mirrored in hidden text and referenced from the
+    checkbox: WCAG 1.4.1 (never colour alone) and a real name for screen
+    readers in focus mode. The `title` stays as a pointer aid only.
+  */
+  const describedBy = cx(priorityId, task.overdue ? overdueId : undefined)
 
   return (
     <li
@@ -45,7 +54,8 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
           id={inputId}
           type="checkbox"
           checked={task.done}
-          aria-label={`Marcar «${task.title}»`}
+          aria-label={`${task.done ? 'Desmarcar' : 'Marcar'} «${task.title}»`}
+          aria-describedby={describedBy}
           onChange={(event) => onToggle(task.id, event.target.checked)}
           className={styles.input}
         />
@@ -65,8 +75,16 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
               title={PRIORITY_LABEL[priority]}
               aria-hidden="true"
             />
+            <span id={priorityId} className="visually-hidden">
+              {PRIORITY_LABEL[priority]}.
+            </span>
             <span>{task.title}</span>
           </span>
+          {task.overdue ? (
+            <span id={overdueId} className="visually-hidden">
+              Vencida.
+            </span>
+          ) : null}
           {task.due ? <span className={styles.due}>{task.due}</span> : null}
         </span>
         {task.note || task.tag ? (

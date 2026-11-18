@@ -18,13 +18,18 @@ Abre la URL que imprime Vite (por defecto `http://localhost:5173`).
 | `pnpm dev` | Servidor de desarrollo con recarga en caliente. |
 | `pnpm build` | Comprueba tipos y genera `dist/` para producción. |
 | `pnpm preview` | Sirve la build de producción. |
-| `pnpm typecheck` | Solo la comprobación de TypeScript. |
+| `pnpm typecheck` | Solo la comprobación de TypeScript (incluye `tests/`). |
+| `pnpm lint` | ESLint: correctitud y accesibilidad (`jsx-a11y`), sin reglas de estilo. |
+| `pnpm test` | Vitest en modo watch. |
+| `pnpm test:run` | Vitest una sola vez, para verificación. |
 
 ## Stack
 
 - **Vite + React 19 + TypeScript**.
 - **CSS Modules** por componente. Sin framework de UI ni librería de estilos.
 - **CSS custom properties** como única fuente de verdad para el diseño.
+- **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + reglas de hooks) sin reglas de estilo: no reformatea el código.
+- **Vitest + Testing Library** sobre jsdom, para las interacciones que originaron los bugs de la revisión.
 - **Tipografías locales** en `public/fonts` (subconjunto latin de IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch y Caveat).
 - Popovers, calendarios, ruedas y menús propios; sin dependencias de fechas o de componentes.
 
@@ -67,24 +72,26 @@ Hay dos materiales, y un mismo control se adapta a ambos:
 
 El componente `Surface` propaga el contexto por React y pone `data-surface` en el DOM. Los popovers portaleados recuperan ese contexto con `useSurface`, de modo que un calendario abierto dentro de una hoja sigue siendo de papel, y uno abierto en un panel sigue siendo de panel.
 
-El tema activo se guarda en `localStorage` (`liferpg-ui-theme`) y se aplica antes del primer pintado para evitar parpadeos. En el `<html>` se escriben `data-theme` y `data-paper`.
+El tema activo se guarda en `localStorage` (`liferpg-ui-theme`) y se aplica antes del primer pintado para evitar parpadeos. En el `<html>` se escriben `data-theme` y `data-paper`. `src/theme/themes.ts` es la única lista de temas: un plugin de `vite.config.ts` inyecta esa lista en el script de arranque de `index.html`.
 
 ### Añadir un tema
 
 1. Añade una entrada en `src/theme/themes.ts` (clave, etiqueta, meta, tipo de papel y muestras).
 2. Añade su bloque de paleta en `src/styles/tokens/themes.css` con los tokens `--stone-*`, `--bone-*`, `--panel-*`, `--parch`, `--ink-*`, `--ribbon-*`, etc.
-3. Añade la clave a la lista permitida del script de `index.html`.
 
-No hay que tocar ningún componente.
+No hay que tocar ningún componente ni `index.html`: el script de arranque se genera desde `THEMES`.
 
 ## Accesibilidad
 
 - Etiquetas asociadas, roles ARIA y estados (`aria-expanded`, `aria-checked`, `aria-activedescendant`, `aria-selected`, `aria-valuenow`, `aria-live`).
 - Navegación completa por teclado en Select, Combobox, calendario, rueda de hora, menú de temas y controles nativos.
+- «Saltar al contenido» es el primer elemento enfocable y lleva el foco a `main#contenido`.
+- El tooltip es hoverable y se descarta con `Escape` (WCAG 1.4.13); los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1).
+- Prioridad y vencimiento de `TaskRow` no dependen del color; `ProgressBar` exige `label` o `aria-label`; `RangeSlider` se anuncia como grupo.
 - Foco visible y devuelto al disparador al cerrar con `Escape`.
 - Cierre por clic fuera y por pérdida de foco.
 - `prefers-reduced-motion` desactiva animaciones y transiciones.
-- Auditoría axe-core WCAG 2 A/AA y buenas prácticas sobre el estado inicial de la galería: **0 violaciones**.
+- Auditoría axe-core WCAG 2 A/AA y buenas prácticas sobre el estado inicial de la galería: **0 violaciones**. La auditoría fue externa; el control automático que queda en el repositorio es `pnpm lint` (`jsx-a11y`) más la suite de `tests/`, que cubre nombre accesible del listbox, `aria-controls`, `required` y las descripciones de `TaskRow`.
 
 Atajos principales:
 
@@ -102,6 +109,9 @@ LifeRPG/
   index.html                 entrada de Vite (tema antes del primer paint)
   design/mockup.html         mockup estático original conservado
   public/fonts/              fuentes locales .woff2
+  eslint.config.js           flat config: correctitud y accesibilidad, sin estilo
+  vitest.config.ts           Vitest + jsdom + setup de Testing Library
+  tests/                     un archivo por asunto, escritos contra roles y nombres
   src/
     App.tsx
     main.tsx
@@ -123,7 +133,7 @@ LifeRPG/
 
 - **DatePicker / TimePicker** son implementaciones propias: no hay `input type="date"` ni dependencias de calendario. El calendario empieza en lunes y respeta `min`, `max` y fechas deshabilitadas. La rueda de hora trabaja en pasos configurables.
 - **FileUploader** valida tipo y tamaño, permite arrastrar y soltar, muestra miniaturas de imágenes y lista de archivos. No sube nada a un servidor: la demo es 100% local.
-- **Toast** es una demo en memoria; los avisos se apilan, se pausan al pasar el cursor y se cierran solos.
+- **Toast** es una demo en memoria; los avisos se apilan, se pausan al pasar el cursor y mientras el foco de teclado está dentro, y se cierran solos.
 - El mockup original sigue en `design/mockup.html`, con `design/fonts/local.css` apuntando a las fuentes locales de `public/fonts`.
 
 ## Documentación de diseño

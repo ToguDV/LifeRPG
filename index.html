@@ -12,14 +12,38 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23111310'/%3E%3Cpath d='M16 4c1.1 6.7 5.2 10.8 12 12-6.8 1.2-10.9 5.3-12 12-1.1-6.7-5.2-10.8-12-12 6.8-1.2 10.9-5.3 12-12Z' fill='%23c1b69a'/%3E%3C/svg%3E"
     />
+    <!--
+      Body and uppercase labels are the two families painted above the fold.
+      Font fetches are CORS anonymous, so `crossorigin` is required or the
+      preload is discarded and the file downloads twice.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/im-fell-english-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/cinzel-400-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <script>
       // Apply the saved palette before first paint to avoid a flash of parchment.
+      // The manifest is generated from `src/theme/themes.ts` by vite.config.ts.
       try {
-        var key = localStorage.getItem('liferpg-ui-theme')
-        var allowed = ['pergamino', 'chalk', 'catppuccin', 'dracula', 'nord', 'gruvbox', 'rosepine', 'tokyonight']
-        if (allowed.indexOf(key) !== -1) {
-          document.documentElement.setAttribute('data-theme', key)
-          document.documentElement.setAttribute('data-paper', key === 'pergamino' ? 'light' : 'dark')
+        var manifest = __THEME_MANIFEST__
+        var key = localStorage.getItem(manifest.storageKey)
+        var themes = manifest.themes
+        for (var i = 0; i < themes.length; i += 1) {
+          if (themes[i][0] === key) {
+            document.documentElement.setAttribute('data-theme', themes[i][0])
+            document.documentElement.setAttribute('data-paper', themes[i][1])
+            break
+          }
         }
       } catch (error) {}
     </script>

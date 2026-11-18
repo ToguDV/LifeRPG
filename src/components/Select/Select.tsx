@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { cx } from '../../lib/cx'
 import { useControllableState } from '../../lib/useControllableState'
-import { Field, getFieldMessageId } from '../Field/Field'
+import { Field, getFieldLabelId, getFieldMessageIds } from '../Field/Field'
 import { Icon } from '../Icon/Icon'
 import { Popover } from '../Popover/Popover'
 import styles from './Select.module.css'
@@ -75,6 +75,7 @@ export function Select({
 }: SelectProps) {
   const autoId = useId()
   const fieldId = id ?? `select-${autoId}`
+  const labelId = getFieldLabelId(fieldId)
   const listboxId = `${fieldId}-listbox`
   const triggerRef = useRef<HTMLButtonElement>(null)
   const optionRefs = useRef<Array<HTMLLIElement | null>>([])
@@ -90,11 +91,13 @@ export function Select({
 
   const selectedIndex = options.findIndex((option) => option.value === current)
   const selected = selectedIndex >= 0 ? options[selectedIndex] : undefined
-  const messageId = error
-    ? getFieldMessageId(fieldId, 'error')
-    : hint
-      ? getFieldMessageId(fieldId, 'hint')
-      : undefined
+  const hasLabel = Boolean(label)
+  /*
+    Without a `Field` label there is no label node to reference, so the popup
+    inherits the visible value instead of pointing at an id that is not there.
+  */
+  const popupName = selected?.label || placeholder || 'Opciones'
+  const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const close = useCallback(
     (restoreFocus = true) => {
@@ -218,7 +221,8 @@ export function Select({
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-controls={listboxId}
+        aria-controls={open ? listboxId : undefined}
+        aria-label={hasLabel ? undefined : popupName}
         aria-activedescendant={
           activeOption ? `${fieldId}-option-${activeIndex}` : undefined
         }
@@ -263,11 +267,15 @@ export function Select({
         onClose={close}
         matchWidth
         className={styles.menu}
+        role="region"
+        ariaLabelledby={hasLabel ? labelId : undefined}
+        ariaLabel={hasLabel ? undefined : popupName}
       >
         <ul
           id={listboxId}
           role="listbox"
-          aria-labelledby={fieldId}
+          aria-labelledby={hasLabel ? labelId : undefined}
+          aria-label={hasLabel ? undefined : popupName}
           className={styles.listbox}
           tabIndex={-1}
         >
@@ -275,6 +283,8 @@ export function Select({
             const isSelected = option.value === current
             const isActive = index === activeIndex
             return (
+              // The listbox owns the keyboard through aria-activedescendant.
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
               <li
                 key={option.value}
                 ref={(node) => {

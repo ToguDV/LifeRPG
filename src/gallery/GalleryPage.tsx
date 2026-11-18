@@ -4,7 +4,7 @@ import { ThemePicker } from '../theme/ThemePicker'
 import type { SurfaceValue } from '../components/Surface/surface-context'
 import { Atmosphere } from './Atmosphere'
 import { cx } from '../lib/cx'
-import { SECTIONS } from './sections'
+import { SECTIONS, type SectionId } from './sections'
 import { SectionHeading } from './Demo'
 import { ActionsSection } from './sections/ActionsSection'
 import { SelectionSection } from './sections/SelectionSection'
@@ -20,7 +20,7 @@ import type { SectionProps } from './SectionProps'
 import { useActiveSection } from './useActiveSection'
 import styles from './GalleryPage.module.css'
 
-const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps>> = {
+const SECTION_COMPONENTS: Record<SectionId, ComponentType<SectionProps>> = {
   acciones: ActionsSection,
   seleccion: SelectionSection,
   campos: FieldsSection,
@@ -33,7 +33,7 @@ const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps>> = {
   contenedores: ContainersSection,
 }
 
-const SECTION_IDS = SECTIONS.map((section) => section.id)
+const SECTION_IDS: readonly SectionId[] = SECTIONS.map((section) => section.id)
 
 const TOP_LINKS = [
   { id: 'acciones', label: 'Acciones' },
@@ -55,6 +55,7 @@ function SurfaceToggle({
         type="button"
         className={styles.surfaceOption}
         aria-pressed={value === 'paper'}
+        aria-label="Papel"
         onClick={() => onChange('paper')}
         title="Ver los controles sobre papel"
       >
@@ -65,6 +66,7 @@ function SurfaceToggle({
         type="button"
         className={styles.surfaceOption}
         aria-pressed={value === 'panel'}
+        aria-label="Panel"
         onClick={() => onChange('panel')}
         title="Ver los controles sobre panel oscuro"
       >
@@ -81,6 +83,10 @@ export function GalleryPage() {
 
   return (
     <div className={styles.page} id="top">
+      <a className={styles.skipLink} href="#contenido">
+        Saltar al contenido
+      </a>
+
       <Atmosphere />
 
       <div className={styles.content}>
@@ -190,7 +196,7 @@ export function GalleryPage() {
             </div>
           </aside>
 
-          <main className={styles.main} id="contenido">
+          <main className={styles.main} id="contenido" tabIndex={-1}>
             {SECTIONS.map((meta) => {
               const Section = SECTION_COMPONENTS[meta.id]
               return (

@@ -15,16 +15,31 @@ export interface ThemeDefinition {
   label: string
   meta: string
   paper: PaperMode
-  /** [desk, paper, ink, accent] — used by the picker swatches. */
+  /** [desk, paper, ink, accent] — mirrors raw tokens of `themes.css`; see below. */
   swatches: readonly [string, string, string, string]
 }
 
+/*
+  `swatches` is the one sanctioned copy of the raw palette, which otherwise
+  lives only in `src/styles/tokens/themes.css` (DESIGN.md §3.5). The picker
+  previews themes that are not applied, so it cannot read the live custom
+  properties; the hexes are the contract. Slots, in order:
+
+    desk   — the board behind the page (--stone-0, --panel-1 in Pergamino)
+    paper  — --parch
+    ink    — --ink
+    accent — the theme's headline accent (--crimson, --chalk-rouge, --bronze)
+
+  The comment above each row names the exact tokens. Retouching a palette
+  means updating both files in the same change.
+*/
 export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'pergamino',
     label: 'Pergamino',
     meta: 'Tinta & cera',
     paper: 'light',
+    // --panel-1 · --parch · --ink · --crimson
     swatches: ['#2c2e28', '#e6e0d0', '#34312a', '#7f3c31'],
   },
   {
@@ -32,6 +47,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Tiza',
     meta: 'Cartulina negra',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --chalk-rouge
     swatches: ['#050605', '#191a13', '#e9e6da', '#d19a86'],
   },
   {
@@ -39,6 +55,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Catppuccin',
     meta: 'Mocha',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --bronze
     swatches: ['#11111b', '#1e1e2e', '#cdd6f4', '#cba6f7'],
   },
   {
@@ -46,6 +63,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Dracula',
     meta: 'Noche púrpura',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --bronze
     swatches: ['#191a21', '#282a36', '#f8f8f2', '#bd93f9'],
   },
   {
@@ -53,6 +71,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Nord',
     meta: 'Frío polar',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --bronze
     swatches: ['#242933', '#2e3440', '#eceff4', '#88c0d0'],
   },
   {
@@ -60,6 +79,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Gruvbox',
     meta: 'Cuero & ámbar',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --bronze-soft
     swatches: ['#1d2021', '#282828', '#ebdbb2', '#fabd2f'],
   },
   {
@@ -67,6 +87,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Rosé Pine',
     meta: 'Rosa marchita',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --crimson
     swatches: ['#191724', '#232136', '#e0def4', '#eb6f92'],
   },
   {
@@ -74,6 +95,7 @@ export const THEMES: readonly ThemeDefinition[] = [
     label: 'Tokyo Night',
     meta: 'Neón velado',
     paper: 'dark',
+    // --stone-0 · --parch · --ink · --bronze
     swatches: ['#16161e', '#1a1b26', '#c0caf5', '#7aa2f7'],
   },
 ] as const

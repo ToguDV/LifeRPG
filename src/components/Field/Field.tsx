@@ -23,6 +23,30 @@ export function getFieldMessageId(
   return `${id}-${kind}`
 }
 
+/**
+ * Stable id for the `<label>` node. Controls that portal a popup need it to
+ * name the popup: an `aria-labelledby` pointing at the control itself yields
+ * no name (combobox and button are not name-from-content roles).
+ */
+export function getFieldLabelId(id: string): string {
+  return `${id}-label`
+}
+
+/**
+ * Ids of the messages `Field` renders for a control, in reading order: the
+ * error first, then the hint. Both messages are rendered and both are
+ * referenced by `aria-describedby`; an error never hides the hint.
+ */
+export function getFieldMessageIds(
+  id: string,
+  message: { hint?: ReactNode; error?: ReactNode },
+): string[] {
+  const ids: string[] = []
+  if (message.error) ids.push(getFieldMessageId(id, 'error'))
+  if (message.hint) ids.push(getFieldMessageId(id, 'hint'))
+  return ids
+}
+
 export function Field({
   id,
   label,
@@ -37,19 +61,20 @@ export function Field({
   children,
 }: FieldProps) {
   const hasLabel = Boolean(label)
-  const message = error ?? hint
-  const messageId = error
-    ? getFieldMessageId(id, 'error')
-    : hint
-      ? getFieldMessageId(id, 'hint')
-      : undefined
+  const labelId = getFieldLabelId(id)
+  const errorId = error ? getFieldMessageId(id, 'error') : undefined
+  const hintId = hint ? getFieldMessageId(id, 'hint') : undefined
 
   return (
     <div className={cx(styles.field, className)} data-invalid={error ? 'true' : undefined}>
       {hasLabel || labelAside ? (
         <div className={styles.labelRow}>
-          {hasLabel && !hideLabel ? (
-            <label htmlFor={id} className={styles.label}>
+          {hasLabel ? (
+            <label
+              htmlFor={id}
+              id={labelId}
+              className={cx(styles.label, hideLabel && 'visually-hidden')}
+            >
               <span>{label}</span>
               {required ? (
                 <span className={styles.required} aria-hidden="true">
@@ -67,13 +92,15 @@ export function Field({
 
       {children}
 
-      {message ? (
-        <p
-          id={messageId}
-          className={cx(styles.message, error ? styles.error : styles.hint)}
-          role={error ? 'alert' : undefined}
-        >
-          {message}
+      {error ? (
+        <p id={errorId} className={cx(styles.message, styles.error)} role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      {hint ? (
+        <p id={hintId} className={cx(styles.message, styles.hint)}>
+          {hint}
         </p>
       ) : null}
     </div>
