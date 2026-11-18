@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { DatePicker } from '../../components/DatePicker/DatePicker'
 import { TimePicker } from '../../components/TimePicker/TimePicker'
 import { formatDate, startOfDay } from '../../lib/format'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
+import styles from './sections.module.css'
 
 function inDays(days: number): Date {
   const date = new Date()
@@ -20,9 +22,14 @@ export function DateTimeSection({ canvas }: SectionProps) {
   const [council, setCouncil] = useState<string | null>('18:30')
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="DatePicker · TimePicker"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          DatePicker · TimePicker
+        </Badge>
+      }
       title="El tiempo, tallado"
       description="Un calendario de seis semanas que empieza en lunes y una rueda de campanas con pasos de cinco minutos. Ambos se abren en un diálogo flotante, se recorren con el teclado y se cierran con Escape."
       folio="06"
@@ -72,6 +79,6 @@ export function DateTimeSection({ canvas }: SectionProps) {
           </DemoNote>
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

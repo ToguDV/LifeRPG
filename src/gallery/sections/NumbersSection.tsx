@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { RangeSlider, Slider } from '../../components/Slider/Slider'
 import { Stepper } from '../../components/Stepper/Stepper'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
+import styles from './sections.module.css'
 
 const RESISTANCE_MARKS = [
   { value: 0, label: 'Agotada' },
@@ -26,9 +28,14 @@ export function NumbersSection({ canvas }: SectionProps) {
   const [torches, setTorches] = useState(2)
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="Slider · RangeSlider · Stepper"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          Slider · RangeSlider · Stepper
+        </Badge>
+      }
       title="Medir el pulso"
       description="Deslizadores con marcas y burbujas de valor, un rango de dos pulgares y contadores con límites. Todos responden al teclado y respetan los topes."
       folio="05"
@@ -110,6 +117,6 @@ export function NumbersSection({ canvas }: SectionProps) {
           </DemoNote>
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

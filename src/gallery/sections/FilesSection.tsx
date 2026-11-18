@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { FileUploader } from '../../components/FileUploader/FileUploader'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
+import styles from './sections.module.css'
 
 function makeDemoFiles(): File[] {
   const emblem = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
@@ -22,9 +24,14 @@ export function FilesSection({ canvas }: SectionProps) {
   const [files, setFiles] = useState<File[]>(makeDemoFiles)
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="FileUploader"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          FileUploader
+        </Badge>
+      }
       title="Mapas, sellos y provisiones"
       description="Arrastra, suelta o abre el estante. La lista muestra el nombre y el peso; los archivos que no pasan el filtro se explican en rojo en lugar de desaparecer en silencio."
       folio="07"
@@ -69,6 +76,6 @@ export function FilesSection({ canvas }: SectionProps) {
           />
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

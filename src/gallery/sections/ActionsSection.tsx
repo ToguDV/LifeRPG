@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
 import { Button } from '../../components/Button/Button'
+import { Card } from '../../components/Card/Card'
 import { Icon } from '../../components/Icon/Icon'
 import { Tooltip } from '../../components/Tooltip/Tooltip'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote, DemoRow } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
@@ -12,9 +13,14 @@ export function ActionsSection({ canvas }: SectionProps) {
 
   return (
     <>
-      <DemoCard
-        canvas={canvas}
-        component="Button"
+      <Card
+        size="lg"
+        surface={canvas}
+        kicker={
+          <Badge variant="outline" size="sm" className={styles.componentBadge}>
+            Button
+          </Badge>
+        }
         title="La cera y el hierro"
         description="Cuatro variantes, tres tamaños y los estados que aparecen cuando el invierno aprieta. El botón principal se comporta como un sello de cera; el resto son herramientas de mesa."
         folio="01"
@@ -94,11 +100,16 @@ export function ActionsSection({ canvas }: SectionProps) {
             </DemoNote>
           </DemoGroup>
         </DemoGrid>
-      </DemoCard>
+      </Card>
 
-      <DemoCard
-        canvas={canvas}
-        component="Tooltip"
+      <Card
+        size="lg"
+        surface={canvas}
+        kicker={
+          <Badge variant="outline" size="sm" className={styles.componentBadge}>
+            Tooltip
+          </Badge>
+        }
         title="Una voz al oído"
         description="La pista aparece tras una pausa breve, también al enfocar con el teclado. Nunca tapa el control que la invoca."
         folio="01 b"
@@ -130,7 +141,7 @@ export function ActionsSection({ canvas }: SectionProps) {
             </p>
           </DemoGroup>
         </DemoGrid>
-      </DemoCard>
+      </Card>
     </>
   )
 }

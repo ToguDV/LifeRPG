@@ -1,10 +1,10 @@
 import { Badge } from '../../components/Badge/Badge'
 import { Button } from '../../components/Button/Button'
+import { Card } from '../../components/Card/Card'
 import { Divider } from '../../components/Divider/Divider'
 import { Icon } from '../../components/Icon/Icon'
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar'
 import { useToast } from '../../components/Toast/Toast'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote, DemoRow } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
@@ -13,9 +13,14 @@ export function ExtrasSection({ canvas }: SectionProps) {
   const toast = useToast()
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="Badge · ProgressBar · Divider · Toast"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          Badge · ProgressBar · Divider · Toast
+        </Badge>
+      }
       title="Señales al borde"
       description="Las piezas que no piden atención hasta que la merecen: etiquetas, medidores, divisores y avisos que entran por la esquina inferior."
       folio="08"
@@ -139,6 +144,6 @@ export function ExtrasSection({ canvas }: SectionProps) {
           </p>
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

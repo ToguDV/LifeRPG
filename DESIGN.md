@@ -221,7 +221,7 @@ Por debajo de 640 px el desplazamiento de la pila baja a 4 y 9 px. El margen de 
 
 El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
 
-**Contenedores.** `Card` es la hoja reutilizable: cabecera (kicker, título, descripción, lacre), filete, cuerpo y pie manuscrito. Tres alturas, con el mismo material y los mismos ornamentos:
+**Contenedores.** `Card` es la hoja reutilizable: cabecera (kicker, título, descripción, lacre), filete, cuerpo y pie manuscrito. `tilt` es el mismo ornamento de `Surface` y se ignora sobre panel. Tres alturas, con el mismo material y los mismos ornamentos:
 
 - `sm`: ficha de 21 rem, padding medio, título `--text-lg`.
 - `md`: pliego de 30 rem, padding grande, título `--text-xl`.
@@ -235,7 +235,7 @@ Las colas son capas `aria-hidden`; el `<h3>` real vive dentro de la banda y sigu
 
 Por debajo de 720 px los tres colapsan al ancho de la columna y el margen de cuaderno se desactiva para no comerse el contenido.
 
-La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior (en la cinta o en la cabecera del panel) sigue nombrándolo. Lo mismo vale para `DemoCard`.
+La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior (en la cinta o en la cabecera del panel) sigue nombrándolo.
 
 ### 5.2 Panel
 
@@ -449,7 +449,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - Scroll-spy con `IntersectionObserver`.
 - Selector de tema dialog con muestras, metadatos y navegación por teclado.
 - Interruptor **Papel / Panel** global: todas las tarjetas y controles cambian de superficie.
-- Las hojas `DemoCard` muestran badge de componente, título en versalitas, descripción, folio estampado en lacre y contenido interactivo, sobre dos hojas apiladas.
+- Las hojas de demo son `Card size="lg"` sin envoltorio propio: el badge con el nombre del componente entra por `kicker`, el título va en la cinta sobre papel y el folio en lacre. Así la galería enseña el contenedor real y no un clon.
 - Cada demo incluye notas manuscritas con el estado actual para que el comportamiento sea visible sin abrir las devtools.
 - La sección “En contexto” usa todos los patrones en una mini todo-list real.
 - La sección “Contenedores” muestra `Card` en sus tres alturas con la lista de componentes de otras secciones.

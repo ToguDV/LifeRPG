@@ -19,6 +19,8 @@ export interface CardProps extends PaperOrnamentProps {
   folio?: string
   /** Handwritten note under the body. */
   footer?: ReactNode
+  /** Hand-placed sheet angle; only applies on the paper surface. */
+  tilt?: SurfaceProps['tilt']
   as?: ElementType
   children?: ReactNode
   className?: string
@@ -40,6 +42,7 @@ export function Card({
   description,
   folio,
   footer,
+  tilt = 'none',
   as,
   children,
   className,
@@ -58,6 +61,7 @@ export function Card({
       surface={surface}
       padding={size === 'sm' ? 'md' : 'lg'}
       torn={paper}
+      tilt={paper ? tilt : 'none'}
       stack={paper ? stack : 'none'}
       margin={paper ? margin : 'none'}
       stains={paper && stains}

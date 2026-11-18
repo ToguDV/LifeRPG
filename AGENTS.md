@@ -122,11 +122,12 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 
 ### Galería
 
+Las hojas de demo no tienen contenedor propio: son `Card size="lg"` con el nombre del componente en un `Badge` pasado por `kicker`.
+
 | Archivo | Rol |
 | --- | --- |
 | `src/gallery/GalleryPage.tsx` + `.module.css` | Página única, topbar, masthead, índice, scroll-spy, toggle Papel/Panel y footer. |
 | `src/gallery/sections.ts` | Metadata de las diez secciones. |
-| `src/gallery/DemoCard.tsx` + `.module.css` | Hoja de muestra con superficie, badge, folio en lacre, ornamentos de papel y contenido. |
 | `src/gallery/Demo.tsx` + `.module.css` | `DemoGrid`, `DemoGroup`, `DemoRow`, `DemoStack`, `DemoNote` y `SectionHeading`. |
 | `src/gallery/sections/ActionsSection.tsx` | Button y Tooltip. |
 | `src/gallery/sections/SelectionSection.tsx` | Checkbox, Radio, Switch y estados. |
@@ -138,7 +139,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 | `src/gallery/sections/ExtrasSection.tsx` | Badge, ProgressBar, Divider y Toast. |
 | `src/gallery/sections/ContextSection.tsx` | Mini todo-list con TaskList, TaskRow, EmptyState y formulario. |
 | `src/gallery/sections/ContainersSection.tsx` | `Card` en sus tres tamaños con la lista de componentes de otras secciones. |
-| `src/gallery/sections/sections.module.css` | Layouts específicos de secciones (task app, sizeFields, etc.). |
+| `src/gallery/sections/sections.module.css` | Layouts específicos de secciones (task app, sizeFields, badge de componente, etc.). |
 | `src/gallery/Atmosphere.tsx` + `.module.css` | Capas fijas de grano, viñeta, mapa y motas. |
 | `src/gallery/SectionProps.ts` | Tipo `SectionProps` (`canvas`). |
 | `src/gallery/useActiveSection.ts` | Scroll-spy con `IntersectionObserver`. |
@@ -208,7 +209,7 @@ Antes de dar un cambio por terminado:
 - No debe haber scroll horizontal a 320 px, ni en ningún ancho hasta 1440 px. No se tapa con `overflow-x: hidden`: si algo se sale, se corrige el elemento.
 - Las rejillas de demo usan `DemoGrid` con `columns={2}` o `columns={3}`; no vuelvas al `auto-fit` con spans porque crea tracks vacíos.
 - Las tarjetas y campos deben mantener `min-width: 0` para permitir truncado.
-- Los textos largos de componente en el badge de `DemoCard` deben poder envolver.
+- Los textos largos de componente en el badge de la galería deben poder envolver (`componentBadge` en `sections.module.css`).
 
 ---
 

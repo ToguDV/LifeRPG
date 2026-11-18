@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { Checkbox, CheckboxGroup } from '../../components/Checkbox/Checkbox'
 import { Radio, RadioGroup } from '../../components/Radio/Radio'
 import { Switch } from '../../components/Switch/Switch'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
@@ -59,9 +60,14 @@ export function SelectionSection({ canvas }: SectionProps) {
   const paceLabel = PACES.find((item) => item.value === pace)?.label ?? '—'
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="Checkbox · Radio · Switch"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          Checkbox · Radio · Switch
+        </Badge>
+      }
       title="Decisiones pequeñas"
       description="Tres formas de elegir: varias, una sola, o ninguna. La cera del control se adapta al papel y al panel sin cambiar de forma."
       folio="02"
@@ -159,6 +165,6 @@ export function SelectionSection({ canvas }: SectionProps) {
           </DemoNote>
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

@@ -95,3 +95,14 @@
   line-height: var(--leading-snug);
   color: var(--ui-text-muted);
 }
+
+/* Panel heading matches the step the paper ribbon takes on phones. */
+@media (max-width: 640px) {
+  .size-md .title {
+    font-size: var(--text-lg);
+  }
+
+  .size-lg .title {
+    font-size: var(--text-xl);
+  }
+}

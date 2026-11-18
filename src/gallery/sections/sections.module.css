@@ -6,6 +6,18 @@
   color: var(--ui-text-muted);
 }
 
+/* The gallery badge lists every component in the demo; let it wrap. */
+.componentBadge {
+  max-width: 100%;
+  height: auto;
+  min-height: var(--badge-height-sm);
+  padding-block: var(--space-1);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: var(--leading-snug);
+  text-align: left;
+}
+
 .groupBreak {
   display: block;
   height: var(--border-width);

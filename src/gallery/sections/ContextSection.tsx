@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Badge } from '../../components/Badge/Badge'
 import { Button } from '../../components/Button/Button'
+import { Card } from '../../components/Card/Card'
 import { EmptyState } from '../../components/EmptyState/EmptyState'
 import { Icon } from '../../components/Icon/Icon'
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar'
@@ -9,7 +10,6 @@ import { TaskList } from '../../components/TaskList/TaskList'
 import type { Task } from '../../components/TaskList/TaskRow'
 import { TextInput } from '../../components/TextInput/TextInput'
 import { useToast } from '../../components/Toast/Toast'
-import { DemoCard } from '../DemoCard'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
@@ -126,9 +126,14 @@ export function ContextSection({ canvas }: SectionProps) {
   }
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="TaskList · TaskRow · EmptyState"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          TaskList · TaskRow · EmptyState
+        </Badge>
+      }
       title="El diario en marcha"
       description="Todas las piezas anteriores, ahora con una tarea real entre manos: añade, marca, filtra y elimina. El estado vive en la página; los tokens siguen mandando."
       folio="09"
@@ -219,6 +224,6 @@ export function ContextSection({ canvas }: SectionProps) {
           {doneCount} de {tasks.length} selladas · {filter === 'all' ? 'todo el diario' : filter === 'open' ? 'solo pendientes' : 'solo hechas'}
         </p>
       </div>
-    </DemoCard>
+    </Card>
   )
 }

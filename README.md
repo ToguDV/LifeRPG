@@ -123,7 +123,7 @@ LifeRPG/
     gallery/
       GalleryPage.tsx        página única con índice, temas y superficies
       sections/              una sección por familia de componentes
-      DemoCard.tsx           hoja de muestra (papel o panel) con lacre y ornamentos
+      Demo.tsx               rejillas, grupos, filas y notas de las demos
     lib/                     cx, estado controlado, floating, dismiss, fechas y formato
     styles/                  fuentes, tokens, temas y base
     theme/                   metadata, provider y selector de temas

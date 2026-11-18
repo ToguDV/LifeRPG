@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { Icon } from '../../components/Icon/Icon'
-import { Textarea } from '../../components/Textarea/Textarea'
 import { TextInput } from '../../components/TextInput/TextInput'
-import { DemoCard } from '../DemoCard'
+import { Textarea } from '../../components/Textarea/Textarea'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
@@ -15,9 +16,14 @@ export function FieldsSection({ canvas }: SectionProps) {
   const [notes, setNotes] = useState(INITIAL_NOTES)
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="TextInput · Textarea"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          TextInput · Textarea
+        </Badge>
+      }
       title="Tinta sobre la línea"
       description="Etiquetas talladas, pistas escritas a mano y errores que no gritan. Los campos comparten la misma geometría de control en papel y en panel."
       folio="03"
@@ -99,6 +105,6 @@ export function FieldsSection({ canvas }: SectionProps) {
           />
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }

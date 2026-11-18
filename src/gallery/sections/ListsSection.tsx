@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { Badge } from '../../components/Badge/Badge'
+import { Card } from '../../components/Card/Card'
 import { Combobox } from '../../components/Combobox/Combobox'
 import { Icon } from '../../components/Icon/Icon'
 import { Select } from '../../components/Select/Select'
-import { DemoCard } from '../DemoCard'
 import { DemoGrid, DemoGroup, DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
+import styles from './sections.module.css'
 
 const ROLES = [
   {
@@ -73,9 +75,14 @@ export function ListsSection({ canvas }: SectionProps) {
   const taskLabel = TASKS.find((item) => item.value === task)?.label
 
   return (
-    <DemoCard
-      canvas={canvas}
-      component="Select · Combobox"
+    <Card
+      size="lg"
+      surface={canvas}
+      kicker={
+        <Badge variant="outline" size="sm" className={styles.componentBadge}>
+          Select · Combobox
+        </Badge>
+      }
       title="Escoger entre lo escrito"
       description="Un desplegable de opciones cerradas y una lista que se filtra mientras escribes. Ambos se anclan al campo, respetan el teclado y vuelven a su sitio si la pantalla cambia."
       folio="04"
@@ -126,6 +133,6 @@ export function ListsSection({ canvas }: SectionProps) {
           />
         </DemoGroup>
       </DemoGrid>
-    </DemoCard>
+    </Card>
   )
 }
