@@ -1,0 +1,275 @@
+.surface {
+  --surface-pad: var(--card-padding-md);
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  color: var(--ui-text);
+  border-radius: var(--radius-sm);
+}
+
+.content {
+  position: relative;
+  z-index: var(--z-raised);
+  min-width: 0;
+  padding: var(--surface-pad);
+}
+
+/* ---------- parchment ---------- */
+.paper {
+  /*
+    The shadow is always darker than the sheet. On dark cardstock the
+    old `--ui-shadow-color` (a light ink) drew a halo around every card;
+    `--ui-paper-drop` is black there and warm ink on light paper.
+  */
+  filter: drop-shadow(0 var(--space-2) var(--space-5) var(--ui-paper-drop));
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  border-radius: var(--radius-sm);
+}
+
+.paper .texture {
+  background-color: var(--ui-surface);
+  background-image:
+    radial-gradient(115% 95% at 16% 2%, var(--ui-paper-light), transparent 58%),
+    radial-gradient(95% 82% at 88% 98%, var(--ui-paper-shade), transparent 64%),
+    var(--ui-paper-grain);
+  background-size: auto, auto, var(--texture-size) var(--texture-size);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-blend-mode: normal, normal, var(--ui-paper-texture-blend);
+  box-shadow: var(--ui-paper-inner-shadow);
+}
+
+.paper .texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(
+      90deg,
+      var(--ui-paper-side-shade),
+      transparent 8%,
+      transparent 92%,
+      var(--ui-paper-side-shade)
+    ),
+    linear-gradient(
+      180deg,
+      var(--ui-paper-top-sheen),
+      transparent 13%,
+      transparent 86%,
+      var(--ui-paper-bottom-shade)
+    );
+}
+
+.paper[data-torn="true"] .texture {
+  filter: url(#ui-torn-soft);
+}
+
+.paper[data-torn="false"] .texture {
+  box-shadow:
+    var(--ui-paper-inner-shadow),
+    inset 0 0 0 var(--border-width) var(--ui-border);
+}
+
+/* ---------- sheets of paper underneath ---------- */
+.sheets {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-behind);
+  pointer-events: none;
+}
+
+.sheets::before,
+.sheets::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--ui-paper-sheet-back);
+  background-image: var(--ui-paper-grain);
+  background-size: var(--texture-size) var(--texture-size);
+  background-blend-mode: var(--ui-paper-texture-blend);
+  /*
+    A stack reads through its cut edges: one hairline of lit paper,
+    one hairline of shade where the next sheet begins.
+  */
+  box-shadow:
+    1px 1px 0 var(--ui-paper-cut),
+    2px 2px 0 var(--ui-paper-seam);
+  transform: translate(var(--paper-sheet-offset-1), var(--paper-sheet-offset-1))
+    rotate(var(--paper-sheet-tilt-1));
+}
+
+.stack-double .sheets::after {
+  background-color: var(--ui-paper-sheet-back-2);
+  transform: translate(var(--paper-sheet-offset-2), var(--paper-sheet-offset-2))
+    rotate(var(--paper-sheet-tilt-2));
+}
+
+.stack-single .sheets::after {
+  content: none;
+}
+
+/* ---------- water stains, only at the edges ---------- */
+.stains {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  border-radius: var(--radius-sm);
+  background-image:
+    radial-gradient(28% 20% at 5% 103%, var(--ui-paper-stain), transparent 70%),
+    radial-gradient(22% 16% at 55% 105%, var(--ui-paper-stain), transparent 74%),
+    /* a single tide mark, half off the corner */
+    radial-gradient(4.5rem 2.75rem at 97% 101%, transparent 54%, var(--ui-paper-stain-ring) 62%, transparent 74%);
+  opacity: 0.75;
+  /* The mask is an alpha stencil, not a palette colour. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 64%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 64%, #000 100%);
+}
+
+/* ---------- folded corner ---------- */
+.dogEar {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  z-index: calc(var(--z-raised) + 1);
+  width: var(--paper-dogear-size);
+  height: var(--paper-dogear-size);
+  pointer-events: none;
+  background-image:
+    /* the fold itself: the back of the sheet, a touch lighter */
+    linear-gradient(315deg, var(--ui-paper-fold) 0 49.4%, transparent 49.4%),
+    /* the crease itself, then the shadow it throws up-left over the page */
+    linear-gradient(315deg, transparent 0 49.1%, var(--ui-paper-seam) 49.6% 50.4%, transparent 58%);
+}
+
+/* ---------- tape across the top edge ---------- */
+.tape {
+  position: absolute;
+  inset-block-start: var(--paper-tape-top);
+  inset-inline-start: var(--space-3);
+  z-index: calc(var(--z-raised) + 1);
+  width: var(--paper-tape-width);
+  height: var(--paper-tape-height);
+  pointer-events: none;
+  background-color: var(--ui-paper-tape);
+  background-image:
+    var(--ui-paper-grain),
+    linear-gradient(
+      100deg,
+      transparent,
+      color-mix(in srgb, var(--ui-text) 4%, transparent) 55%,
+      transparent
+    );
+  background-size: var(--texture-size) var(--texture-size), 100% 100%;
+  background-blend-mode: var(--ui-paper-texture-blend), normal;
+  box-shadow:
+    0 1px 2px var(--ui-paper-tape-edge),
+    inset 0 0 0 var(--border-width) color-mix(in srgb, var(--ui-paper-tape-edge) 55%, transparent);
+  transform: rotate(-2.4deg);
+  clip-path: polygon(0 8%, 5% 0, 94% 3%, 100% 12%, 98% 92%, 93% 100%, 6% 96%, 1% 88%);
+}
+
+/* ---------- notebook gutter ---------- */
+.marginRule .content {
+  padding-inline-start: calc(var(--surface-pad) + var(--paper-margin-width));
+}
+
+.marginRule .content::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--space-3);
+  inset-inline-start: calc(var(--surface-pad) + var(--paper-margin-line-offset));
+  width: var(--border-width);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-accent) 46%, transparent),
+    color-mix(in srgb, var(--ui-accent) 26%, transparent)
+  );
+}
+
+/* ---------- dark panel ---------- */
+.panel {
+  background-color: var(--ui-surface);
+  background-image:
+    var(--texture-grain),
+    linear-gradient(
+      158deg,
+      color-mix(in srgb, var(--ui-surface) 92%, var(--ui-text) 8%) 0%,
+      var(--ui-surface) 45%,
+      color-mix(in srgb, var(--ui-surface) 84%, var(--ui-shadow-color)) 100%
+    );
+  background-size:
+    var(--texture-size) var(--texture-size),
+    100% 100%;
+  background-blend-mode: overlay, normal;
+  border: var(--border-width) solid var(--ui-border);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--ui-text) 5%, transparent),
+    inset 0 0 70px color-mix(in srgb, var(--ui-shadow-color) 34%, transparent);
+}
+
+.panel .texture {
+  display: none;
+}
+
+/* ---------- material variants ---------- */
+.paper.raised .texture {
+  background-color: var(--ui-surface-raised);
+}
+
+.paper.sunken .texture {
+  background-color: var(--ui-surface-sunken);
+}
+
+.panel.raised {
+  background-color: var(--ui-surface-raised);
+}
+
+.panel.sunken {
+  background-color: var(--ui-surface-sunken);
+}
+
+/* ---------- padding ---------- */
+.pad-none {
+  --surface-pad: 0;
+}
+
+.pad-sm {
+  --surface-pad: var(--card-padding-sm);
+}
+
+.pad-md {
+  --surface-pad: var(--card-padding-md);
+}
+
+.pad-lg {
+  --surface-pad: var(--card-padding-lg);
+}
+
+/* ---------- hand-placed sheets ---------- */
+.tilt-left {
+  transform: rotate(-0.22deg);
+}
+
+.tilt-right {
+  transform: rotate(0.18deg);
+}
+
+@media (max-width: 720px) {
+  /* A 38 px gutter eats the demo column on phones. */
+  .marginRule .content {
+    padding-inline-start: var(--surface-pad);
+  }
+
+  .marginRule .content::before {
+    content: none;
+  }
+}

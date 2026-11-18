@@ -1,0 +1,187 @@
+.aside {
+  max-width: 52ch;
+  font-size: var(--text-sm);
+  font-style: italic;
+  line-height: var(--leading-relaxed);
+  color: var(--ui-text-muted);
+}
+
+.groupBreak {
+  display: block;
+  height: var(--border-width);
+  margin-block: var(--space-1);
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-text) 18%, transparent),
+    transparent
+  );
+}
+
+.controlStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sizeFields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+/* ---------- contextual task app ---------- */
+.taskApp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.taskHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--ui-divider);
+}
+
+.taskKicker {
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  color: var(--ui-accent-strong);
+}
+
+.taskTitle {
+  margin-top: var(--space-1);
+  font-family: var(--font-caps);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-book);
+  line-height: var(--leading-tight);
+  color: var(--ui-text);
+}
+
+.taskSub {
+  margin-top: var(--space-1);
+  font-family: var(--font-hand);
+  font-size: var(--text-base);
+  line-height: var(--leading-tight);
+  color: var(--ui-text-muted);
+}
+
+.addForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.addField {
+  flex: 1 1 var(--form-field-min);
+  min-width: 0;
+}
+
+.taskToolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-4) var(--space-6);
+  padding-block: var(--space-1);
+}
+
+.taskProgress {
+  min-width: 0;
+  max-width: var(--task-progress-max);
+}
+
+.filterGroup {
+  justify-self: end;
+}
+
+.taskListWrap {
+  min-width: 0;
+}
+
+.taskFoot {
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: var(--border-width) solid var(--ui-divider-soft);
+  font-family: var(--font-hand);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  color: var(--ui-text-muted);
+}
+
+/* ---------- container shelf ---------- */
+.containerShelf {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  border-bottom: var(--border-width) dotted var(--ui-divider-soft);
+}
+
+.cardRow:last-child {
+  border-bottom: 0;
+}
+
+.cardRowNum {
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ui-text-muted);
+}
+
+.cardRowName {
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--ui-text);
+}
+
+.shelfNote {
+  max-width: var(--content-measure);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+@media (max-width: 720px) {
+  .sizeFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .taskHeader {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .taskToolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filterGroup {
+    justify-self: start;
+  }
+
+  .taskTitle {
+    font-size: var(--text-xl);
+  }
+}

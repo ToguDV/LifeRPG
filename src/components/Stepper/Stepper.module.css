@@ -1,0 +1,121 @@
+.control {
+  display: inline-flex;
+  align-items: stretch;
+  width: auto;
+  min-width: 0;
+  height: var(--control-height-md);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--ui-field-bg);
+  box-shadow: var(--shadow-inset);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.control:hover:not(.disabled) {
+  border-color: var(--ui-border-strong);
+}
+
+.control:focus-within {
+  border-color: var(--ui-focus);
+  box-shadow:
+    0 0 0 1px var(--ui-focus),
+    var(--shadow-inset);
+}
+
+.control.invalid {
+  border-color: var(--ui-danger);
+}
+
+.control.disabled {
+  opacity: var(--opacity-disabled);
+}
+
+.button {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--stepper-button-width);
+  color: var(--ui-text-soft);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.button:hover:not(:disabled) {
+  color: var(--ui-text);
+  background-color: var(--ui-field-bg-hover);
+}
+
+.button:disabled {
+  opacity: var(--opacity-disabled);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
+}
+
+.decrease {
+  border-inline-end: var(--border-width) solid var(--ui-border);
+  border-start-start-radius: var(--radius-sm);
+  border-end-start-radius: var(--radius-sm);
+}
+
+.increase {
+  border-inline-start: var(--border-width) solid var(--ui-border);
+  border-start-end-radius: var(--radius-sm);
+  border-end-end-radius: var(--radius-sm);
+}
+
+.input {
+  width: var(--stepper-value-min-width);
+  min-width: 0;
+  padding: 0 var(--space-1);
+  border: 0;
+  background: transparent;
+  color: var(--ui-text);
+  font-family: var(--font-engraved);
+  font-size: var(--text-lg);
+  line-height: var(--leading-none);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.suffix {
+  align-self: center;
+  padding-inline-end: var(--space-2);
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+  white-space: nowrap;
+}
+
+/* ---------- sizes ---------- */
+.sm {
+  height: var(--control-height-sm);
+}
+
+.sm .input {
+  font-size: var(--text-base);
+}
+
+.sm .button {
+  width: calc(var(--stepper-button-width) - var(--space-1));
+}

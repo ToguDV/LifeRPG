@@ -1,0 +1,92 @@
+import type { ElementType, HTMLAttributes, ReactNode } from 'react'
+import { cx } from '../../lib/cx'
+import { SurfaceContext, type SurfaceValue } from './surface-context'
+import styles from './Surface.module.css'
+
+/** Sheets of paper peeking out under the card. */
+export type PaperStack = 'none' | 'single' | 'double'
+/** Notebook gutter with a ruled margin line. */
+export type PaperMargin = 'none' | 'rule'
+
+/**
+ * Physical cues that turn the parchment surface into a sheet of paper.
+ * They only apply to `surface="paper"`; the dark panel has its own material.
+ */
+export interface PaperOrnamentProps {
+  stack?: PaperStack
+  margin?: PaperMargin
+  dogEar?: boolean
+  tape?: boolean
+  stains?: boolean
+}
+
+export interface SurfaceProps extends HTMLAttributes<HTMLElement>, PaperOrnamentProps {
+  surface?: SurfaceValue
+  variant?: 'base' | 'raised' | 'sunken'
+  padding?: 'none' | 'sm' | 'md' | 'lg'
+  torn?: boolean
+  tilt?: 'none' | 'left' | 'right'
+  as?: ElementType
+  children?: ReactNode
+}
+
+/**
+ * The two materials of the journal: a torn sheet of parchment or a
+ * riveted dark panel. Sets `data-surface` so every nested control
+ * re-binds its text, border and accent tokens to the right material.
+ *
+ * Paper ornaments are decorative layers (`aria-hidden`), painted behind
+ * the content and never over the text column.
+ */
+export function Surface({
+  surface = 'paper',
+  variant = 'base',
+  padding = 'md',
+  torn = true,
+  tilt = 'none',
+  stack = 'none',
+  margin = 'none',
+  dogEar = false,
+  tape = false,
+  stains = false,
+  as,
+  className,
+  children,
+  ...rest
+}: SurfaceProps) {
+  const Tag = (as ?? 'div') as ElementType
+  const paper = surface === 'paper'
+
+  return (
+    <SurfaceContext.Provider value={surface}>
+      <Tag
+        {...rest}
+        data-surface={surface}
+        data-variant={variant}
+        data-torn={torn ? 'true' : 'false'}
+        className={cx(
+          styles.surface,
+          styles[surface],
+          styles[variant],
+          styles[`pad-${padding}`],
+          paper && stack !== 'none' && styles[`stack-${stack}`],
+          paper && margin === 'rule' && styles.marginRule,
+          tilt !== 'none' && styles[`tilt-${tilt}`],
+          className,
+        )}
+      >
+        {paper && stack !== 'none' ? (
+          <span className={styles.sheets} aria-hidden="true" />
+        ) : null}
+        <span
+          className={cx(styles.texture, paper && torn && styles.torn)}
+          aria-hidden="true"
+        />
+        {paper && stains ? <span className={styles.stains} aria-hidden="true" /> : null}
+        {paper && dogEar ? <span className={styles.dogEar} aria-hidden="true" /> : null}
+        {paper && tape ? <span className={styles.tape} aria-hidden="true" /> : null}
+        <div className={styles.content}>{children}</div>
+      </Tag>
+    </SurfaceContext.Provider>
+  )
+}

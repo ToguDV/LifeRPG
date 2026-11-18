@@ -1,0 +1,254 @@
+/* ============================================================
+   PRIMITIVE TOKENS — invariant across palettes
+   Spacing, type scale, control geometry, motion, layers, texture.
+   Nothing visual in a component should be a raw value: it should
+   resolve to one of these tokens or to a themed semantic token.
+   ============================================================ */
+
+:root {
+  /* ---------- type families ---------- */
+  --font-body: "IM Fell English", "Iowan Old Style", Georgia, serif;
+  --font-caps: "IM Fell English SC", "IM Fell English", Georgia, serif;
+  --font-display: "Grenze", "IM Fell English", Georgia, serif;
+  --font-engraved: "Cinzel", Georgia, serif;
+  --font-hand: "Caveat", "Bradley Hand", cursive;
+  --font-gothic: "Grenze Gotisch", "Grenze", Georgia, serif;
+
+  /* ---------- type scale ---------- */
+  --text-2xs: 0.6875rem;  /* 11px */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.8125rem;   /* 13px */
+  --text-base: 0.9375rem; /* 15px */
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 2.75rem;
+  --text-5xl: 3.5rem;
+  --text-6xl: 4.5rem;
+
+  /* ---------- leading / tracking / weight ---------- */
+  --leading-none: 1;
+  --leading-display: 0.92;
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: 0.005em;
+  --tracking-normal: 0.01em;
+  --tracking-wide: 0.08em;
+  --tracking-wider: 0.14em;
+  --tracking-widest: 0.22em;
+
+  --weight-book: 400;
+  --weight-medium: 500;
+  --weight-bold: 600;
+
+  /* ---------- spacing: 4px rhythm ---------- */
+  --space-0: 0;
+  --space-0-25: 0.0625rem;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-px: 1px;
+
+  /* ---------- radii ---------- */
+  --radius-none: 0;
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* ---------- borders ---------- */
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --border-style-solid: solid;
+  --border-style-dashed: dashed;
+  --border-style-dotted: dotted;
+
+  /* ---------- controls ---------- */
+  --control-height-sm: 1.875rem;
+  --control-height-md: 2.375rem;
+  --control-height-lg: 2.75rem;
+  --control-padding-x-sm: 0.625rem;
+  --control-padding-x-md: 0.875rem;
+  --control-padding-x-lg: 1rem;
+  --control-gap: var(--space-2);
+  --field-gap: 0.375rem;
+  --field-label-gap: 0.3125rem;
+  --field-message-gap: 0.375rem;
+  --field-message-leading: 0.125rem;
+
+  --icon-size-xs: 0.75rem;
+  --icon-size-sm: 0.875rem;
+  --icon-size-md: 1rem;
+  --icon-size-lg: 1.25rem;
+  --icon-size-xl: 1.5rem;
+  --icon-size-2xl: 2rem;
+  --icon-stroke-width: 1.5;
+
+  --checkbox-size: 1.0625rem;
+  --radio-size: 1.0625rem;
+  --radio-dot-size: 0.4375rem;
+  --switch-width: 2.5rem;
+  --switch-height: 1.375rem;
+  --switch-thumb-size: 1rem;
+  --switch-thumb-inset: 0.1875rem;
+  --switch-width-sm: 2.125rem;
+  --switch-height-sm: 1.1875rem;
+  --switch-thumb-size-sm: 0.875rem;
+  --switch-thumb-inset-sm: 0.15625rem;
+
+  --slider-track-height: 0.3125rem;
+  --slider-thumb-size: 1.125rem;
+  --slider-mark-size: 0.1875rem;
+  --slider-value-bubble-min: 2.25rem;
+
+  --stepper-button-width: 2.125rem;
+  --stepper-value-min-width: 2.75rem;
+
+  --calendar-width: 19.5rem;
+  --calendar-cell-size: 2rem;
+  --calendar-gap: 0.125rem;
+  --calendar-nav-size: 1.75rem;
+
+  --picker-wheel-height: 10.5rem;
+  --picker-wheel-item-height: 2.25rem;
+  --picker-wheel-padding: calc(
+    (var(--picker-wheel-height) - var(--picker-wheel-item-height)) / 2
+  );
+  --picker-width: 15.5rem;
+
+  --dropzone-min-height: 9.5rem;
+  --textarea-min-height: 6rem;
+  --progress-track-height: 0.375rem;
+  --progress-track-height-lg: 0.5rem;
+  --badge-height-sm: 1.375rem;
+  --badge-height-md: 1.625rem;
+
+  /* ---------- layout ---------- */
+  --page-max-width: 90rem;
+  --page-gutter: clamp(1rem, 4vw, 3rem);
+  --layout-sidebar-width: 12.5rem;
+  --layout-gap: clamp(1.25rem, 3vw, 2.75rem);
+  --topbar-height: 3.5rem;
+  --content-measure: 68ch;
+  --card-padding-sm: 1rem;
+  --card-padding-md: clamp(1.125rem, 2.4vw, 1.75rem);
+  --card-padding-lg: clamp(1.5rem, 3vw, 2.25rem);
+  --card-max-sm: 21rem;
+  --card-max-md: 30rem;
+  --section-gap: clamp(2rem, 4vw, 3.25rem);
+  --demo-gap: 1.25rem;
+  --demo-column-min: 13rem;
+  --form-field-min: 14rem;
+  --task-progress-max: 24rem;
+  --backdrop-blur: 12px;
+  --popover-offset: 0.375rem;
+  --popover-padding: 0.375rem;
+  --tooltip-max-width: 16rem;
+  --tooltip-arrow-size: 0.375rem;
+  --toast-max-width: 21rem;
+
+  /* ---------- focus ---------- */
+  --focus-ring-width: 1px;
+  --text-decoration-width: 1px;
+  --focus-ring-offset: 3px;
+  --focus-ring-offset-tight: 1px;
+  --focus-ring-style: dashed;
+
+  /* ---------- motion ---------- */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+  --duration-slower: 480ms;
+  --ease-linear: linear;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.25, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- layers ---------- */
+  --z-behind: -1;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 10;
+  --z-dropdown: 40;
+  --z-popover: 60;
+  --z-toast: 80;
+  --z-tooltip: 90;
+
+  /* ---------- opacity ---------- */
+  --opacity-disabled: 0.45;
+  --opacity-muted: 0.72;
+  --opacity-faint: 0.55;
+  --opacity-overlay: 0.72;
+
+  /* ---------- textures (same in every palette) ---------- */
+  --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.42'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --texture-grain-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* ---------- texture geometry ---------- */
+  --texture-size: 220px;
+
+  /* ---------- paper ornaments (art geometry, not spacing) ---------- */
+  --paper-sheet-offset-1: 0.4375rem; /* 7px  · first sheet under the card */
+  --paper-sheet-offset-2: 0.875rem; /* 14px · second sheet */
+  --paper-sheet-tilt-1: 0.18deg;
+  --paper-sheet-tilt-2: -0.22deg;
+  --paper-margin-width: 2.375rem; /* notebook gutter */
+  --paper-margin-line-offset: 0.75rem; /* rule stays near the paper edge */
+  --paper-dogear-size: 1.375rem;
+  --paper-tape-width: 5rem;
+  --paper-tape-height: 1rem;
+  --paper-tape-top: 0.375rem;
+  --seal-size-sm: 2rem;
+  --seal-size-md: 2.375rem;
+
+  /* ---------- shadows (resolved against --ui-shadow-color) ---------- */
+  --shadow-sm:
+    0 1px 2px color-mix(in srgb, var(--ui-shadow-color) 30%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--ui-text) 4%, transparent);
+  --shadow-md:
+    0 6px 14px -6px color-mix(in srgb, var(--ui-shadow-color) 40%, transparent),
+    0 2px 4px color-mix(in srgb, var(--ui-shadow-color) 22%, transparent);
+  --shadow-lg:
+    0 20px 40px -16px color-mix(in srgb, var(--ui-shadow-color) 55%, transparent),
+    0 6px 14px -8px color-mix(in srgb, var(--ui-shadow-color) 38%, transparent);
+  --shadow-xl:
+    0 34px 54px -30px color-mix(in srgb, var(--ui-shadow-color) 70%, transparent),
+    0 12px 24px -14px color-mix(in srgb, var(--ui-shadow-color) 45%, transparent);
+  --shadow-inset:
+    inset 0 1px 2px color-mix(in srgb, var(--ui-shadow-color) 38%, transparent);
+  --shadow-wax:
+    0 1px 0 color-mix(in srgb, var(--ui-shadow-color) 40%, transparent),
+    0 4px 10px -4px color-mix(in srgb, var(--ui-primary-bg) 60%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+  }
+}

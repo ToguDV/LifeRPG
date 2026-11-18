@@ -1,0 +1,25 @@
+.popover {
+  position: fixed;
+  z-index: var(--z-popover);
+  color: var(--ui-text);
+  background-color: var(--ui-surface-raised);
+  background-image: var(--texture-grain-light);
+  background-blend-mode: soft-light;
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xl);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: popover-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--popover-offset) * -0.5));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,385 @@
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react'
+import { cx } from '../../lib/cx'
+import {
+  addDays,
+  addMonthsClamped,
+  addYearsClamped,
+  dateKey,
+  endOfWeekSunday,
+  getCalendarDays,
+  isSameMonth,
+  startOfMonth,
+  startOfWeekMonday,
+} from '../../lib/date'
+import { formatDate, formatMonth, isSameDay, startOfDay } from '../../lib/format'
+import { useControllableState } from '../../lib/useControllableState'
+import { Button } from '../Button/Button'
+import { Field, getFieldMessageId } from '../Field/Field'
+import { Icon } from '../Icon/Icon'
+import { Popover } from '../Popover/Popover'
+import styles from './DatePicker.module.css'
+
+const WEEKDAYS = [
+  { short: 'L', long: 'lunes' },
+  { short: 'M', long: 'martes' },
+  { short: 'X', long: 'miércoles' },
+  { short: 'J', long: 'jueves' },
+  { short: 'V', long: 'viernes' },
+  { short: 'S', long: 'sábado' },
+  { short: 'D', long: 'domingo' },
+] as const
+
+export interface DatePickerProps {
+  value?: Date | null
+  defaultValue?: Date | null
+  onChange?: (date: Date | null) => void
+  min?: Date
+  max?: Date
+  isDateDisabled?: (date: Date) => boolean
+  label?: ReactNode
+  hint?: ReactNode
+  error?: ReactNode
+  optional?: boolean
+  labelAside?: ReactNode
+  placeholder?: string
+  size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
+  required?: boolean
+  name?: string
+  id?: string
+  className?: string
+  fieldClassName?: string
+}
+
+export function DatePicker({
+  value,
+  defaultValue = null,
+  onChange,
+  min,
+  max,
+  isDateDisabled,
+  label,
+  hint,
+  error,
+  optional,
+  labelAside,
+  placeholder = 'Elegir fecha',
+  size = 'md',
+  disabled,
+  required,
+  name,
+  id,
+  className,
+  fieldClassName,
+}: DatePickerProps) {
+  const autoId = useId()
+  const fieldId = id ?? `date-picker-${autoId}`
+  const dialogId = `${fieldId}-dialog`
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const dayRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const shouldFocusDay = useRef(false)
+  const today = startOfDay(new Date())
+
+  const [current, setCurrent] = useControllableState<Date | null>({
+    value,
+    defaultValue,
+    onChange,
+  })
+  const currentDate = current ? startOfDay(current) : null
+
+  const [open, setOpen] = useState(false)
+  const [viewDate, setViewDate] = useState(() => startOfMonth(currentDate ?? today))
+  const [focusedDate, setFocusedDate] = useState(() => currentDate ?? today)
+
+  const messageId = error
+    ? getFieldMessageId(fieldId, 'error')
+    : hint
+      ? getFieldMessageId(fieldId, 'hint')
+      : undefined
+
+  const isDisabledDate = (date: Date) => {
+    const day = startOfDay(date)
+    if (min && day < startOfDay(min)) return true
+    if (max && day > startOfDay(max)) return true
+    return isDateDisabled?.(day) ?? false
+  }
+
+  const close = (restoreFocus = true) => {
+    setOpen(false)
+    if (restoreFocus) triggerRef.current?.focus()
+  }
+
+  const openCalendar = () => {
+    if (disabled) return
+    const base = currentDate ?? today
+    setFocusedDate(base)
+    setViewDate(startOfMonth(base))
+    setOpen(true)
+    shouldFocusDay.current = true
+  }
+
+  useEffect(() => {
+    if (!open || !shouldFocusDay.current) return
+    const frame = requestAnimationFrame(() => {
+      const node = dayRefs.current[dateKey(focusedDate)]
+      if (node) {
+        node.focus()
+        shouldFocusDay.current = false
+      }
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [focusedDate, open, viewDate])
+
+  const selectDate = (date: Date) => {
+    if (isDisabledDate(date)) return
+    setCurrent(startOfDay(date))
+    close(true)
+  }
+
+  const moveFocus = (deltaDays: number) => {
+    const next = addDays(focusedDate, deltaDays)
+    setFocusedDate(next)
+    if (!isSameMonth(next, viewDate)) setViewDate(startOfMonth(next))
+    shouldFocusDay.current = true
+  }
+
+  const changeMonth = (delta: number) => {
+    const next = addMonthsClamped(focusedDate, delta)
+    setFocusedDate(next)
+    setViewDate(startOfMonth(next))
+  }
+
+  const changeYear = (delta: number) => {
+    const next = addYearsClamped(focusedDate, delta)
+    setFocusedDate(next)
+    setViewDate(startOfMonth(next))
+  }
+
+  const handleDayKeyDown = (event: KeyboardEvent<HTMLButtonElement>, date: Date) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        event.preventDefault()
+        moveFocus(-1)
+        break
+      case 'ArrowRight':
+        event.preventDefault()
+        moveFocus(1)
+        break
+      case 'ArrowUp':
+        event.preventDefault()
+        moveFocus(-7)
+        break
+      case 'ArrowDown':
+        event.preventDefault()
+        moveFocus(7)
+        break
+      case 'Home':
+        event.preventDefault()
+        setFocusedDate(startOfWeekMonday(date))
+        shouldFocusDay.current = true
+        break
+      case 'End':
+        event.preventDefault()
+        setFocusedDate(endOfWeekSunday(date))
+        shouldFocusDay.current = true
+        break
+      case 'PageUp':
+        event.preventDefault()
+        if (event.shiftKey) changeYear(-1)
+        else changeMonth(-1)
+        shouldFocusDay.current = true
+        break
+      case 'PageDown':
+        event.preventDefault()
+        if (event.shiftKey) changeYear(1)
+        else changeMonth(1)
+        shouldFocusDay.current = true
+        break
+      case 'Enter':
+      case ' ':
+      case 'Spacebar':
+        event.preventDefault()
+        selectDate(date)
+        break
+      default:
+        break
+    }
+  }
+
+  const days = getCalendarDays(viewDate)
+  const rows = Array.from({ length: 6 }, (_, row) => days.slice(row * 7, row * 7 + 7))
+  const displayValue = currentDate ? formatDate(currentDate) : placeholder
+
+  return (
+    <Field
+      id={fieldId}
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      optional={optional}
+      labelAside={labelAside}
+      className={fieldClassName}
+    >
+      <button
+        ref={triggerRef}
+        type="button"
+        id={fieldId}
+        className={cx(
+          styles.trigger,
+          styles[size],
+          open && styles.open,
+          error && styles.invalid,
+          className,
+        )}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={dialogId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={messageId}
+        disabled={disabled}
+        onClick={() => (open ? close(true) : openCalendar())}
+      >
+        <span className={styles.icon} aria-hidden="true">
+          <Icon name="calendar" size="sm" />
+        </span>
+        <span className={cx(styles.value, !currentDate && styles.placeholder)}>
+          {displayValue}
+        </span>
+        <Icon name="chevron-down" size="sm" className={styles.chevron} />
+      </button>
+
+      {name ? (
+        <input type="hidden" name={name} value={currentDate ? dateKey(currentDate) : ''} />
+      ) : null}
+
+      <Popover
+        open={open}
+        anchorRef={triggerRef}
+        onClose={close}
+        id={dialogId}
+        role="dialog"
+        ariaLabel="Elegir fecha"
+        className={styles.calendar}
+      >
+        <div className={styles.header}>
+          <div className={styles.navGroup}>
+            <button
+              type="button"
+              className={styles.navButton}
+              aria-label="Año anterior"
+              onClick={() => changeYear(-1)}
+            >
+              <Icon name="chevrons-left" size="xs" />
+            </button>
+            <button
+              type="button"
+              className={styles.navButton}
+              aria-label="Mes anterior"
+              onClick={() => changeMonth(-1)}
+            >
+              <Icon name="chevron-left" size="xs" />
+            </button>
+          </div>
+          <p className={styles.title} aria-live="polite">
+            {formatMonth(viewDate)}
+          </p>
+          <div className={styles.navGroup}>
+            <button
+              type="button"
+              className={styles.navButton}
+              aria-label="Mes siguiente"
+              onClick={() => changeMonth(1)}
+            >
+              <Icon name="chevron-right" size="xs" />
+            </button>
+            <button
+              type="button"
+              className={styles.navButton}
+              aria-label="Año siguiente"
+              onClick={() => changeYear(1)}
+            >
+              <Icon name="chevrons-right" size="xs" />
+            </button>
+          </div>
+        </div>
+
+        <div role="grid" className={styles.grid} aria-label={formatMonth(viewDate)}>
+          <div role="row" className={styles.weekdays}>
+            {WEEKDAYS.map((day) => (
+              <span key={day.long} role="columnheader" aria-label={day.long}>
+                {day.short}
+              </span>
+            ))}
+          </div>
+          {rows.map((row, rowIndex) => (
+            <div role="row" className={styles.row} key={`week-${rowIndex}`}>
+              {row.map((date) => {
+                const disabledDate = isDisabledDate(date)
+                const selected = Boolean(currentDate && isSameDay(date, currentDate))
+                const isToday = isSameDay(date, today)
+                const outside = !isSameMonth(date, viewDate)
+                const focused = isSameDay(date, focusedDate)
+
+                return (
+                  <div
+                    role="gridcell"
+                    key={dateKey(date)}
+                    className={styles.cell}
+                    aria-selected={selected}
+                  >
+                    <button
+                      ref={(node) => {
+                        dayRefs.current[dateKey(date)] = node
+                      }}
+                      type="button"
+                      className={styles.day}
+                      data-selected={selected ? 'true' : undefined}
+                      data-today={isToday ? 'true' : undefined}
+                      data-outside={outside ? 'true' : undefined}
+                      data-disabled={disabledDate ? 'true' : undefined}
+                      tabIndex={focused ? 0 : -1}
+                      aria-label={formatDate(date)}
+                      aria-disabled={disabledDate || undefined}
+                      onClick={() => selectDate(date)}
+                      onFocus={() => {
+                        if (!isSameDay(date, focusedDate)) setFocusedDate(date)
+                      }}
+                      onKeyDown={(event) => handleDayKeyDown(event, date)}
+                    >
+                      {date.getDate()}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.footer}>
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={isDisabledDate(today)}
+            onClick={() => selectDate(today)}
+          >
+            Hoy
+          </Button>
+          <Button variant="ghost" size="sm" disabled={!currentDate} onClick={() => {
+            setCurrent(null)
+            close(true)
+          }}>
+            Limpiar
+          </Button>
+        </div>
+      </Popover>
+    </Field>
+  )
+}

@@ -1,0 +1,158 @@
+.atmosphere {
+  --mote-size: 2px;
+  --mote-glow: 6px;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-base);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--texture-grain);
+  background-size: var(--texture-size) var(--texture-size);
+  opacity: 0.34;
+  mix-blend-mode: soft-light;
+}
+
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 560px at 22% -6%, color-mix(in srgb, var(--bone) 5%, transparent), transparent 65%),
+    radial-gradient(680px 500px at 96% 10%, color-mix(in srgb, var(--bronze) 3.5%, transparent), transparent 65%),
+    radial-gradient(120% 90% at 50% 38%, transparent 42%, color-mix(in srgb, var(--stone-0) 52%, transparent) 100%);
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--bone);
+  opacity: 0.35;
+}
+
+.motes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.motes i {
+  position: absolute;
+  width: var(--mote-size);
+  height: var(--mote-size);
+  border-radius: var(--radius-circle);
+  background: color-mix(in srgb, var(--bone) 56%, transparent);
+  box-shadow: 0 0 var(--mote-glow) 1px color-mix(in srgb, var(--bone) 30%, transparent);
+  opacity: 0;
+  animation: drift linear infinite;
+}
+
+.motes i:nth-child(1) {
+  left: 8%;
+  bottom: 12%;
+  animation-duration: 24s;
+  animation-delay: -3s;
+}
+
+.motes i:nth-child(2) {
+  left: 19%;
+  bottom: 4%;
+  width: 1px;
+  height: 1px;
+  animation-duration: 31s;
+  animation-delay: -17s;
+}
+
+.motes i:nth-child(3) {
+  left: 33%;
+  bottom: 20%;
+  animation-duration: 27s;
+  animation-delay: -9s;
+}
+
+.motes i:nth-child(4) {
+  left: 47%;
+  bottom: 7%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 36s;
+  animation-delay: -22s;
+}
+
+.motes i:nth-child(5) {
+  left: 61%;
+  bottom: 16%;
+  animation-duration: 29s;
+  animation-delay: -14s;
+}
+
+.motes i:nth-child(6) {
+  left: 73%;
+  bottom: 3%;
+  width: 1px;
+  height: 1px;
+  animation-duration: 33s;
+  animation-delay: -25s;
+}
+
+.motes i:nth-child(7) {
+  left: 84%;
+  bottom: 12%;
+  animation-duration: 22s;
+  animation-delay: -7s;
+}
+
+.motes i:nth-child(8) {
+  left: 92%;
+  bottom: 22%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 38s;
+  animation-delay: -19s;
+}
+
+.motes i:nth-child(9) {
+  left: 26%;
+  bottom: 32%;
+  width: 1px;
+  height: 1px;
+  animation-duration: 41s;
+  animation-delay: -29s;
+}
+
+.motes i:nth-child(10) {
+  left: 68%;
+  bottom: 30%;
+  animation-duration: 35s;
+  animation-delay: -11s;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 10px, 0) scale(0.8);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.65;
+  }
+  70% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate3d(46px, -140px, 0) scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motes i {
+    animation: none;
+  }
+}

@@ -1,0 +1,782 @@
+/* ============================================================
+   THEMES — eight inks, one winter
+   Each palette only swaps raw colour, paper texture behaviour and
+   a handful of semantic accents. Component CSS never reads these
+   raw tokens directly: it reads the --ui-* bindings at the bottom.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   0. PERGAMINO — default
+   ------------------------------------------------------------ */
+:root,
+[data-theme="pergamino"] {
+  color-scheme: dark;
+
+  --stone-0: #111310;
+  --stone-1: #181a17;
+  --stone-2: #20221e;
+  --stone-3: #2a2c26;
+
+  --bone: #e7e3d6;
+  --bone-dim: #b5b09f;
+  --bone-faint: #8a8778;
+  --bronze: #a79b80;
+  --bronze-soft: #c1b69a;
+  --gold: #cec3a4;
+  --line: color-mix(in srgb, var(--bone) 15%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 28%, transparent);
+
+  --parch: #e6e0d0;
+  --ink: #34312a;
+  --ink-2: #575247;
+  --ink-3: #7a7260;
+  --crimson: #7f3c31;
+  --crimson-deep: #52241d;
+  --chalk-rouge: #7b4f3b;
+
+  --panel-1: #2c2e28;
+  --panel-2: #232520;
+  --panel-3: #1b1d19;
+  --well: #141611;
+  --paper-raised: #e4decd;
+
+  --leather-1: #42453c;
+  --leather-2: #2c2e28;
+  --leather-3: #1f211c;
+  --tag-1: #34352f;
+  --tag-2: #262822;
+
+  --ribbon-1: #874034;
+  --ribbon-2: #78362c;
+  --ribbon-3: #602a22;
+
+  --vital-1: #b57462;
+  --vital-2: #bda77b;
+  --vital-3: #a5a798;
+
+  --map-river: #94a79b;
+  --map-road: #c8836d;
+  --map-mark: #d18d77;
+  --xp-1: #7e7355;
+  --xp-2: #bdb193;
+
+  --pin-hi: #f4f1e7;
+  --pin-mid: #c8c2b1;
+  --pin-lo: #6d685b;
+
+  /* semantic accents */
+  --accent-panel: var(--bronze-soft);
+  --accent-panel-strong: var(--gold);
+  --accent-paper: var(--crimson);
+  --accent-paper-strong: var(--crimson-deep);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--crimson);
+  --success-panel: #8e9b7e;
+  --success-paper: #4f6a4a;
+  --warning-panel: var(--vital-2);
+  --warning-paper: #8a6a35;
+}
+
+/* ------------------------------------------------------------
+   1. TIZA
+   ------------------------------------------------------------ */
+[data-theme="chalk"] {
+  --stone-0: #050605;
+  --stone-1: #0a0b08;
+  --stone-2: #10110d;
+  --stone-3: #191a15;
+
+  --bone: #ece9df;
+  --bone-dim: #c3bfb1;
+  --bone-faint: #8f8b7e;
+  --bronze: #a8a392;
+  --bronze-soft: #e0dccd;
+  --gold: #ddd6bc;
+  --line: color-mix(in srgb, var(--bone) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 26%, transparent);
+
+  --parch: #191a13;
+  --ink: #e9e6da;
+  --ink-2: #c3bfb1;
+  --ink-3: #938f81;
+  --crimson: #9c5142;
+  --crimson-deep: #5c2a22;
+  --chalk-rouge: #d19a86;
+
+  --panel-1: #1a1b16;
+  --panel-2: #11120e;
+  --panel-3: #0a0b08;
+  --well: #070806;
+  --paper-raised: #1c1d16;
+
+  --leather-1: #24261f;
+  --leather-2: #161712;
+  --leather-3: #0a0b08;
+  --tag-1: #1f201a;
+  --tag-2: #151610;
+
+  --ribbon-1: #9a4c3e;
+  --ribbon-2: #813b31;
+  --ribbon-3: #5e281f;
+
+  --vital-1: #c5816d;
+  --vital-2: #ccb384;
+  --vital-3: #b2b4a5;
+
+  --map-river: #94a79b;
+  --map-road: #c8836d;
+  --map-mark: #d18d77;
+  --xp-1: #7c735e;
+  --xp-2: #d6cdb2;
+
+  --pin-hi: #f4f1e7;
+  --pin-mid: #c8c2b1;
+  --pin-lo: #6d685b;
+
+  --accent-panel: var(--chalk-rouge);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--bronze-soft);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--chalk-rouge);
+  --success-panel: #a3b291;
+  --success-paper: #b2c0a0;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   2. CATPPUCCIN (Mocha)
+   ------------------------------------------------------------ */
+[data-theme="catppuccin"] {
+  --stone-0: #11111b;
+  --stone-1: #181825;
+  --stone-2: #1e1e2e;
+  --stone-3: #313244;
+
+  --bone: #cdd6f4;
+  --bone-dim: #a6adc8;
+  --bone-faint: #7f849c;
+  --bronze: #cba6f7;
+  --bronze-soft: #b4befe;
+  --gold: #f9e2af;
+  --line: color-mix(in srgb, var(--bone) 15%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 28%, transparent);
+
+  --parch: #1e1e2e;
+  --ink: #cdd6f4;
+  --ink-2: #bac2de;
+  --ink-3: #a6adc8;
+  --crimson: #f38ba8;
+  --crimson-deep: #881f3a;
+  --chalk-rouge: #f5c2e7;
+
+  --panel-1: #1e1e2e;
+  --panel-2: #181825;
+  --panel-3: #11111b;
+  --well: #0b0b12;
+  --paper-raised: #26263b;
+
+  --leather-1: #313244;
+  --leather-2: #181825;
+  --leather-3: #11111b;
+  --tag-1: #262637;
+  --tag-2: #1a1a2b;
+
+  --ribbon-1: #f5c2e7;
+  --ribbon-2: #d24a79;
+  --ribbon-3: #7a2147;
+
+  --vital-1: #f38ba8;
+  --vital-2: #f9e2af;
+  --vital-3: #89dceb;
+
+  --map-river: #94e2d5;
+  --map-road: #f5c2e7;
+  --map-mark: #f38ba8;
+  --xp-1: #cba6f7;
+  --xp-2: #f9e2af;
+
+  --pin-hi: #f5e0dc;
+  --pin-mid: #cdd6f4;
+  --pin-lo: #6c7086;
+
+  --accent-panel: var(--bronze);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--ribbon-1);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--crimson);
+  --success-panel: #a6e3a1;
+  --success-paper: #a6e3a1;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   3. DRACULA
+   ------------------------------------------------------------ */
+[data-theme="dracula"] {
+  --stone-0: #191a21;
+  --stone-1: #21222c;
+  --stone-2: #282a36;
+  --stone-3: #44475a;
+
+  --bone: #f8f8f2;
+  --bone-dim: #d8d8e3;
+  --bone-faint: #8b91b5;
+  --bronze: #bd93f9;
+  --bronze-soft: #ff79c6;
+  --gold: #f1fa8c;
+  --line: color-mix(in srgb, var(--bone) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 27%, transparent);
+
+  --parch: #282a36;
+  --ink: #f8f8f2;
+  --ink-2: #d8d8e3;
+  --ink-3: #a1a7c9;
+  --crimson: #ff79c6;
+  --crimson-deep: #7a2a55;
+  --chalk-rouge: #ffb86c;
+
+  --panel-1: #282a36;
+  --panel-2: #21222c;
+  --panel-3: #191a21;
+  --well: #111218;
+  --paper-raised: #30323f;
+
+  --leather-1: #343746;
+  --leather-2: #21222c;
+  --leather-3: #191a21;
+  --tag-1: #343746;
+  --tag-2: #21222c;
+
+  --ribbon-1: #ff79c6;
+  --ribbon-2: #b34a86;
+  --ribbon-3: #5c2046;
+
+  --vital-1: #ff5555;
+  --vital-2: #f1fa8c;
+  --vital-3: #8be9fd;
+
+  --map-river: #8be9fd;
+  --map-road: #ff79c6;
+  --map-mark: #ff5555;
+  --xp-1: #bd93f9;
+  --xp-2: #f1fa8c;
+
+  --pin-hi: #f8f8f2;
+  --pin-mid: #d8d8e3;
+  --pin-lo: #6272a4;
+
+  --accent-panel: var(--bronze);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--bronze-soft);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--vital-1);
+  --success-panel: #50fa7b;
+  --success-paper: #50fa7b;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   4. NORD
+   ------------------------------------------------------------ */
+[data-theme="nord"] {
+  --stone-0: #242933;
+  --stone-1: #2e3440;
+  --stone-2: #343b49;
+  --stone-3: #434c5e;
+
+  --bone: #eceff4;
+  --bone-dim: #d8dee9;
+  --bone-faint: #8794ab;
+  --bronze: #88c0d0;
+  --bronze-soft: #8fbcbb;
+  --gold: #ebcb8b;
+  --line: color-mix(in srgb, var(--bone) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 27%, transparent);
+
+  --parch: #2e3440;
+  --ink: #eceff4;
+  --ink-2: #d8dee9;
+  --ink-3: #aeb8c8;
+  --crimson: #bf616a;
+  --crimson-deep: #6e3038;
+  --chalk-rouge: #d08770;
+
+  --panel-1: #343b49;
+  --panel-2: #2e3440;
+  --panel-3: #242933;
+  --well: #1c2029;
+  --paper-raised: #3b4252;
+
+  --leather-1: #3b4252;
+  --leather-2: #2e3440;
+  --leather-3: #242933;
+  --tag-1: #3b4252;
+  --tag-2: #2e3440;
+
+  --ribbon-1: #bf616a;
+  --ribbon-2: #8f4a51;
+  --ribbon-3: #4d272b;
+
+  --vital-1: #bf616a;
+  --vital-2: #ebcb8b;
+  --vital-3: #88c0d0;
+
+  --map-river: #8fbcbb;
+  --map-road: #d08770;
+  --map-mark: #bf616a;
+  --xp-1: #88c0d0;
+  --xp-2: #ebcb8b;
+
+  --pin-hi: #eceff4;
+  --pin-mid: #d8dee9;
+  --pin-lo: #4c566a;
+
+  --accent-panel: var(--bronze);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--crimson);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--crimson);
+  --success-panel: #a3be8c;
+  --success-paper: #a3be8c;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   5. GRUVBOX
+   ------------------------------------------------------------ */
+[data-theme="gruvbox"] {
+  --stone-0: #1d2021;
+  --stone-1: #282828;
+  --stone-2: #32302f;
+  --stone-3: #3c3836;
+
+  --bone: #ebdbb2;
+  --bone-dim: #d5c4a1;
+  --bone-faint: #a89984;
+  --bronze: #d79921;
+  --bronze-soft: #fabd2f;
+  --gold: #fabd2f;
+  --line: color-mix(in srgb, var(--bone) 15%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 28%, transparent);
+
+  --parch: #282828;
+  --ink: #ebdbb2;
+  --ink-2: #d5c4a1;
+  --ink-3: #bdae93;
+  --crimson: #cc241d;
+  --crimson-deep: #6b1a17;
+  --chalk-rouge: #fe8019;
+
+  --panel-1: #32302f;
+  --panel-2: #282828;
+  --panel-3: #1d2021;
+  --well: #161718;
+  --paper-raised: #3c3836;
+
+  --leather-1: #3c3836;
+  --leather-2: #282828;
+  --leather-3: #1d2021;
+  --tag-1: #3c3836;
+  --tag-2: #282828;
+
+  --ribbon-1: #fb4934;
+  --ribbon-2: #b13426;
+  --ribbon-3: #5e1e18;
+
+  --vital-1: #fb4934;
+  --vital-2: #fabd2f;
+  --vital-3: #8ec07c;
+
+  --map-river: #83a598;
+  --map-road: #fe8019;
+  --map-mark: #fb4934;
+  --xp-1: #d79921;
+  --xp-2: #fabd2f;
+
+  --pin-hi: #fbf1c7;
+  --pin-mid: #ebdbb2;
+  --pin-lo: #7c6f64;
+
+  --accent-panel: var(--gold);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--gold);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--vital-1);
+  --success-panel: #b8bb26;
+  --success-paper: #b8bb26;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   6. ROSÉ PINE
+   ------------------------------------------------------------ */
+[data-theme="rosepine"] {
+  --stone-0: #191724;
+  --stone-1: #1f1d2e;
+  --stone-2: #232136;
+  --stone-3: #393552;
+
+  --bone: #e0def4;
+  --bone-dim: #c5c3da;
+  --bone-faint: #908caa;
+  --bronze: #c4a7e7;
+  --bronze-soft: #9ccfd8;
+  --gold: #f6c177;
+  --line: color-mix(in srgb, var(--bone) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 27%, transparent);
+
+  --parch: #232136;
+  --ink: #e0def4;
+  --ink-2: #c5c3da;
+  --ink-3: #908caa;
+  --crimson: #eb6f92;
+  --crimson-deep: #7a2c46;
+  --chalk-rouge: #ea9a97;
+
+  --panel-1: #2a273f;
+  --panel-2: #232136;
+  --panel-3: #191724;
+  --well: #14121f;
+  --paper-raised: #2a273f;
+
+  --leather-1: #393552;
+  --leather-2: #232136;
+  --leather-3: #191724;
+  --tag-1: #2a273f;
+  --tag-2: #232136;
+
+  --ribbon-1: #eb6f92;
+  --ribbon-2: #b34a68;
+  --ribbon-3: #5c2439;
+
+  --vital-1: #eb6f92;
+  --vital-2: #f6c177;
+  --vital-3: #9ccfd8;
+
+  --map-river: #9ccfd8;
+  --map-road: #eb6f92;
+  --map-mark: #ea9a97;
+  --xp-1: #c4a7e7;
+  --xp-2: #f6c177;
+
+  --pin-hi: #e0def4;
+  --pin-mid: #c5c3da;
+  --pin-lo: #6e6a86;
+
+  --accent-panel: var(--bronze);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--crimson);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--crimson);
+  --success-panel: #9ccfd8;
+  --success-paper: #9ccfd8;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   7. TOKYO NIGHT
+   ------------------------------------------------------------ */
+[data-theme="tokyonight"] {
+  --stone-0: #16161e;
+  --stone-1: #1a1b26;
+  --stone-2: #1f2335;
+  --stone-3: #292e42;
+
+  --bone: #c0caf5;
+  --bone-dim: #a9b1d6;
+  --bone-faint: #737aa2;
+  --bronze: #7aa2f7;
+  --bronze-soft: #bb9af7;
+  --gold: #e0af68;
+  --line: color-mix(in srgb, var(--bone) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--bone) 27%, transparent);
+
+  --parch: #1a1b26;
+  --ink: #c0caf5;
+  --ink-2: #a9b1d6;
+  --ink-3: #8f97c0;
+  --crimson: #f7768e;
+  --crimson-deep: #7a2637;
+  --chalk-rouge: #ff9e64;
+
+  --panel-1: #1f2335;
+  --panel-2: #1a1b26;
+  --panel-3: #16161e;
+  --well: #11121a;
+  --paper-raised: #24283b;
+
+  --leather-1: #292e42;
+  --leather-2: #1a1b26;
+  --leather-3: #16161e;
+  --tag-1: #24283b;
+  --tag-2: #1a1b26;
+
+  --ribbon-1: #f7768e;
+  --ribbon-2: #b34a5c;
+  --ribbon-3: #5c2230;
+
+  --vital-1: #f7768e;
+  --vital-2: #e0af68;
+  --vital-3: #7dcfff;
+
+  --map-river: #7dcfff;
+  --map-road: #ff9e64;
+  --map-mark: #f7768e;
+  --xp-1: #7aa2f7;
+  --xp-2: #e0af68;
+
+  --pin-hi: #c0caf5;
+  --pin-mid: #a9b1d6;
+  --pin-lo: #565f89;
+
+  --accent-panel: var(--bronze);
+  --accent-panel-strong: var(--bronze-soft);
+  --accent-paper: var(--chalk-rouge);
+  --accent-paper-strong: var(--crimson);
+  --danger-panel: var(--vital-1);
+  --danger-paper: var(--crimson);
+  --success-panel: #9ece6a;
+  --success-paper: #9ece6a;
+  --warning-panel: var(--vital-2);
+  --warning-paper: var(--vital-2);
+}
+
+/* ------------------------------------------------------------
+   PAPER TEXTURE BEHAVIOUR
+   Pergamino is light paper on a dark desk. Every other theme is
+   dark cardstock: same geometry, different blend.
+   ------------------------------------------------------------ */
+[data-paper="light"] {
+  --ui-paper-light: rgba(253, 251, 244, 0.92);
+  --ui-paper-shade: rgba(105, 99, 82, 0.21);
+  --ui-paper-ring: rgba(88, 81, 62, 0.055);
+  --ui-paper-grain: var(--texture-grain);
+  --ui-paper-texture-blend: multiply;
+  --ui-paper-inner-shadow:
+    inset 0 0 2px rgba(62, 57, 45, 0.58),
+    inset 0 0 34px rgba(79, 73, 56, 0.22),
+    inset 0 0 90px rgba(96, 88, 68, 0.1);
+  --ui-paper-top-sheen: rgba(255, 253, 246, 0.26);
+  --ui-paper-side-shade: rgba(70, 64, 49, 0.16);
+  --ui-paper-bottom-shade: rgba(70, 64, 49, 0.14);
+  /* physical paper: cut edges, sheets, tape, stains, drop shadow */
+  --ui-paper-cut: color-mix(in srgb, var(--paper-raised) 55%, #fffdf4);
+  --ui-paper-fold: color-mix(in srgb, var(--paper-raised) 88%, #fffdf4);
+  --ui-paper-seam: rgba(64, 58, 44, 0.42);
+  --ui-paper-sheet-back: color-mix(in srgb, var(--paper-raised) 84%, var(--ink) 16%);
+  --ui-paper-sheet-back-2: color-mix(in srgb, var(--paper-raised) 66%, var(--ink) 34%);
+  --ui-paper-stain: rgba(96, 84, 58, 0.12);
+  --ui-paper-stain-ring: rgba(96, 84, 58, 0.17);
+  --ui-paper-tape: rgba(255, 251, 238, 0.42);
+  --ui-paper-tape-edge: rgba(70, 64, 49, 0.18);
+  --ui-paper-drop: rgba(34, 30, 22, 0.34);
+}
+
+/*
+  Dark cardstock: the light comes from the sheet, never from around it.
+  There is no light rim and no pale halo: the edge is a shade, the drop
+  shadow is black, and the only brightness is the paper itself.
+*/
+[data-paper="dark"] {
+  --ui-paper-light: color-mix(in srgb, var(--bone) 2%, transparent);
+  --ui-paper-shade: rgba(0, 0, 0, 0.28);
+  --ui-paper-ring: rgba(0, 0, 0, 0.42);
+  --ui-paper-grain: var(--texture-grain-light);
+  --ui-paper-texture-blend: screen;
+  --ui-paper-inner-shadow:
+    inset 0 0 2px rgba(0, 0, 0, 0.7),
+    inset 0 0 34px rgba(0, 0, 0, 0.52),
+    inset 0 0 90px rgba(0, 0, 0, 0.32);
+  --ui-paper-top-sheen: transparent;
+  --ui-paper-side-shade: rgba(0, 0, 0, 0.28);
+  --ui-paper-bottom-shade: rgba(0, 0, 0, 0.22);
+  /* On dark cardstock a stack reads by its cut edges catching light,
+     never by a halo around the sheet. */
+  --ui-paper-cut: color-mix(in srgb, var(--bone) 15%, transparent);
+  --ui-paper-fold: color-mix(in srgb, var(--parch) 90%, var(--bone) 10%);
+  --ui-paper-seam: rgba(0, 0, 0, 0.62);
+  --ui-paper-sheet-back: color-mix(in srgb, var(--parch) 86%, var(--stone-0) 14%);
+  --ui-paper-sheet-back-2: color-mix(in srgb, var(--parch) 70%, var(--stone-0) 30%);
+  --ui-paper-stain: rgba(0, 0, 0, 0.22);
+  --ui-paper-stain-ring: rgba(0, 0, 0, 0.3);
+  --ui-paper-tape: color-mix(in srgb, var(--bone) 7%, transparent);
+  --ui-paper-tape-edge: rgba(0, 0, 0, 0.34);
+  --ui-paper-drop: rgba(0, 0, 0, 0.62);
+}
+
+/* ============================================================
+   SEMANTIC BINDINGS
+   Raw palette stays above. From here down, components only see
+   surface-aware --ui-* tokens.
+   ============================================================ */
+
+:root {
+  /* ---------- primary (the wax / ribbon action) ---------- */
+  --ui-primary-bg: color-mix(in srgb, var(--ribbon-2) 72%, var(--stone-0));
+  --ui-primary-bg-hi: color-mix(in srgb, var(--ribbon-1) 62%, var(--ribbon-2));
+  --ui-primary-bg-lo: color-mix(in srgb, var(--ribbon-3) 82%, var(--stone-0));
+  --ui-primary-text: var(--pin-hi);
+  --ui-primary-edge: color-mix(in srgb, var(--ui-primary-bg-hi) 68%, var(--bone) 32%);
+
+  /* ---------- panel semantics ---------- */
+  --ui-panel-bg: var(--panel-2);
+  --ui-panel-bg-raised: var(--panel-1);
+  --ui-panel-bg-sunken: var(--well);
+  --ui-panel-bg-overlay: color-mix(in srgb, var(--panel-3) 94%, transparent);
+  --ui-panel-text: var(--bone);
+  --ui-panel-text-soft: var(--bone-dim);
+  --ui-panel-text-muted: color-mix(in srgb, var(--bone-faint) 70%, var(--bone-dim));
+  --ui-panel-border: color-mix(in srgb, var(--bone) 16%, transparent);
+  --ui-panel-border-strong: color-mix(in srgb, var(--bone) 32%, transparent);
+  --ui-panel-field-bg: color-mix(in srgb, var(--well) 78%, transparent);
+  --ui-panel-field-bg-hover: color-mix(in srgb, var(--well) 52%, transparent);
+  --ui-panel-placeholder: color-mix(in srgb, var(--bone-faint) 88%, transparent);
+  --ui-panel-accent: var(--accent-panel);
+  --ui-panel-accent-strong: var(--accent-panel-strong);
+  --ui-panel-accent-soft: color-mix(in srgb, var(--accent-panel) 15%, transparent);
+  --ui-panel-accent-contrast: var(--stone-0);
+  --ui-panel-danger: var(--danger-panel);
+  --ui-panel-danger-soft: color-mix(in srgb, var(--danger-panel) 16%, transparent);
+  --ui-panel-success: var(--success-panel);
+  --ui-panel-success-soft: color-mix(in srgb, var(--success-panel) 16%, transparent);
+  --ui-panel-warning: var(--warning-panel);
+  --ui-panel-warning-soft: color-mix(in srgb, var(--warning-panel) 16%, transparent);
+  --ui-panel-selection-bg: color-mix(in srgb, var(--bone) 84%, transparent);
+  --ui-panel-selection-text: var(--stone-0);
+  --ui-panel-focus: var(--accent-panel-strong);
+  --ui-panel-shadow-color: var(--stone-0);
+
+  /* ---------- paper semantics ---------- */
+  --ui-paper-bg: var(--parch);
+  --ui-paper-bg-raised: var(--paper-raised);
+  --ui-paper-bg-sunken: color-mix(in srgb, var(--ink) 5%, var(--parch));
+  --ui-paper-bg-overlay: color-mix(in srgb, var(--parch) 96%, transparent);
+  --ui-paper-text: var(--ink);
+  --ui-paper-text-soft: var(--ink-2);
+  --ui-paper-text-muted: var(--ink-3);
+  --ui-paper-border: color-mix(in srgb, var(--ink) 24%, transparent);
+  --ui-paper-border-strong: color-mix(in srgb, var(--ink) 44%, transparent);
+  --ui-paper-field-bg: color-mix(in srgb, var(--ink) 4%, transparent);
+  --ui-paper-field-bg-hover: color-mix(in srgb, var(--ink) 7%, transparent);
+  --ui-paper-placeholder: color-mix(in srgb, var(--ink-3) 88%, transparent);
+  --ui-paper-accent: var(--accent-paper);
+  --ui-paper-accent-strong: var(--accent-paper-strong);
+  --ui-paper-accent-soft: color-mix(in srgb, var(--accent-paper) 12%, transparent);
+  --ui-paper-accent-contrast: var(--parch);
+  --ui-paper-danger: var(--danger-paper);
+  --ui-paper-danger-soft: color-mix(in srgb, var(--danger-paper) 12%, transparent);
+  --ui-paper-success: var(--success-paper);
+  --ui-paper-success-soft: color-mix(in srgb, var(--success-paper) 12%, transparent);
+  --ui-paper-warning: var(--warning-paper);
+  --ui-paper-warning-soft: color-mix(in srgb, var(--warning-paper) 14%, transparent);
+  --ui-paper-selection-bg: color-mix(in srgb, var(--ink) 82%, transparent);
+  --ui-paper-selection-text: var(--parch);
+  --ui-paper-focus: var(--accent-paper);
+  --ui-paper-shadow-color: var(--ink);
+
+  /* ---------- surface-agnostic ---------- */
+  --ui-overlay: color-mix(in srgb, var(--stone-0) 74%, transparent);
+  --ui-scrim: color-mix(in srgb, var(--stone-0) 62%, transparent);
+  --ui-tooltip-bg: var(--panel-3);
+  --ui-tooltip-text: var(--bone);
+  --ui-tooltip-border: color-mix(in srgb, var(--bone) 20%, transparent);
+  --ui-menu-hover: color-mix(in srgb, var(--ui-text) 6%, transparent);
+  --ui-menu-active: color-mix(in srgb, var(--ui-accent) 13%, transparent);
+  --ui-divider: color-mix(in srgb, var(--ui-text) 14%, transparent);
+  --ui-divider-soft: color-mix(in srgb, var(--ui-text) 7%, transparent);
+  --ui-skeleton: color-mix(in srgb, var(--ui-text) 9%, transparent);
+  --ui-scrollbar-thumb: color-mix(in srgb, var(--ui-text) 22%, transparent);
+  --ui-scrollbar-track: transparent;
+  --ui-disabled-bg: color-mix(in srgb, var(--ui-text) 3%, transparent);
+  --ui-required: var(--ui-accent);
+}
+
+/* panel is the default surface outside a sheet */
+:root,
+[data-surface="panel"] {
+  --ui-text: var(--ui-panel-text);
+  --ui-text-soft: var(--ui-panel-text-soft);
+  --ui-text-muted: var(--ui-panel-text-muted);
+  --ui-surface: var(--ui-panel-bg);
+  --ui-surface-raised: var(--ui-panel-bg-raised);
+  --ui-surface-sunken: var(--ui-panel-bg-sunken);
+  --ui-surface-overlay: var(--ui-panel-bg-overlay);
+  --ui-border: var(--ui-panel-border);
+  --ui-border-strong: var(--ui-panel-border-strong);
+  --ui-field-bg: var(--ui-panel-field-bg);
+  --ui-field-bg-hover: var(--ui-panel-field-bg-hover);
+  --ui-placeholder: var(--ui-panel-placeholder);
+  --ui-accent: var(--ui-panel-accent);
+  --ui-accent-strong: var(--ui-panel-accent-strong);
+  --ui-accent-soft: var(--ui-panel-accent-soft);
+  --ui-accent-contrast: var(--ui-panel-accent-contrast);
+  --ui-danger: var(--ui-panel-danger);
+  --ui-danger-soft: var(--ui-panel-danger-soft);
+  --ui-success: var(--ui-panel-success);
+  --ui-success-soft: var(--ui-panel-success-soft);
+  --ui-warning: var(--ui-panel-warning);
+  --ui-warning-soft: var(--ui-panel-warning-soft);
+  --ui-selection-bg: var(--ui-panel-selection-bg);
+  --ui-selection-text: var(--ui-panel-selection-text);
+  --ui-focus: var(--ui-panel-focus);
+  --ui-shadow-color: var(--ui-panel-shadow-color);
+}
+
+[data-surface="paper"] {
+  --ui-text: var(--ui-paper-text);
+  --ui-text-soft: var(--ui-paper-text-soft);
+  --ui-text-muted: var(--ui-paper-text-muted);
+  --ui-surface: var(--ui-paper-bg);
+  --ui-surface-raised: var(--ui-paper-bg-raised);
+  --ui-surface-sunken: var(--ui-paper-bg-sunken);
+  --ui-surface-overlay: var(--ui-paper-bg-overlay);
+  --ui-border: var(--ui-paper-border);
+  --ui-border-strong: var(--ui-paper-border-strong);
+  --ui-field-bg: var(--ui-paper-field-bg);
+  --ui-field-bg-hover: var(--ui-paper-field-bg-hover);
+  --ui-placeholder: var(--ui-paper-placeholder);
+  --ui-accent: var(--ui-paper-accent);
+  --ui-accent-strong: var(--ui-paper-accent-strong);
+  --ui-accent-soft: var(--ui-paper-accent-soft);
+  --ui-accent-contrast: var(--ui-paper-accent-contrast);
+  --ui-danger: var(--ui-paper-danger);
+  --ui-danger-soft: var(--ui-paper-danger-soft);
+  --ui-success: var(--ui-paper-success);
+  --ui-success-soft: var(--ui-paper-success-soft);
+  --ui-warning: var(--ui-paper-warning);
+  --ui-warning-soft: var(--ui-paper-warning-soft);
+  --ui-selection-bg: var(--ui-paper-selection-bg);
+  --ui-selection-text: var(--ui-paper-selection-text);
+  --ui-focus: var(--ui-paper-focus);
+  --ui-shadow-color: var(--ui-paper-shadow-color);
+}
+
+/* Light paper needs a touch more ink for small hints and meta labels. */
+[data-paper="light"] {
+  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 50%, var(--ink-2));
+}
+
+/*
+  Paper shadows are always darker than the sheet. On dark cardstock the
+  ink is light, so using it as a shadow colour drew a halo under every
+  control; stone-0 keeps the same depth with the right sign.
+*/
+[data-paper="light"] {
+  --ui-paper-shadow-color: var(--ink);
+}
+
+[data-paper="dark"] {
+  --ui-paper-shadow-color: var(--stone-0);
+}

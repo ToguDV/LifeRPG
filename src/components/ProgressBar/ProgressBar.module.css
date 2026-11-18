@@ -1,0 +1,109 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--ui-text-soft);
+}
+
+.value {
+  flex: none;
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ui-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-xs);
+  background-color: var(--ui-surface-sunken);
+  box-shadow: var(--shadow-inset);
+}
+
+.sm {
+  height: var(--progress-track-height);
+}
+
+.md {
+  height: var(--progress-track-height-lg);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  border-radius: var(--radius-xs);
+  transition: width var(--duration-slow) var(--ease-out);
+}
+
+.accent {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-accent) 56%, var(--ui-shadow-color)),
+    var(--ui-accent)
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ui-accent) 22%, transparent);
+}
+
+.xp {
+  background-image: linear-gradient(90deg, var(--xp-1), var(--xp-2));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--xp-2) 20%, transparent);
+}
+
+.success {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-success) 52%, var(--ui-shadow-color)),
+    var(--ui-success)
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ui-success) 22%, transparent);
+}
+
+.warning {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-warning) 52%, var(--ui-shadow-color)),
+    var(--ui-warning)
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ui-warning) 22%, transparent);
+}
+
+.danger {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-danger) 52%, var(--ui-shadow-color)),
+    var(--ui-danger)
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ui-danger) 22%, transparent);
+}
+
+.hint {
+  font-family: var(--font-hand);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  color: var(--ui-text-muted);
+}

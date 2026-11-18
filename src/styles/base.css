@@ -1,0 +1,173 @@
+/* ============================================================
+   BASE — reset, page canvas, accessibility defaults
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--ui-text);
+  background:
+    radial-gradient(
+      1100px 720px at 12% -8%,
+      color-mix(in srgb, var(--bone) 4.5%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      850px 620px at 92% 2%,
+      color-mix(in srgb, var(--bronze) 3%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse at 50% 118%,
+      color-mix(in srgb, var(--stone-0) 92%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(180deg, var(--stone-2) 0%, var(--stone-1) 40%, var(--stone-0) 100%);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ol,
+ul,
+dl {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+a {
+  color: var(--ui-accent);
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--ui-accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+svg {
+  display: block;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+}
+
+::selection {
+  background: var(--ui-selection-bg);
+  color: var(--ui-selection-text);
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* The theme picker turns transitions off for one frame so a palette
+   swap reads as ink changing, not as every property animating. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition-duration: 0ms !important;
+  animation-duration: 0ms !important;
+}
+
+#root {
+  position: relative;
+  z-index: var(--z-base);
+  min-height: 100vh;
+}
+
+/* ---------- scrollbars ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-scrollbar-thumb) var(--ui-scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--ui-scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--ui-scrollbar-thumb);
+  border: var(--border-width) solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--radius-pill);
+}
+
+/* ---------- utilities ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

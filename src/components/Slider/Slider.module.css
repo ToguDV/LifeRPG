@@ -1,0 +1,226 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-3);
+}
+
+.railArea {
+  position: relative;
+  height: var(--slider-thumb-size);
+}
+
+.rail {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: var(--slider-track-height);
+  transform: translateY(-50%);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--ui-field-bg);
+  box-shadow: var(--shadow-inset);
+}
+
+.fill {
+  position: absolute;
+  left: var(--start);
+  right: calc(100% - var(--end));
+  top: 50%;
+  height: var(--slider-track-height);
+  transform: translateY(-50%);
+  border-radius: var(--radius-pill);
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ui-accent) 52%, var(--ui-shadow-color)),
+    var(--ui-accent)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--ui-accent-contrast) 20%, transparent),
+    0 0 8px color-mix(in srgb, var(--ui-accent) 18%, transparent);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.input::-webkit-slider-runnable-track {
+  height: var(--slider-thumb-size);
+  background: transparent;
+  border: 0;
+}
+
+.input::-moz-range-track {
+  height: var(--slider-thumb-size);
+  background: transparent;
+  border: 0;
+}
+
+.input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border: var(--border-width) solid
+    color-mix(in srgb, var(--ui-accent) 68%, var(--ui-shadow-color));
+  border-radius: var(--radius-circle);
+  background: radial-gradient(
+    circle at 34% 28%,
+    color-mix(in srgb, var(--ui-accent) 34%, var(--ui-text) 66%),
+    var(--ui-accent) 58%,
+    color-mix(in srgb, var(--ui-accent) 72%, var(--ui-shadow-color))
+  );
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--ui-shadow-color) 45%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--ui-text) 35%, transparent);
+  cursor: grab;
+  transition:
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.input::-moz-range-thumb {
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border: var(--border-width) solid
+    color-mix(in srgb, var(--ui-accent) 68%, var(--ui-shadow-color));
+  border-radius: var(--radius-circle);
+  background: radial-gradient(
+    circle at 34% 28%,
+    color-mix(in srgb, var(--ui-accent) 34%, var(--ui-text) 66%),
+    var(--ui-accent) 58%,
+    color-mix(in srgb, var(--ui-accent) 72%, var(--ui-shadow-color))
+  );
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--ui-shadow-color) 45%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--ui-text) 35%, transparent);
+  cursor: grab;
+}
+
+.input:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.06);
+}
+
+.input:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 var(--focus-ring-width) var(--ui-focus),
+    0 2px 4px color-mix(in srgb, var(--ui-shadow-color) 45%, transparent);
+}
+
+.input:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 var(--focus-ring-width) var(--ui-focus),
+    0 2px 4px color-mix(in srgb, var(--ui-shadow-color) 45%, transparent);
+}
+
+.rangeInput {
+  pointer-events: none;
+}
+
+.rangeInput::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.rangeInput::-moz-range-thumb {
+  pointer-events: auto;
+}
+
+.wrapper:has(.input:disabled) {
+  opacity: var(--opacity-disabled);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* ---------- value bubble ---------- */
+.bubble {
+  position: absolute;
+  bottom: calc(100% + var(--space-1));
+  left: clamp(var(--slider-thumb-size), var(--percent), calc(100% - var(--slider-thumb-size)));
+  transform: translateX(-50%) translateY(calc(var(--space-1) / 2));
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-xs);
+  background-color: var(--ui-surface-raised);
+  box-shadow: var(--shadow-sm);
+  color: var(--ui-accent-strong);
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.railArea:hover .bubble,
+.railArea:focus-within .bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- marks ---------- */
+.marks {
+  position: relative;
+  height: var(--space-8);
+  margin-top: var(--space-1);
+}
+
+.mark {
+  position: absolute;
+  left: var(--percent);
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.mark[data-edge="start"] {
+  transform: translateX(0);
+  align-items: flex-start;
+}
+
+.mark[data-edge="end"] {
+  transform: translateX(-100%);
+  align-items: flex-end;
+}
+
+.tick {
+  display: block;
+  width: var(--border-width);
+  height: var(--slider-mark-size);
+  background-color: var(--ui-border-strong);
+}
+
+.markLabel {
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ui-text-muted);
+  white-space: nowrap;
+}
+
+.value {
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ui-accent-strong);
+  font-variant-numeric: tabular-nums;
+}

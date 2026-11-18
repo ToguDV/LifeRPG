@@ -1,0 +1,78 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: fit-content;
+  height: var(--badge-height-sm);
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-none);
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.md {
+  height: var(--badge-height-md);
+  padding-inline: var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+}
+
+.icon svg {
+  width: var(--icon-size-xs);
+  height: var(--icon-size-xs);
+}
+
+.dot {
+  width: var(--space-1);
+  height: var(--space-1);
+  border-radius: var(--radius-circle);
+  background-color: currentColor;
+}
+
+.neutral {
+  color: var(--ui-text-soft);
+  border-color: var(--ui-border);
+  background-color: var(--ui-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.accent {
+  color: var(--ui-accent-strong);
+  border-color: color-mix(in srgb, var(--ui-accent) 30%, transparent);
+  background-color: var(--ui-accent-soft);
+}
+
+.success {
+  color: var(--ui-success);
+  border-color: color-mix(in srgb, var(--ui-success) 32%, transparent);
+  background-color: var(--ui-success-soft);
+}
+
+.warning {
+  color: var(--ui-warning);
+  border-color: color-mix(in srgb, var(--ui-warning) 32%, transparent);
+  background-color: var(--ui-warning-soft);
+}
+
+.danger {
+  color: var(--ui-danger);
+  border-color: color-mix(in srgb, var(--ui-danger) 32%, transparent);
+  background-color: var(--ui-danger-soft);
+}
+
+.outline {
+  color: var(--ui-text-muted);
+  border-color: var(--ui-border-strong);
+  background-color: transparent;
+}

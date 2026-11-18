@@ -1,0 +1,9 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width) solid var(--ui-divider-soft);
+}
+
+.emptyWrap {
+  border-top: var(--border-width) solid var(--ui-divider-soft);
+}

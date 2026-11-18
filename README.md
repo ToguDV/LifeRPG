@@ -1,0 +1,137 @@
+# LifeRPG UI — Códice de Componentes
+
+Galería interactiva de componentes React para una aplicación de tareas con la estética de **El Largo Invierno**: papel pergamino gastado, paneles de piedra, tinta, cera y ocho paletas de color.
+
+El proyecto nace del mockup estático original (`design/mockup.html`) y lo convierte en un sistema de componentes reutilizables, con **tokens de diseño** para color, tipografía, espaciado, geometría de controles, sombras y movimiento.
+
+## Arrancar
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Abre la URL que imprime Vite (por defecto `http://localhost:5173`).
+
+| Comando | Qué hace |
+| --- | --- |
+| `pnpm dev` | Servidor de desarrollo con recarga en caliente. |
+| `pnpm build` | Comprueba tipos y genera `dist/` para producción. |
+| `pnpm preview` | Sirve la build de producción. |
+| `pnpm typecheck` | Solo la comprobación de TypeScript. |
+
+## Stack
+
+- **Vite + React 19 + TypeScript**.
+- **CSS Modules** por componente. Sin framework de UI ni librería de estilos.
+- **CSS custom properties** como única fuente de verdad para el diseño.
+- **Tipografías locales** en `public/fonts` (subconjunto latin de IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch y Caveat).
+- Popovers, calendarios, ruedas y menús propios; sin dependencias de fechas o de componentes.
+
+## La galería
+
+Una sola página con todas las piezas, navegación por secciones, selector de tema y un interruptor **Papel / Panel** que cambia la superficie de muestra de todas las tarjetas.
+
+- **08 temas**: Pergamino (por defecto), Tiza, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine y Tokyo Night.
+- **13 controles**: los 12 pedidos (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker y FileUploader) más `RangeSlider`.
+- **Primitivas de apoyo**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider y Toast.
+- **Contenedores**: `Card` con tres alturas (ficha, pliego, página) y ornamentos de papel (hojas apiladas, margen de cuaderno, lacre, cinta y esquina doblada).
+- **Compuestos de tarea**: TaskRow, TaskList, EmptyState y una demo final “El diario en marcha” que usa todo junto.
+
+Todo es interactivo: escribe, filtra, abre calendarios y ruedas, arrastra archivos, marca tareas, elimina, cambia de tema y alterna papel/panel.
+
+## Sistema de diseño
+
+### Tokens
+
+```
+src/styles/
+  fonts.css              @font-face de las familias locales
+  tokens/
+    primitives.css       tipografía, escala, espaciado, controles, motion, capas, texturas
+    themes.css           paletas, tokens semánticos y superficies
+  base.css               reset, lienzo, accesibilidad y utilidades globales
+```
+
+- `primitives.css` define la escala invariante: `--space-*`, `--text-*`, `--font-*`, `--control-*`, `--radius-*`, `--shadow-*`, `--duration-*`, `--z-*`, etc.
+- `themes.css` contiene las ocho paletas. Cada tema solo cambia la tinta: colores, textura del papel y acentos semánticos.
+- Los componentes **nunca leen colores de paleta directamente**. Leen tokens semánticos `--ui-*` (`--ui-text`, `--ui-accent`, `--ui-field-bg`, `--ui-danger`…).
+- Los valores de layout que no pueden ser variables CSS —breakpoints y geometría de los SVG decorativos— viven en sus módulos; el resto de color, espaciado y tipografía sale de tokens.
+
+### Superficies
+
+Hay dos materiales, y un mismo control se adapta a ambos:
+
+- **Papel** (`data-surface="paper"`): tinta oscura sobre pergamino en Pergamino; tinta clara sobre cartulina oscura en los otros temas.
+- **Panel** (`data-surface="panel"`): piedra oscura con acentos metálicos.
+
+El componente `Surface` propaga el contexto por React y pone `data-surface` en el DOM. Los popovers portaleados recuperan ese contexto con `useSurface`, de modo que un calendario abierto dentro de una hoja sigue siendo de papel, y uno abierto en un panel sigue siendo de panel.
+
+El tema activo se guarda en `localStorage` (`liferpg-ui-theme`) y se aplica antes del primer pintado para evitar parpadeos. En el `<html>` se escriben `data-theme` y `data-paper`.
+
+### Añadir un tema
+
+1. Añade una entrada en `src/theme/themes.ts` (clave, etiqueta, meta, tipo de papel y muestras).
+2. Añade su bloque de paleta en `src/styles/tokens/themes.css` con los tokens `--stone-*`, `--bone-*`, `--panel-*`, `--parch`, `--ink-*`, `--ribbon-*`, etc.
+3. Añade la clave a la lista permitida del script de `index.html`.
+
+No hay que tocar ningún componente.
+
+## Accesibilidad
+
+- Etiquetas asociadas, roles ARIA y estados (`aria-expanded`, `aria-checked`, `aria-activedescendant`, `aria-selected`, `aria-valuenow`, `aria-live`).
+- Navegación completa por teclado en Select, Combobox, calendario, rueda de hora, menú de temas y controles nativos.
+- Foco visible y devuelto al disparador al cerrar con `Escape`.
+- Cierre por clic fuera y por pérdida de foco.
+- `prefers-reduced-motion` desactiva animaciones y transiciones.
+- Auditoría axe-core WCAG 2 A/AA y buenas prácticas sobre el estado inicial de la galería: **0 violaciones**.
+
+Atajos principales:
+
+| Control | Teclas |
+| --- | --- |
+| Select / Combobox | `↑` `↓` `Home` `End` `Enter` `Esc`; escribir filtra en Combobox. |
+| DatePicker | Flechas para el día, `Home`/`End` para la semana, `PageUp`/`PageDown` para el mes, `Shift` + `PageUp`/`PageDown` para el año, `Enter`, `Esc`. |
+| TimePicker | `↑` `↓` cambian la rueda enfocada, `PageUp`/`PageDown` saltan cinco, `Home`/`End`, `Enter`. |
+| Menú de temas | Flechas, `Home`/`End`, `Enter`, `Esc`. |
+
+## Estructura
+
+```
+LifeRPG/
+  index.html                 entrada de Vite (tema antes del primer paint)
+  design/mockup.html         mockup estático original conservado
+  public/fonts/              fuentes locales .woff2
+  src/
+    App.tsx
+    main.tsx
+    components/
+      Button/ Checkbox/ Radio/ Switch/ TextInput/ Textarea/
+      Select/ Combobox/ Slider/ Stepper/ DatePicker/ TimePicker/
+      FileUploader/ Surface/ Card/ Icon/ Badge/ ProgressBar/ Tooltip/
+      Divider/ Toast/ EmptyState/ TaskList/ Field/ Popover/ Ornaments/
+    gallery/
+      GalleryPage.tsx        página única con índice, temas y superficies
+      sections/              una sección por familia de componentes
+      DemoCard.tsx           hoja de muestra (papel o panel) con lacre y ornamentos
+    lib/                     cx, estado controlado, floating, dismiss, fechas y formato
+    styles/                  fuentes, tokens, temas y base
+    theme/                   metadata, provider y selector de temas
+```
+
+## Notas
+
+- **DatePicker / TimePicker** son implementaciones propias: no hay `input type="date"` ni dependencias de calendario. El calendario empieza en lunes y respeta `min`, `max` y fechas deshabilitadas. La rueda de hora trabaja en pasos configurables.
+- **FileUploader** valida tipo y tamaño, permite arrastrar y soltar, muestra miniaturas de imágenes y lista de archivos. No sube nada a un servidor: la demo es 100% local.
+- **Toast** es una demo en memoria; los avisos se apilan, se pausan al pasar el cursor y se cierran solos.
+- El mockup original sigue en `design/mockup.html`, con `design/fonts/local.css` apuntando a las fuentes locales de `public/fonts`.
+
+## Documentación de diseño
+
+- `DESIGN.md` — decisiones de diseño, modelo de tokens, temas, superficies, tipografía, accesibilidad y límites.
+- `AGENTS.md` — mapa de archivos principales, convenciones y recetas para trabajar en el proyecto.
+- `design/mockup.html` — referencia estática original.
+
+## Créditos
+
+Diseño original del diario, la paleta y los temas: el mockup `El Largo Invierno — Diario de la Marca Hueca`. Esta versión lo convierte en un kit React con tokens y componentes interactivos. Tipografías: Google Fonts, distribuidas bajo SIL Open Font License.

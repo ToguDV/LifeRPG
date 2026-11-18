@@ -1,0 +1,179 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--control-gap);
+  height: var(--control-height-md);
+  padding-inline: var(--control-padding-x-md);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wider);
+  line-height: var(--leading-none);
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.button:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+
+.icon svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.spinner {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- sizes ---------- */
+.sm {
+  height: var(--control-height-sm);
+  padding-inline: var(--control-padding-x-sm);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+}
+
+.md {
+  height: var(--control-height-md);
+  padding-inline: var(--control-padding-x-md);
+}
+
+.lg {
+  height: var(--control-height-lg);
+  padding-inline: var(--control-padding-x-lg);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+}
+
+/* ---------- variants ---------- */
+.primary {
+  color: var(--ui-primary-text);
+  border-color: var(--ui-primary-edge);
+  background-image: linear-gradient(
+    180deg,
+    var(--ui-primary-bg-hi) 0%,
+    var(--ui-primary-bg) 24%,
+    var(--ui-primary-bg) 74%,
+    var(--ui-primary-bg-lo) 100%
+  );
+  box-shadow:
+    var(--shadow-wax),
+    inset 0 1px 0 color-mix(in srgb, var(--ui-primary-text) 18%, transparent);
+}
+
+.primary:hover:not(:disabled) {
+  background-image: linear-gradient(
+    180deg,
+    var(--ui-primary-bg-hi) 0%,
+    color-mix(in srgb, var(--ui-primary-bg) 90%, var(--ui-primary-bg-hi)) 24%,
+    color-mix(in srgb, var(--ui-primary-bg) 92%, var(--ui-primary-bg-hi)) 74%,
+    var(--ui-primary-bg-lo) 100%
+  );
+  color: var(--ui-primary-text);
+}
+
+.secondary {
+  color: var(--ui-text);
+  border-color: var(--ui-border);
+  background-color: var(--ui-surface-raised);
+  background-image: var(--texture-grain-light);
+  background-blend-mode: soft-light;
+  box-shadow: var(--shadow-sm);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--ui-border-strong);
+  background-color: var(--ui-field-bg-hover);
+}
+
+.ghost {
+  color: var(--ui-text-soft);
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.ghost:hover:not(:disabled) {
+  color: var(--ui-text);
+  background-color: var(--ui-field-bg);
+}
+
+.danger {
+  color: var(--ui-danger);
+  border-color: color-mix(in srgb, var(--ui-danger) 42%, transparent);
+  background-color: var(--ui-danger-soft);
+}
+
+.danger:hover:not(:disabled) {
+  color: var(--ui-danger);
+  border-color: var(--ui-danger);
+  background-color: color-mix(in srgb, var(--ui-danger) 20%, transparent);
+}
+
+/* ---------- shapes ---------- */
+.iconOnly {
+  width: var(--control-height-md);
+  padding-inline: 0;
+}
+
+.iconOnly.sm {
+  width: var(--control-height-sm);
+}
+
+.iconOnly.lg {
+  width: var(--control-height-lg);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.loading {
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

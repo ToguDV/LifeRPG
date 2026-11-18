@@ -1,0 +1,140 @@
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--control-gap);
+  width: 100%;
+  min-width: 0;
+  padding-inline: var(--control-padding-x-md);
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--ui-field-bg);
+  color: var(--ui-text);
+  box-shadow: var(--shadow-inset);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.control:hover:not(.disabled) {
+  border-color: var(--ui-border-strong);
+  background-color: var(--ui-field-bg-hover);
+}
+
+.control:focus-within {
+  border-color: var(--ui-focus);
+  box-shadow:
+    0 0 0 1px var(--ui-focus),
+    var(--shadow-inset);
+}
+
+.control.invalid {
+  border-color: var(--ui-danger);
+}
+
+.control.invalid:focus-within {
+  box-shadow:
+    0 0 0 1px var(--ui-danger),
+    var(--shadow-inset);
+}
+
+.control.disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background-color: var(--ui-disabled-bg);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--ui-placeholder);
+  font-style: italic;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.affix {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  color: var(--ui-text-muted);
+}
+
+.prefix,
+.suffix {
+  flex: none;
+  font-family: var(--font-engraved);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+  white-space: nowrap;
+}
+
+.clear {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  margin-inline-end: calc(var(--space-1) * -1);
+  border-radius: var(--radius-circle);
+  color: var(--ui-text-muted);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.clear:hover {
+  color: var(--ui-text);
+  background-color: var(--ui-field-bg-hover);
+}
+
+.clear:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: var(--focus-ring-offset-tight);
+}
+
+/* ---------- sizes ---------- */
+.sm {
+  height: var(--control-height-sm);
+  padding-inline: var(--control-padding-x-sm);
+}
+
+.sm .input {
+  font-size: var(--text-sm);
+}
+
+.sm .prefix,
+.sm .suffix {
+  font-size: var(--text-2xs);
+}
+
+.md {
+  height: var(--control-height-md);
+}
+
+.lg {
+  height: var(--control-height-lg);
+  padding-inline: var(--control-padding-x-lg);
+}
+
+.lg .input {
+  font-size: var(--text-md);
+}
