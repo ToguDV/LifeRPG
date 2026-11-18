@@ -49,9 +49,10 @@ export function ContainersSection({ canvas }: SectionProps) {
       })}
 
       <DemoNote muted className={styles.shelfNote}>
-        Tres contenedores: ficha de 21 rem, pliego de 30 rem y página completa. Las hojas
-        apiladas, el margen de cuaderno y las manchas de borde son capas decorativas: viven
-        bajo el contenido y se marcan como <b>aria-hidden</b>.
+        Tres contenedores: ficha de 21 rem, pliego de 30 rem y página completa. Sobre
+        papel, el título va en una cinta de cera que cruza el borde superior y sus colas
+        son capas decorativas marcadas como <b>aria-hidden</b>. Las hojas apiladas, el
+        margen de cuaderno y las manchas de borde también viven bajo el contenido.
       </DemoNote>
     </div>
   )

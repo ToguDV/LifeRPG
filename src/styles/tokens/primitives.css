@@ -217,6 +217,12 @@
   --paper-margin-line-offset: 0.75rem; /* rule stays near the paper edge */
   --seal-size-sm: 2rem;
   --seal-size-md: 2.375rem;
+  /* wax ribbon that carries a paper card title */
+  --card-ribbon-rise: 0.625rem; /* band peeking above the torn top edge */
+  --card-ribbon-tail-peek: 2rem; /* tail visible past the band */
+  --card-ribbon-tail-tuck: 2.5rem; /* tail hidden behind the band */
+  --card-ribbon-tail-drop: 0.5rem; /* tail hanging below the band */
+  --card-ribbon-tail-inset: 0.375rem; /* tail starting below the band top */
 
   /* ---------- shadows (resolved against --ui-shadow-color) ---------- */
   --shadow-sm:
@@ -250,6 +256,9 @@
   :root {
     --paper-sheet-offset-1: 0.25rem; /* 4px · first sheet under the card */
     --paper-sheet-offset-2: 0.5625rem; /* 9px · second sheet */
+    /* the tails lose their overhang before the band loses its title */
+    --card-ribbon-rise: 0.5rem;
+    --card-ribbon-tail-peek: 1rem;
   }
 }
 

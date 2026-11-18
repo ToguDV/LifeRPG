@@ -40,7 +40,7 @@ Una sola página con todas las piezas, navegación por secciones, selector de te
 - **08 temas**: Pergamino (por defecto), Tiza, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine y Tokyo Night.
 - **13 controles**: los 12 pedidos (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker y FileUploader) más `RangeSlider`.
 - **Primitivas de apoyo**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider y Toast.
-- **Contenedores**: `Card` con tres alturas (ficha, pliego, página) y ornamentos de papel (hojas apiladas y envejecidas, margen de cuaderno y lacre).
+- **Contenedores**: `Card` con tres alturas (ficha, pliego, página), ornamentos de papel (hojas apiladas y envejecidas, margen de cuaderno y lacre) y, sobre papel, el título en una cinta de cera que cruza el borde superior.
 - **Compuestos de tarea**: TaskRow, TaskList, EmptyState y una demo final “El diario en marcha” que usa todo junto.
 
 Todo es interactivo: escribe, filtra, abre calendarios y ruedas, arrastra archivos, marca tareas, elimina, cambia de tema y alterna papel/panel.

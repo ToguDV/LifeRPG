@@ -64,6 +64,7 @@ pnpm test:run     # Vitest una vez, sin watch
 | `tests/required.test.tsx` | «Campo obligatorio» anunciado en DatePicker, TimePicker, CheckboxGroup y RadioGroup. |
 | `tests/use-controllable-state.test.tsx` | Dos actualizaciones funcionales en el mismo tick y `onChange` con el valor resuelto. |
 | `tests/task-row.test.tsx` | Prioridad y vencimiento en la descripción del checkbox; Marcar / Desmarcar. |
+| `tests/card-title.test.tsx` | El título de `Card` sigue siendo el encabezado con la cinta; el panel conserva el encabezado plano. |
 
 ### Referencia estática
 
@@ -115,7 +116,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 | TaskRow / TaskList | `src/components/TaskList/TaskRow.tsx`, `TaskList.tsx` + módulos CSS |
 | Field | `src/components/Field/Field.tsx`, `Field.module.css` |
 | Popover | `src/components/Popover/Popover.tsx`, `Popover.module.css` |
-| Card | `src/components/Card/Card.tsx`, `Card.module.css` |
+| Card | `src/components/Card/Card.tsx`, `Card.module.css`, `RibbonTitle.tsx`, `RibbonTitle.module.css` |
 | WaxSeal | `src/components/Ornaments/WaxSeal.tsx`, `WaxSeal.module.css` |
 | TornSilhouette | `src/components/Ornaments/TornSilhouette.tsx` (silueta rasgada compartida) |
 

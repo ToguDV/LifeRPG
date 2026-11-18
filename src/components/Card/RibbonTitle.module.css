@@ -1,0 +1,141 @@
+/*
+  The wax ribbon that carries a paper card's title. One band and two tails
+  tucked behind it: cheap gradients and a static clip-path per tail, no SVG
+  filter and no backdrop blur.
+
+  The ribbon hangs over the sheet's top edge by rising through the
+  `Surface` padding; `--surface-pad` is inherited from the surrounding
+  surface, so the overlap is the same on a ficha, a pliego and a page.
+*/
+.ribbon {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  /*
+    The tails peek out at both sides. Capping the band and letting the
+    tails hang over the content edge keeps the decoration inside the card
+    at 320px, where the tails are reduced in `primitives.css`.
+  */
+  max-width: calc(100% - var(--card-ribbon-tail-peek) * 2);
+  margin-inline: auto;
+  /*
+    Rise by the surface padding plus the ribbon peek, so the band crosses
+    the torn top edge instead of starting under it. `--surface-pad` is
+    inherited from the surrounding `Surface`.
+  */
+  margin-block-start: calc(
+    (var(--surface-pad) + var(--card-ribbon-rise)) * -1
+  );
+  /*
+    Clear the tails and leave a real gap before the header: the tails hang
+    below the band, so a plain margin read as almost nothing under them.
+  */
+  margin-block-end: calc(var(--card-ribbon-tail-drop) + var(--space-4));
+}
+
+.title {
+  position: relative;
+  z-index: var(--z-raised);
+  margin: 0;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-caps);
+  font-weight: var(--weight-book);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  color: var(--ui-primary-text);
+  /*
+    Cera, not a button: the same three stops as the primary action but
+    without its top highlight. The wax tokens already resolve per theme.
+  */
+  background-image: linear-gradient(
+    180deg,
+    var(--ui-primary-bg-hi),
+    var(--ui-primary-bg) 24%,
+    var(--ui-primary-bg) 74%,
+    var(--ui-primary-bg-lo)
+  );
+  box-shadow:
+    0 var(--space-1) var(--space-5)
+      color-mix(in srgb, var(--ui-shadow-color) 42%, transparent),
+    inset 0 var(--border-width) 0
+      color-mix(in srgb, var(--ui-primary-text) 12%, transparent);
+  text-shadow: 0 var(--border-width) 0
+    color-mix(in srgb, var(--ui-primary-bg-lo) 82%, transparent);
+}
+
+.size-sm .title {
+  font-size: var(--text-lg);
+}
+
+.size-md .title {
+  font-size: var(--text-xl);
+}
+
+.size-lg .title {
+  font-size: var(--text-2xl);
+}
+
+/* ---------- tails behind the band ---------- */
+.tail {
+  position: absolute;
+  z-index: var(--z-base);
+  inset-block-start: var(--card-ribbon-tail-inset);
+  inset-block-end: calc(var(--card-ribbon-tail-drop) * -1);
+  width: calc(var(--card-ribbon-tail-peek) + var(--card-ribbon-tail-tuck));
+  border-radius: var(--radius-xs);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-primary-bg-lo) 74%, var(--ui-shadow-color)),
+    color-mix(in srgb, var(--ui-primary-bg-lo) 58%, var(--ui-shadow-color))
+  );
+}
+
+/*
+  The notch is a swallowtail cut into the outer edge. Its depth is a share
+  of the visible peek, so shrinking the tails on phones keeps the V inside
+  the part that is not hidden by the band.
+*/
+.tail[data-side='left'] {
+  inset-inline-start: calc(var(--card-ribbon-tail-peek) * -1);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    calc(var(--card-ribbon-tail-peek) * 0.78) 50%
+  );
+}
+
+.tail[data-side='right'] {
+  inset-inline-end: calc(var(--card-ribbon-tail-peek) * -1);
+  /*
+    The notch is cut into the outer edge, so the tip sits between the two
+    outer corners. Putting it after the bottom corner would cut the side
+    hidden behind the band and leave a solid tip.
+  */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--card-ribbon-tail-peek) * 0.78) 50%,
+    100% 100%,
+    0 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .title {
+    padding-inline: var(--space-4);
+  }
+
+  .size-md .title {
+    font-size: var(--text-lg);
+  }
+
+  .size-lg .title {
+    font-size: var(--text-xl);
+  }
+}

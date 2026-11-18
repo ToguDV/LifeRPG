@@ -227,9 +227,15 @@ El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la ac
 - `md`: pliego de 30 rem, padding grande, título `--text-xl`.
 - `lg`: página completa, padding grande, título `--text-2xl`.
 
+**La cinta del título.** Sobre papel el título no es una línea de texto: `RibbonTitle` lo lleva a una cinta de cera que cruza el borde superior rasgado. Comparte los tokens de la acción principal (`--ui-primary-*`), como el lacre, y no añade reflejos, filtros ni `backdrop-filter`: la banda es un degradado de tres paradas y las colas, dos `clip-path` estáticos.
+
+La banda se sube con el padding heredado de `Surface` (`--surface-pad`) más `--card-ribbon-rise`; así cruza el canto en las tres alturas sin repetir medidas. Debajo, la cinta reserva la caída de las colas más `--space-4` antes de la cabecera. Las colas viven detrás de la banda, asoman `--card-ribbon-tail-peek` y cuelgan `--card-ribbon-tail-drop`; la muesca de golondrina se corta con `clip-path` a partir del asomo visible. La banda se limita a `100% - 2 × asomo`, de modo que la decoración nunca crece el documento. Por debajo de 640 px el asomo baja a 1 rem y el título un paso de escala para que la cinta siga cabiendo a 320 px.
+
+Las colas son capas `aria-hidden`; el `<h3>` real vive dentro de la banda y sigue nombrando la tarjeta. El contenedor no crea landmarks. Sobre panel la cinta no se pinta: el título vuelve a ser un encabezado normal.
+
 Por debajo de 720 px los tres colapsan al ancho de la columna y el margen de cuaderno se desactiva para no comerse el contenido.
 
-La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior sigue nombrándolo. Lo mismo vale para `DemoCard`.
+La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior (en la cinta o en la cabecera del panel) sigue nombrándolo. Lo mismo vale para `DemoCard`.
 
 ### 5.2 Panel
 
