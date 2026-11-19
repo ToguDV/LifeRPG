@@ -1,8 +1,16 @@
-# LifeRPG UI — Component Codex
+# LifeRPG
 
-Interactive gallery of React components for a task application with the aesthetic of **The Long Winter**: worn parchment paper, stone panels, ink, wax and eight colour palettes.
+**An RPG-style to-do list.** Real-life tasks are written as quests, grouped into milestones and completed along a route the journal remembers.
 
-The project starts from the original static mockup (`design/mockup.html`) and turns it into a system of reusable components, with **design tokens** for colour, typography, spacing, control geometry, shadows and motion.
+> **Status: UI planning phase.** This repository holds the UI layer of LifeRPG: design tokens, the component set and the **Component Codex** gallery used to decide and verify the interface. There is no application state, routing, persistence or backend yet. The product direction, the intended loop and the open decisions live in [`PRODUCT.md`](PRODUCT.md).
+
+The visual starting point is the static mockup **The Long Winter — Journal of the Hollow Mark** (`design/mockup.html`): worn parchment, stone panels, ink, wax and eight colour palettes. The work so far turns that mockup into a system of reusable components, with **design tokens** for colour, typography, spacing, control geometry, shadows and motion — the foundation the app's screens will be built from.
+
+## What the app will be
+
+LifeRPG is a journal, not a backlog. The player writes real tasks, gives them a place on a route, completes them and watches the journal record the progress: the route inks in, milestones unlock and experience accumulates. The game is a reading layer over real work — the task stays the unit of work, and the journal has to be a good task journal before it is a good game.
+
+The UI already contains the pieces this loop needs: `Questline` for milestones and their tasks, `TaskList` for the daily list, `ProgressBar` for meters, `Card` and `Surface` for the materials, and `Toast` for notices. The XP economy, the application state and the real screens are still to be designed; the current phase is about making the interface ready to carry them. [`PRODUCT.md`](PRODUCT.md) explains the pillars, the loop and what is still open.
 
 ## Getting started
 
@@ -38,9 +46,9 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 - **Local fonts** in `public/fonts` (latin subset of IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch and Caveat).
 - Popovers, calendars, wheels and menus of our own; no date or component dependencies.
 
-## The gallery
+## The Component Codex
 
-A single page with every piece, section navigation, a theme picker and a **Paper / Panel** switch that changes the sample surface of every card.
+The gallery is the review surface of the UI planning phase: a single page with every piece, section navigation, a theme picker and a **Paper / Panel** switch that changes the sample surface of every card. It is not the app yet — it is where the app's interface is being decided and demonstrated.
 
 - **8 themes**: Parchment (default), Chalk, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
@@ -100,7 +108,7 @@ No component and no `index.html` needs touching: the boot script is generated fr
 - `prefers-reduced-motion` disables animations and transitions.
 - `pnpm test:e2e` audits the whole gallery with axe-core (WCAG 2.0/2.1 A and AA + best practices) across the **8 themes × 2 surfaces**, plus the `Questline` panel, editor and delete confirmation and the Select, Combobox and DatePicker popovers. Open states are compared against the previous state so that an inherited finding does not hide the one the overlay introduces.
 - **Findings from the first hands-on run** (all fixed; the log with selectors and ratios is in [`e2e/FINDINGS.md`](e2e/FINDINGS.md)): `label-content-name-mismatch` in the three areas of `FileUploader` (the accessible name was the field label and did not contain the visible text of the area); contrast of the `Questline` overdue marker on panel in Parchment, Nord and Gruvbox; contrast of the active index number in Nord (4.42:1); `Questline` panel text on paper in Parchment (4.18–4.2:1); delete button on panel (4.02:1). The `DatePicker` kept the known finding from `REVISION.md` §3 in the day cells until the day name dropped the zero padding.
-- axe leaves hundreds of `color-contrast` nodes in `incomplete` over the paper and panel textures. The harness prints them and attaches them separately; **they do not count as passed** and contrast still needs manual review.
+- axe leaves hundreds of `color-contrast` nodes in `incomplete` over the paper and panel textures. The project owner reviewed them by hand in the 8 themes and accepted them as valid (2026-11-18); the harness prints them and attaches them as diagnostics, not as a pending finding.
 
 Main shortcuts:
 
@@ -152,10 +160,11 @@ LifeRPG/
 
 ## Design documentation
 
+- `PRODUCT.md` — what LifeRPG is, the intended loop, the current UI planning phase and the open product decisions.
 - `DESIGN.md` — design decisions, token model, themes, surfaces, typography, accessibility and limits.
 - `AGENTS.md` — operating guide for agents: commands, non-obvious rules and traps. It has a closed budget (`pnpm check:docs`).
 - `design/mockup.html` — original static reference.
 
 ## Credits
 
-Original design of the journal, the palette and the themes: the `The Long Winter — Journal of the Hollow Mark` mockup. This version turns it into a React kit with tokens and interactive components. Typography: Google Fonts, distributed under the SIL Open Font License.
+Original design of the journal, the palette and the themes: the `The Long Winter — Journal of the Hollow Mark` mockup. This repository builds LifeRPG's UI layer on top of it: tokens, interactive components and the codex gallery. The game and its data layer are not implemented yet. Typography: Google Fonts, distributed under the SIL Open Font License.

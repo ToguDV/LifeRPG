@@ -1,8 +1,8 @@
 # AGENTS.md — Operating guide
 
-> **LifeRPG UI**: a React component kit with a fantasy-journal aesthetic.
+> **LifeRPG**: an RPG-style to-do app where tasks are quests. This repository is its UI layer — design system, components and the Component Codex gallery — currently in the **planning phase**: no app logic, persistence or backend yet.
 > This file is short on purpose: commands, rules you cannot infer from the code, and traps.
-> Before touching styles, tokens, themes or surfaces, read **`DESIGN.md`**.
+> Before touching styles, tokens, themes or surfaces, read **`DESIGN.md`**; for the product direction read **`PRODUCT.md`**.
 
 ## Commands
 

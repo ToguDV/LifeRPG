@@ -1,6 +1,7 @@
 # DESIGN.md — Design decisions
 
-> Reference document for **LifeRPG UI — Component Codex**.
+> Reference document for **LifeRPG — UI layer**.
+> LifeRPG is an RPG-style to-do app: real tasks are written as quests, grouped into milestones and completed along a route the journal remembers. This document covers the UI layer, which is the phase under construction.
 > It explains what was decided, why, and where each decision lives in the code.
 > If you change a visual or interaction rule, update this file.
 
@@ -8,7 +9,9 @@
 
 ## 1. Concept
 
-The interface is the winter notebook of a traveller: a task journal that is also an object. The starting point is the static mockup **The Long Winter — Journal of the Hollow Mark** (`design/mockup.html`).
+LifeRPG is a to-do list played as a role-playing game. Real commitments are written as quests, grouped into milestones and completed along a route the journal remembers. The interface is the traveller's winter notebook: a task journal that is also an object, and the home of the game's reading layer.
+
+The product is in the **UI planning phase**. This document is about materials, hierarchy and interaction; the application layer, the XP economy and persistence are not implemented yet (see `PRODUCT.md`). The starting point is the static mockup **The Long Winter — Journal of the Hollow Mark** (`design/mockup.html`).
 
 The React version does not try to be a “generic dark theme”. It tries to preserve three things from the mockup:
 
@@ -16,7 +19,7 @@ The React version does not try to be a “generic dark theme”. It tries to pre
 2. **Hierarchy**: what matters is read first; decoration does not compete with the content.
 3. **Flexibility**: eight inks and two surfaces without duplicating components.
 
-The aesthetic rests on typography, texture and colour. **No parchment images or external icons are used**: the textures are generated SVGs and the icons are a bespoke set of paths.
+The aesthetic rests on typography, texture and colour. **No parchment images or external icons are used**: the textures are generated SVGs and the icons are a bespoke set of paths. The gamification is a reading layer on top of that material: a task must stay legible and quick to write before it becomes a quest.
 
 ---
 
@@ -531,8 +534,8 @@ The gallery is the system's review surface; Storybook is not used.
 
 ## 14. Known limits and trade-offs
 
-- **No backend**: FileUploader and Toast are local; there is no network.
-- **No router**: the gallery is a single page with anchors.
+- **UI layer only**: the repository is the interface, not the application. There is no product state, routing, XP economy or backend yet; FileUploader and Toast are local demos and there is no network. This is the scope of the planning phase, not a defect.
+- **No router yet**: the gallery is a single page with anchors; the app's screens are not composed.
 - **No Storybook**: the gallery page fills that role and is the review deliverable.
 - **Interaction tests, not layout tests**: Vitest + Testing Library cover behaviour and `pnpm test:e2e` measures in Chromium the trail, the widths (320–1440 px), the keyboard and axe; jsdom measures none of that.
 - **Questline without reordering**: the order of milestones and tasks is narrative; there is no drag and drop.
@@ -547,6 +550,7 @@ The gallery is the system's review surface; Storybook is not used.
 
 | Decision | File |
 | --- | --- |
+| Product direction and UI-phase scope | `PRODUCT.md` |
 | Invariant tokens | `src/styles/tokens/primitives.css` |
 | Palettes, semantics and surfaces | `src/styles/tokens/themes.css` |
 | Reset, canvas, global focus, reduced motion | `src/styles/base.css` |

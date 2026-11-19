@@ -1,4 +1,6 @@
-# Technical review — LifeRPG UI
+# Technical review — LifeRPG UI layer
+
+**Scope:** the UI layer during the planning phase. The product layer — task model, XP economy, persistence, routing and backend — is out of scope and not implemented yet; see `PRODUCT.md`.
 
 **Status:** closed. The base review (32 findings) was implemented and verified earlier; this round closes the `Questline` findings and turns `§2` into an automated harness. The historical detail is in `git log -p REVISION.md` and the design decisions in `DESIGN.md`.
 
