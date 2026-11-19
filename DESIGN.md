@@ -8,7 +8,7 @@
 
 ## 1. Concept
 
-The interface is the winter notebook of a traveller: a task journal that is also an object. The starting point is the static mockup **El Largo Invierno — Diario de la Marca Hueca** (`design/mockup.html`).
+The interface is the winter notebook of a traveller: a task journal that is also an object. The starting point is the static mockup **The Long Winter — Journal of the Hollow Mark** (`design/mockup.html`).
 
 The React version does not try to be a “generic dark theme”. It tries to preserve three things from the mockup:
 
@@ -57,10 +57,10 @@ Focus, error, disabled and selection states are part of the visual system, not a
 Tokens are organised into four layers. The rule is simple: **a component never reads a raw palette**.
 
 ```
-Capa 1 · paleta del tema         --stone-0, --bone, --parch, --ink, --ribbon-2, --vital-1…
-Capa 2 · semántica de superficie --ui-panel-*, --ui-paper-*
-Capa 3 · bindings de contexto    --ui-text, --ui-surface, --ui-accent, --ui-field-bg…
-Capa 4 · primitivas invariantes  --space-*, --text-*, --font-*, --control-*, --radius-*, --duration-*
+Layer 1 · theme palette          --stone-0, --bone, --parch, --ink, --ribbon-2, --vital-1…
+Layer 2 · surface semantics      --ui-panel-*, --ui-paper-*
+Layer 3 · context bindings       --ui-text, --ui-surface, --ui-accent, --ui-field-bg…
+Layer 4 · invariant primitives   --space-*, --text-*, --font-*, --control-*, --radius-*, --duration-*
 ```
 
 ### 3.1 Raw palette
@@ -130,9 +130,9 @@ They live in `src/styles/tokens/primitives.css`:
 
 - **Rule**: in `src/components/**/*.module.css` no raw colours, type sizes or main spacings are written. Tokens are used.
 - **Intentional exception**: `ProgressBar variant="xp"` uses `--xp-1` and `--xp-2` directly, because experience is a world colour, not a surface colour.
-- **Documented exception**: `src/theme/themes.ts` repeats four hex values per theme in `swatches` for the theme selector. The selector shows palettes that are **not** applied, so it cannot read the custom properties at runtime; the copy is the contract. The swatches are, in order, `--stone-0` (desktop; `--panel-1` in Pergamino), `--parch`, `--ink` and the theme's title accent (`--crimson`, `--chalk-rouge`, `--bronze` or `--bronze-soft`), and each entry names its tokens in the code. Retouching a palette means touching both files in the same change.
+- **Documented exception**: `src/theme/themes.ts` repeats four hex values per theme in `swatches` for the theme selector. The selector shows palettes that are **not** applied, so it cannot read the custom properties at runtime; the copy is the contract. The swatches are, in order, `--stone-0` (desktop; `--panel-1` in Parchment), `--parch`, `--ink` and the theme's title accent (`--crimson`, `--chalk-rouge`, `--bronze` or `--bronze-soft`), and each entry names its tokens in the code. Retouching a palette means touching both files in the same change.
 - **Practical exception**: `@media` breakpoints, the geometry of the decorative SVGs, the 1 px `visually-hidden` pattern and some art details cannot be or should not be tokenised. They are documented in the corresponding modules.
-- UI copy is in Spanish; API and prop names are in English.
+- UI copy and API names are in English.
 
 ---
 
@@ -142,8 +142,8 @@ They live in `src/styles/tokens/primitives.css`:
 
 | Key | Name | Paper | Intent |
 | --- | --- | --- | --- |
-| `pergamino` | Pergamino | Light | The canonical theme: light paper on a dark desktop. |
-| `chalk` | Tiza | Dark | Black card stock, chalk and clay. |
+| `pergamino` | Parchment | Light | The canonical theme: light paper on a dark desktop. |
+| `chalk` | Chalk | Dark | Black card stock, chalk and clay. |
 | `catppuccin` | Catppuccin | Dark | Mocha, mauve and rose. |
 | `dracula` | Dracula | Dark | Purple night. |
 | `nord` | Nord | Dark | Polar cold, blue and cyan. |
@@ -151,14 +151,14 @@ They live in `src/styles/tokens/primitives.css`:
 | `rosepine` | Rosé Pine | Dark | Faded rose and mauve. |
 | `tokyonight` | Tokyo Night | Dark | Veiled neon. |
 
-The difference between Pergamino and the rest is not simply “light vs. dark”: Pergamino has **real light paper** over a dark desktop; the rest have **dark card stock**, with the same geometry and the same material feel.
+The difference between Parchment and the rest is not simply “light vs. dark”: Parchment has **real light paper** over a dark desktop; the rest have **dark card stock**, with the same geometry and the same material feel.
 
 ### 4.2 Selection and persistence
 
 - `<html data-theme="…" data-paper="light|dark">`.
 - `ThemeProvider` writes both attributes and stores the key in `localStorage` (`liferpg-ui-theme`).
-- The inline script in `index.html` applies the theme before the first paint to avoid a flash of Pergamino. `src/theme/themes.ts` is the only list of themes: the `liferpg-theme-manifest` plugin in `vite.config.ts` serializes the keys and their `paper` inside the script in `serve` and in `build`. There is no second hand-written list.
-- `color-scheme` is derived from `data-paper` in `base.css`, not from the palette: `html[data-paper="light"]` gives a light scheme and the rest, dark. This way the caret, autofill and native controls follow the paper from the first paint. In Pergamino the change is most noticeable in the caret and the autofill background: the scrollbar keeps its themed `scrollbar-color`, so it does not lighten over the dark desktop (only a browser that ignores that property would draw a light track).
+- The inline script in `index.html` applies the theme before the first paint to avoid a flash of Parchment. `src/theme/themes.ts` is the only list of themes: the `liferpg-theme-manifest` plugin in `vite.config.ts` serializes the keys and their `paper` inside the script in `serve` and in `build`. There is no second hand-written list.
+- `color-scheme` is derived from `data-paper` in `base.css`, not from the palette: `html[data-paper="light"]` gives a light scheme and the rest, dark. This way the caret, autofill and native controls follow the paper from the first paint. In Parchment the change is most noticeable in the caret and the autofill background: the scrollbar keeps its themed `scrollbar-color`, so it does not lighten over the dark desktop (only a browser that ignores that property would draw a light track).
 - `data-paper` allows the paper texture to be tuned without duplicating selectors per theme:
   - `light`: light gradients, grain with `multiply`.
   - `dark`: faint grain with `screen`, deeper shadows.
@@ -168,7 +168,7 @@ The difference between Pergamino and the rest is not simply “light vs. dark”
 
 It is a deliberate decision:
 
-- **Paper** uses a warm “ink” accent: `--chalk-rouge` in the dark themes, `--crimson` in Pergamino. This makes controls look stamped onto the sheet.
+- **Paper** uses a warm “ink” accent: `--chalk-rouge` in the dark themes, `--crimson` in Parchment. This makes controls look stamped onto the sheet.
 - **Panel** uses the theme's metallic accent: mauve, cyan, gold, blue, etc. This makes controls look like hardware on stone.
 
 The result is that the same control changes temperature when switching Paper / Panel. It is part of the material narrative, not an inconsistency.
@@ -180,7 +180,7 @@ Concrete decisions to keep legibility without losing the aesthetic:
 - The light paper's “muted” text is mixed 30/70 between `--ink-3` and `--ink-2`; at 50/50 it stayed at 4.22:1 over the Questline panel well.
 - The dark paper's “muted” text is mixed 88/12 between `--ink-3` and `--ink-2`: Rose Pine fell to 4.29:1 over its sunken sheet.
 - The panel's “muted” text is mixed 70/30 between `--bone-faint` and `--bone-dim`; it keeps the hierarchy and gains contrast.
-- State accents have two roles per surface. `--ui-danger`, `--ui-success` and `--ui-warning` remain the badge's border, fill and dot; `--ui-danger-text`, `--ui-success-text` and `--ui-warning-text` are the only ones used as text. The variant is declared per theme and surface (`--danger-panel-text`, `--danger-paper-text`, …) and is mixed toward the surface ink only when the base accent does not reach 4.5:1: Nord's overdue marker goes from 2.74:1 to 4.86:1 over `--panel-1`; Pergamino's danger button, from 4.02:1 to 5.59:1 over its tint; Pergamino's completed kicker, from 4.18:1 to 5.51:1. On light paper, the final success and warning mix drops to 65/35 and 55/45 to cover the badge tint and the sunken sheet as well.
+- State accents have two roles per surface. `--ui-danger`, `--ui-success` and `--ui-warning` remain the badge's border, fill and dot; `--ui-danger-text`, `--ui-success-text` and `--ui-warning-text` are the only ones used as text. The variant is declared per theme and surface (`--danger-panel-text`, `--danger-paper-text`, …) and is mixed toward the surface ink only when the base accent does not reach 4.5:1: Nord's overdue marker goes from 2.74:1 to 4.86:1 over `--panel-1`; Parchment's danger button, from 4.02:1 to 5.59:1 over its tint; Parchment's completed kicker, from 4.18:1 to 5.51:1. On light paper, the final success and warning mix drops to 65/35 and 55/45 to cover the badge tint and the sunken sheet as well.
 - Nord's strong panel accent is mixed 92/8 with `--bone`: the active index number was at 4.42:1 over `--ui-accent-soft` and goes to 4.66:1. The 11 px size was not lowered.
 - The primary button does not simply use the ribbon colour: `--ui-primary-bg` mixes 72 % of `--ribbon-2` with 28 % of `--stone-0`.
 - The primary gradient concentrates the brightness in the top 24 %; the centre and the text rest on the dark colour. This allows white on wax in all themes, including Catppuccin, Rosé Pine and Tokyo Night.
@@ -208,7 +208,7 @@ Neither a component nor `index.html` is touched: the boot script is regenerated 
 - Optional, very slight `tilt` (`±0.22deg`) so the sheets do not look like perfect cards.
 - The texture layer sits below the content (`z-index`) and `Surface` isolates the stacking context.
 
-**No halo.** Dark card stock does not project light: on `data-paper="dark"` there is no luminous inner edge, no top veil, no light shadow. The edge is defined by a dark vignette and a black shadow, and the only light is that of the paper itself. The seven dark palettes share that behaviour; Pergamino keeps its warm shadow because its ink is dark.
+**No halo.** Dark card stock does not project light: on `data-paper="dark"` there is no luminous inner edge, no top veil, no light shadow. The edge is defined by a dark vignette and a black shadow, and the only light is that of the paper itself. The seven dark palettes share that behaviour; Parchment keeps its warm shadow because its ink is dark.
 
 **Paint cost.** Paper is the most expensive part of the interface, which is why it is painted with cheap layers: a shared geometry `clip-path` instead of a per-sheet `feDisplacementMap`, a `box-shadow` instead of a `drop-shadow` on the subtree, and no full-screen `mix-blend-mode`. Masks (`mask-image`) are used only when geometry cannot replace them. Any new layer must be measured with performance in mind: concatenating filters per card was the reason the gallery took seconds to paint.
 
@@ -224,7 +224,7 @@ The sheets underneath are tinted with `--bronze` (paper kept in a drawer: somewh
 
 Below 640 px the stack offset drops to 4 and 9 px. The page margin on mobile is 16 px, and a sheet peeking out 19 px widened the document, not just the card; with the reduced offset the decoration fits within the margin and the stack still reads by tone. It is art geometry, so it lives with the rest of the ornament tokens (`primitives.css`).
 
-The wax seal lives apart: `WaxSeal` stamps the folio in wax with the primary action tokens and announces «Folio N» with `role="img"`. The wax is drawn as SVG with three paths —the wax that overflows, the irregular body, and the die ring—, so the silhouette is never a circle; the shadow follows that silhouette with `drop-shadow` on the container.
+The wax seal lives apart: `WaxSeal` stamps the folio in wax with the primary action tokens and announces “Folio N” with `role="img"`. The wax is drawn as SVG with three paths —the wax that overflows, the irregular body, and the die ring—, so the silhouette is never a circle; the shadow follows that silhouette with `drop-shadow` on the container.
 
 **Containers.** `Card` is the reusable sheet: header (kicker, title, description, wax seal), rule, body, and handwritten footer. `tilt` is the same ornament from `Surface` and is ignored on panel. Three heights, with the same material and the same ornaments:
 
@@ -291,7 +291,7 @@ All families are served locally from `public/fonts` (latin subsets of Google Fon
 - No sustained uppercase in paragraphs.
 - Uppercase labels always carry `letter-spacing` and a small size; contrast was adjusted so they remain legible.
 - Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
-- The calendar month starts with a capital only on the first letter (`::first-letter`); it does not capitalise “De”.
+- Month names come already capitalised from `Intl`, so no extra casing rule is applied to the heading.
 
 ---
 
@@ -431,7 +431,7 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
 
 - Slider and RangeSlider use overlapping native inputs; the styling is applied to the thumb and the track.
 - The range uses two thumbs and keeps the low/high order.
-- `RangeSlider` groups the two thumbs in a `role="group"` named by the `Field`'s `<label>`; each thumb keeps its `aria-label` (“Valor mínimo”/“Valor máximo”) and both receive `aria-invalid` when there is an error.
+- `RangeSlider` groups the two thumbs in a `role="group"` named by the `Field`'s `<label>`; each thumb keeps its `aria-label` (“Minimum value”/“Maximum value”) and both receive `aria-invalid` when there is an error.
 - `className` is shared between the two range inputs; `fieldClassName` is used for the container.
 - Marks at the ends align the label inward so it does not spill outside the control.
 - Stepper uses a native number input with the ends disabled once the limits are reached.
@@ -447,21 +447,21 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
 
 - Route organism: a chain of milestones (`QuestNode`) and, inside each one, tasks (`QuestTask`). The model is independent of the UI: stable ids, `title`, `note`, `deadline` and `tasks`.
 - **State is not stored.** `getQuestNodeStates` derives it from the completion of the preceding milestones. A milestone is completed when it has at least one task and all of them are checked; an empty milestone is a draft and does not open the next door. An already completed milestone remains editable even if an earlier one is reopened, so the chain does not swallow work already done.
-- **The deadline lives on the milestone, not on the task** (product decision). `deadline` is a local `YYYY-MM-DD` key; it is compared with today's date and shown short in the rail («12 ene») and long in the panel. Going overdue does not lock: it only tints the milestone with danger. The comparison uses local dates, never `toISOString`. `today` lives in the organism's state and is refreshed when returning to the tab and when crossing midnight, so that «Vence hoy» does not go stale.
+- **The deadline lives on the milestone, not on the task** (product decision). `deadline` is a local `YYYY-MM-DD` key; it is compared with today's date and shown short in the rail (“12 Jan”) and long in the panel. Going overdue does not lock: it only tints the milestone with danger. The comparison uses local dates, never `toISOString`. `today` lives in the organism's state and is refreshed when returning to the tab and when crossing midnight, so that “Due today” does not go stale.
 - **Interaction**: the milestone is a disclosure button (`aria-expanded` / `aria-controls`) that opens an accordion panel **below the entire rail**. The accordion was chosen over an anchored popover because the full CRUD —dates, tasks, delete confirmation— does not fit in a floating menu and on mobile it would cover the route. The panel is named by its `<h4>` and behaves as a `region`.
-- **CRUD**: create, rename, set dates on and delete milestones; create, rename and delete tasks. When a milestone is added, its editor opens with focus on the name. Deleting a milestone asks for a two-step confirmation: when it opens, focus goes to «Cancelar» and on cancel it returns to «Eliminar hito». When the panel closes, focus returns to the trigger.
-- **A locked milestone opens** and its tasks can be created, edited and deleted, but not checked: the checkbox is the only closed gesture. The lock note names **all** pending milestones ahead («…empezando por «A»» when there is more than one): a locked one is also incomplete, and naming only the first promised an unlock that does not happen. `description` is avoided on the `Checkbox` because its description lives inside the `<label>` and would widen the accessible name; the reason is shown in the note and the state in hidden text.
-- **Locked and overdue at the same time.** The derived state can only be one, but the deadline runs all the same: rail and panel carry `data-overdue` in addition to `data-state="locked"`, and the overdue tint is applied without losing the lock, the dashed border or the word «Bloqueado».
+- **CRUD**: create, rename, set dates on and delete milestones; create, rename and delete tasks. When a milestone is added, its editor opens with focus on the name. Deleting a milestone asks for a two-step confirmation: when it opens, focus goes to “Cancel” and on cancel it returns to “Delete milestone”. When the panel closes, focus returns to the trigger.
+- **A locked milestone opens** and its tasks can be created, edited and deleted, but not checked: the checkbox is the only closed gesture. The lock note names **all** pending milestones ahead (“…starting with “A”” when there is more than one): a locked one is also incomplete, and naming only the first promised an unlock that does not happen. `description` is avoided on the `Checkbox` because its description lives inside the `<label>` and would widen the accessible name; the reason is shown in the note and the state in hidden text.
+- **Locked and overdue at the same time.** The derived state can only be one, but the deadline runs all the same: rail and panel carry `data-overdue` in addition to `data-state="locked"`, and the overdue tint is applied without losing the lock, the dashed border or the word “Locked”.
 - **A single owner for the announcement.** The chain's `role="status"` is the only one that writes: it receives the delete notice and the state transitions compared **by id**, not by position. Deleting a milestone in front of a completed one is no longer announced as a completion, and the delete message is not overwritten. Re-locks and real unlocks (`locked → active/overdue`) are announced too, not the positional neighbour.
-- **Vocabulary:** «cerrar» belongs only to the panel («Cerrar el panel»); completing is said as «completar / cumplido» («Completa este hito para abrir el siguiente», «· cumplido», badge «Cumplido»). «Terminar la travesía» is the end of the route.
+- **Vocabulary:** “close” belongs only to the panel (“Close panel”); completing is said as “complete / completed” (“Complete this milestone to open the next one”, “· completed”, badge “Completed”). “Finish the journey” is the end of the route.
 - **Focus:** the panel takes focus on opening (except when it is born in edit mode, where the name's `autoFocus` wins) and returns it to the trigger on closing. Escape steps back one layer: confirmation → milestone editor → task editor → panel; the pickers and the task editor consume their own Escape with `preventDefault`. After renaming or deleting a task, focus goes to the neighbouring row, not to the whole panel, and it is brought on screen with `scrollIntoView({ block: 'nearest' })`.
-- **Draft:** when a milestone is added it is inserted and its editor opens; if it is cancelled without being touched (same title, no tasks, note or deadline) it is discarded. Any save or task edit keeps it. That way an empty «Nuevo hito» does not block the chain.
+- **Draft:** when a milestone is added it is inserted and its editor opens; if it is cancelled without being touched (same title, no tasks, note or deadline) it is discarded. Any save or task edit keeps it. That way an empty “New milestone” does not block the chain.
 - **The note belongs to the author:** it is shown in the panel but not edited, even though `QuestNodePatch` accepts it for consumers that edit the model.
 - **Controlled/uncontrolled API** with `useControllableState`: `nodes` + `onChange`, or `defaultNodes`. Every mutation emits the full array; the component persists nothing.
 - **The trail** is a decorative SVG (`aria-hidden`, `pointer-events: none`) behind the rail. `useQuestTrail` measures markers and stops with a `ResizeObserver` and draws segments between them; if a row wraps, the route goes down, crosses the row gap and re-enters through the first milestone of the next one. That way the line stays connected without `overflow-x` or horizontal scroll. The segment leaving a completed milestone is inked with `--ui-accent`; the pending one uses `--ui-border-strong`. The corner radius and the `stroke-dasharray` are art geometry and stay local.
 - **jsdom neither measures nor implements `ResizeObserver`**: the hook paints nothing and the component keeps working. The trail geometry, the painted contrast and real focus are verified with `pnpm test:e2e` in Chromium, not in Vitest.
 - **A single `STATE_META`** (`questline-state.ts`) gives icon, accessible word, label and badge variant to the four states; the rail and the panel can no longer diverge (that is how it slipped in that the active state had no word). The components are split across `QuestRail`, `QuestStop`, `QuestNodePanel`, `QuestNodeEditor`, `QuestTaskRow` and `QuestDeleteConfirm`.
-- **The goal** is the last milestone: its status line carries «Meta» and the flag icon. It is a reading of the end of the route, not a model field, and it moves if the last milestone is added or removed.
+- **The goal** is the last milestone: its status line carries “Goal” and the flag icon. It is a reading of the end of the route, not a model field, and it moves if the last milestone is added or removed.
 
 ---
 
@@ -473,14 +473,14 @@ The gallery is the system's review surface; Storybook is not used.
 - Sticky side index on desktop; horizontally scrollable index on mobile.
 - Scroll-spy with `IntersectionObserver`.
 - Theme selector dialog with swatches, metadata and keyboard navigation.
-- Global **Papel / Panel** switch: every card and control changes surface.
+- Global **Paper / Panel** switch: every card and control changes surface.
 - The demo sheets are `Card size="lg"` with no wrapper of their own: the badge with the component name comes in through `kicker`, the title goes on the ribbon over paper and the folio in the wax seal. That way the gallery shows the real container and not a clone.
 - Each demo includes handwritten notes with the current state so the behaviour is visible without opening the devtools.
-- The section “En contexto” uses every pattern in a real mini todo-list.
-- The section “La travesía” demonstrates the three states of a milestone (completed, overdue and locked), the full CRUD and the trail that gets inked. Its deadlines are relative to today so the states remain true when the gallery is opened.
-- The section “Contenedores” shows `Card` in its three heights with the list of components from other sections.
-- The first focusable element is “Saltar al contenido”, which points to `main#contenido` (`tabIndex={-1}`) and lives out of flow with `position: fixed` so the topbar is not moved.
-- The theme selector keeps one word visible (“Tema”) when the full name does not fit; the surface toggle keeps “Papel”/“Panel” as an explicit name even though its labels are visually hidden on mobile.
+- The section “In context” uses every pattern in a real mini todo-list.
+- The section “The journey” demonstrates the three states of a milestone (completed, overdue and locked), the full CRUD and the trail that gets inked. Its deadlines are relative to today so the states remain true when the gallery is opened.
+- The section “Containers” shows `Card` in its three heights with the list of components from other sections.
+- The first focusable element is “Skip to content”, which points to `main#content` (`tabIndex={-1}`) and lives out of flow with `position: fixed` so the topbar is not moved.
+- The theme selector keeps one word visible (“Theme”) when the full name does not fit; the surface toggle keeps “Paper”/“Panel” as an explicit name even though its labels are visually hidden on mobile.
 
 ---
 
@@ -493,7 +493,7 @@ The gallery is the system's review surface; Storybook is not used.
 - ≤ 980 px: the three-column grids go to two.
 - ≤ 860 px: masthead in two rows; stats and intro stack.
 - ≤ 720 px: the demo grids go to one column.
-- ≤ 640 px: compact topbar; the surface toggle's labels are visually hidden but stay in the accessibility tree; the theme selector shows “Tema” instead of the full name; the masthead crest disappears to give the title width.
+- ≤ 640 px: compact topbar; the surface toggle's labels are visually hidden but stay in the accessibility tree; the theme selector shows “Theme” instead of the full name; the masthead crest disappears to give the title width.
 - `Questline` wraps in rows: the route is measured and drawn in an SVG that goes down and re-enters on the next row, and the panel is placed below the whole rail. No horizontal scroll at 320 px.
 - The page must not produce horizontal scroll at any width between 320 and 1440 px. It was verified at 320, 375, 480, 768, 1024 and 1440 px (and 640 px in the previous review). `body { overflow-x: hidden }` is not used: below 640 px the stacked sheets are rescaled with `--paper-sheet-offset-*` and, if something overflows, the element is fixed, not hidden.
 
@@ -513,12 +513,12 @@ The gallery is the system's review surface; Storybook is not used.
 - **Contrast over textures: closed.** axe leaves in `incomplete` the nodes whose background is a gradient, an image or has pseudo-elements on top (the paper and panel textures). The project owner reviewed those nodes by hand in the 8 themes and accepted them as valid; they are not counted as an open finding and tools to measure them are not proposed again. The harness prints them as diagnostics.
 - The initial focus of popovers is delayed by one frame so the portal is mounted before focus moves and it does not close because of “focus out”.
 - Portaled listboxes are named by the `Field`'s `<label>` (`getFieldLabelId`), not by the trigger: a `combobox` is not named by content.
-- `required` is exposed with `aria-required` where the role allows it (`Select`, `Combobox`); on the `DatePicker`/`TimePicker` triggers and on groups it is announced as the description «Campo obligatorio», because `aria-required` is not valid on `role="button"` or on `role="group"`. The pickers do not take part in native validation (hidden input): the consumer validates on submit.
-- The skip link is the first focusable element and moves focus to `main#contenido`; programmatic focus does not depend on the browser moving the sequence.
+- `required` is exposed with `aria-required` where the role allows it (`Select`, `Combobox`); on the `DatePicker`/`TimePicker` triggers and on groups it is announced as the description “Required”, because `aria-required` is not valid on `role="button"` or on `role="group"`. The pickers do not take part in native validation (hidden input): the consumer validates on submit.
+- The skip link is the first focusable element and moves focus to `main#content`; programmatic focus does not depend on the browser moving the sequence.
 - `ProgressBar` requires a name by types: a visible `label` or an `aria-label`; the percentage is value text and cannot be the name.
 - `TaskRow` mirrors priority and overdue in `visually-hidden` text, linked with `aria-describedby`; colour stops being the only signal (WCAG 1.4.1).
 - Toasts pause on hover and on keyboard focus (WCAG 2.2.1); the viewport remains a single `aria-live="polite"` region so announcements are not duplicated.
-- `Questline` exposes `aria-expanded` / `aria-controls` on each milestone, names the panel with its heading, focuses it on opening and returns focus to the trigger on closing. Each milestone carries its number and its state in `visually-hidden` text; transitions are announced by id in a `status` region («Hito «X» cumplido», «Se ha desbloqueado/«bloqueado «Y»»).
+- `Questline` exposes `aria-expanded` / `aria-controls` on each milestone, names the panel with its heading, focuses it on opening and returns focus to the trigger on closing. Each milestone carries its number and its state in `visually-hidden` text; transitions are announced by id in a `status` region (“Milestone “X” completed”, ““Y” unlocked/locked”).
 - Locked milestones disable the checkbox (not the preparation CRUD) and explain the reason in a visible note; the state does not depend on colour: the marker changes shape and the note carries a lock.
 
 ---

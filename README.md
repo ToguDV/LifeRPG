@@ -1,6 +1,6 @@
 # LifeRPG UI — Component Codex
 
-Interactive gallery of React components for a task application with the aesthetic of **El Largo Invierno**: worn parchment paper, stone panels, ink, wax and eight colour palettes.
+Interactive gallery of React components for a task application with the aesthetic of **The Long Winter**: worn parchment paper, stone panels, ink, wax and eight colour palettes.
 
 The project starts from the original static mockup (`design/mockup.html`) and turns it into a system of reusable components, with **design tokens** for colour, typography, spacing, control geometry, shadows and motion.
 
@@ -40,14 +40,14 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 
 ## The gallery
 
-A single page with every piece, section navigation, a theme picker and a **Papel / Panel** switch that changes the sample surface of every card.
+A single page with every piece, section navigation, a theme picker and a **Paper / Panel** switch that changes the sample surface of every card.
 
-- **8 themes**: Pergamino (default), Tiza, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
+- **8 themes**: Parchment (default), Chalk, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
 - **Support primitives**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider and Toast.
 - **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, notebook margin and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
-- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “El diario en marcha” that uses everything together.
-- **La travesía**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
+- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together.
+- **The journey**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
 
 Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, delete, switch themes and toggle paper/panel.
 
@@ -73,7 +73,7 @@ src/styles/
 
 There are two materials, and the same control adapts to both:
 
-- **Paper** (`data-surface="paper"`): dark ink on parchment in Pergamino; light ink on dark card stock in the other themes.
+- **Paper** (`data-surface="paper"`): dark ink on parchment in Parchment; light ink on dark card stock in the other themes.
 - **Panel** (`data-surface="panel"`): dark stone with metallic accents.
 
 The `Surface` component propagates the context through React and sets `data-surface` in the DOM. Portalled popovers recover that context with `useSurface`, so a calendar opened inside a sheet is still paper, and one opened on a panel is still panel.
@@ -91,7 +91,7 @@ No component and no `index.html` needs touching: the boot script is generated fr
 
 - Associated labels, ARIA roles and states (`aria-expanded`, `aria-checked`, `aria-activedescendant`, `aria-selected`, `aria-valuenow`, `aria-live`).
 - Full keyboard navigation in Select, Combobox, the calendar, the time wheel, the theme menu and native controls.
-- “Saltar al contenido” is the first focusable element and moves focus to `main#contenido`.
+- “Skip to content” is the first focusable element and moves focus to `main#content`.
 - The tooltip is hoverable and is dismissed with `Escape` (WCAG 1.4.13); toasts pause on hover and on keyboard focus (WCAG 2.2.1).
 - `TaskRow` priority and overdue status do not rely on colour; `ProgressBar` requires `label` or `aria-label`; `RangeSlider` is announced as a group.
 - Focus is visible and returned to the trigger on closing with `Escape`.
@@ -99,7 +99,7 @@ No component and no `index.html` needs touching: the boot script is generated fr
 - `Questline` derives locking and overdue from the state of the tasks; locked milestones open so the list can be prepared, but their checkboxes are disabled. Completing a milestone is announced in a `status` region.
 - `prefers-reduced-motion` disables animations and transitions.
 - `pnpm test:e2e` audits the whole gallery with axe-core (WCAG 2.0/2.1 A and AA + best practices) across the **8 themes × 2 surfaces**, plus the `Questline` panel, editor and delete confirmation and the Select, Combobox and DatePicker popovers. Open states are compared against the previous state so that an inherited finding does not hide the one the overlay introduces.
-- **Open findings** in the first run of the harness (the tests are red on purpose, there is no baseline): `label-content-name-mismatch` in the three areas of `FileUploader` (the accessible name is the field label and does not contain the visible text of the area); contrast of the `Questline` overdue marker on panel in Pergamino, Nord and Gruvbox; contrast of the active index number in Nord (4.42:1); `Questline` panel text on paper in Pergamino (4.18–4.2:1); delete button on panel (4.02:1). The `DatePicker` keeps the known finding from `REVISION.md` §3 in the day cells: it is documented in the test and excluded only in that pass. Details with selectors and ratios in [`e2e/FINDINGS.md`](e2e/FINDINGS.md).
+- **Findings from the first hands-on run** (all fixed; the log with selectors and ratios is in [`e2e/FINDINGS.md`](e2e/FINDINGS.md)): `label-content-name-mismatch` in the three areas of `FileUploader` (the accessible name was the field label and did not contain the visible text of the area); contrast of the `Questline` overdue marker on panel in Parchment, Nord and Gruvbox; contrast of the active index number in Nord (4.42:1); `Questline` panel text on paper in Parchment (4.18–4.2:1); delete button on panel (4.02:1). The `DatePicker` kept the known finding from `REVISION.md` §3 in the day cells until the day name dropped the zero padding.
 - axe leaves hundreds of `color-contrast` nodes in `incomplete` over the paper and panel textures. The harness prints them and attaches them separately; **they do not count as passed** and contrast still needs manual review.
 
 Main shortcuts:
@@ -158,4 +158,4 @@ LifeRPG/
 
 ## Credits
 
-Original design of the journal, the palette and the themes: the `El Largo Invierno — Diario de la Marca Hueca` mockup. This version turns it into a React kit with tokens and interactive components. Typography: Google Fonts, distributed under the SIL Open Font License.
+Original design of the journal, the palette and the themes: the `The Long Winter — Journal of the Hollow Mark` mockup. This version turns it into a React kit with tokens and interactive components. Typography: Google Fonts, distributed under the SIL Open Font License.

@@ -16,20 +16,20 @@ Every finding was reproduced before it was fixed: the new tests were run against
 | Q-02 | Native validation blocked our own error | `noValidate` on the form, `required` kept as semantics; `submitNode` always runs | `questline-panel.test.tsx` |
 | Q-03 | Locking and unlocking in silence | Both directions are announced and the last focused element is stored so focus can be returned if a control becomes `disabled` | `questline.test.tsx` (re-lock when adding a task and when reopening) |
 | Q-04 | The panel did not receive focus when opened | Focus in `requestAnimationFrame` on mount (except when it is born in edit mode: `autoFocus` wins), without stealing focus from a click already made | `questline-panel.test.tsx` |
-| Q-05 | The lock note pointed at a milestone that unlocks nothing | `getBlockingNodes` returns every pending milestone ahead; with several, «…empezando por «A»»; comment fixed | `questline-model.test.ts`, `questline-panel.test.tsx` |
-| Q-06 | «Se ha desbloqueado B» could be a lie | The first `locked → active/overdue` is derived; «La travesía está completa» only if every state ends completed | `questline.test.tsx` |
-| Q-07 | Last-milestone copy | `index === total - 1`: «Completa este hito para terminar la travesía» / «La travesía está completa» | `questline-panel.test.tsx` |
-| Q-08 | «Cerrar el hito» meant two things | «Cerrar el panel» for the panel; «completar / cumplido» for the milestone (footer, tally, badge) | `questline-panel.test.tsx` |
+| Q-05 | The lock note pointed at a milestone that unlocks nothing | `getBlockingNodes` returns every pending milestone ahead; with several, “…starting with “A””; comment fixed | `questline-model.test.ts`, `questline-panel.test.tsx` |
+| Q-06 | “B unlocked” could be a lie | The first `locked → active/overdue` is derived; “The journey is complete” only if every state ends completed | `questline.test.tsx` |
+| Q-07 | Last-milestone copy | `index === total - 1`: “Complete this milestone to finish the journey” / “The journey is complete” | `questline-panel.test.tsx` |
+| Q-08 | “Close milestone” meant two things | “Close panel” for the panel; “complete / completed” for the milestone (footer, tally, badge) | `questline-panel.test.tsx` |
 | Q-09 | Cancelling left a draft milestone | A freshly added milestone is discarded when the editor closes if it is still untouched; any save or task edit keeps it | `questline.test.tsx` |
-| Q-10 | Copy and counts | The header does not show «0 de 0 tareas»; the deadline is shown once (kicker); the note is documented as an author note | `questline.test.tsx`, `questline-panel.test.tsx` |
+| Q-10 | Copy and counts | The header does not show “0 of 0 tasks”; the deadline is shown once (kicker); the note is documented as an author note | `questline.test.tsx`, `questline-panel.test.tsx` |
 | Q-11 | Adding a task was not announced | Focus goes to the new checkbox (or the row button if it is locked) and is brought on screen | `questline-panel.test.tsx` |
 | Q-12 | The active state had no hidden text | `STATE_META` with a word for all four states, shared by rail and panel | `questline.test.tsx` |
-| Q-13 | Locked and overdue milestone without tint | `data-overdue` on rail and panel: the overdue state is tinted without losing the lock, the dashed border or the word «Bloqueado» | `questline.test.tsx` |
-| Q-14 | Escape and task validation | Escape backs out one layer (confirmation → editor → task editor → panel) with focus returned; an empty title when adding and renaming shows «La tarea necesita un nombre.» | `questline-panel.test.tsx` |
+| Q-13 | Locked and overdue milestone without tint | `data-overdue` on rail and panel: the overdue state is tinted without losing the lock, the dashed border or the word “Locked” | `questline.test.tsx` |
+| Q-14 | Escape and task validation | Escape backs out one layer (confirmation → editor → task editor → panel) with focus returned; an empty title when adding and renaming shows “The task needs a name.” | `questline-panel.test.tsx` |
 | Q-15 | Focus after renaming or deleting a task | It goes to the neighbouring row and is secured on screen with `scrollIntoView({ block: 'nearest' })`, with no `preventScroll` | `questline-panel.test.tsx` |
 | Q-16 | Dynamic text without `overflow-wrap` | `overflow-wrap: anywhere` + `min-width: 0` on the note, confirmation, lock and `Checkbox` label | `e2e/overflow.spec.ts` (320–1440 px) |
 | Q-17 | Dead code and inaccurate comments | Out: `triggerId`, `deadlineToKey` and `data-done`; comments in `getBlockingNode` and the stylesheet fixed | lint/build |
-| Q-18 | Default `label` in English | Default «Ruta de hitos»; with `label=""` the rail is named «Hitos» | `questline.test.tsx` |
+| Q-18 | Default `label` | Default “Milestone route”; with `label=""` the rail is named “Milestones” | `questline.test.tsx` |
 | Q-19 | Deadlines going stale at midnight | `today` in state, refreshed on `visibilitychange`, `focus` and midnight; the panel recomputes on re-render | `questline.test.tsx` |
 | Q-20 | DOM ids and public API | `useId` base + `domFragment` (safe for `[A-Za-z0-9_-]`); types and `formatQuestNumber` re-exported from `Questline.tsx` | `questline.test.tsx` |
 | — | Duplication and size | `updateTasks`, a single `STATE_META` and the split into `QuestRail`, `QuestStop`, `QuestNodeEditor`, `QuestTaskRow`, `QuestDeleteConfirm`; `Questline.tsx` 588→449 and `QuestNodePanel.tsx` 602→456 | full suite |
@@ -54,8 +54,8 @@ Every finding was reproduced before it was fixed: the new tests were run against
 | A11Y-03 | Active index number in Nord: 4.42:1 | `--accent-panel-strong` at 4.66:1 |
 | A11Y-04 | Panel on Pergamino paper: kicker 4.18, note/tally/labels 4.2 | `--ui-success-text` and light-paper `--ui-text-muted` (4.66–5.51:1) |
 | A11Y-05 | Danger button in Pergamino+Panel: 4.02:1 | `--ui-danger-text` (5.59:1) |
-| — | Known `DatePicker` issue (former §3): «01 de noviembre» versus the visible «1» | Day name without padding and **no exclusion** in axe |
-| — | `form-field-multiple-labels` in `TaskRow` (`incomplete`) | A single native `<label>`; the exact name «Marcar/Desmarcar «título»» kept |
+| — | Known `DatePicker` issue (former §3): “01 November” versus the visible “1” | Day name without padding and **no exclusion** in axe |
+| — | `form-field-multiple-labels` in `TaskRow` (`incomplete`) | A single native `<label>`; the exact name “Check/Uncheck ‘title’” kept |
 
 ### Closed decisions
 
@@ -72,4 +72,4 @@ Every finding was reproduced before it was fixed: the new tests were run against
 - **Pinned Chromium**: `@playwright/test` 1.64.1 corresponds to `chromium-1248`. Upgrading it may require `pnpm exec playwright install chromium`.
 - **Font preload**: the `href`s of the two `<link rel="preload">` in `index.html` are literals; renaming a `.woff2` forces updating them.
 - **ESLint**: `exhaustive-deps` is a `warn` on purpose and six justified `eslint-disable-next-line` remain (the `aria-activedescendant` and `aria-invalid` pattern on `role="button"`).
-- **Decisions already made, do not reopen without a reason**: «Ahora» rounds down; `minuteStep` is normalised to 1–60 (fallback 5); `Surface` sheets drop to 4/9 px below 640 px; portalled popups use a named `region` and not `dialog`; `required` is announced as a description when the role does not accept `aria-required`; the state accent (`--ui-danger`, `--ui-success`, `--ui-warning`) is never used as text: that is what `--ui-*-text` is for; the `DatePicker` names the day without zero padding so that the name contains the visible text.
+- **Decisions already made, do not reopen without a reason**: “Now” rounds down; `minuteStep` is normalised to 1–60 (fallback 5); `Surface` sheets drop to 4/9 px below 640 px; portalled popups use a named `region` and not `dialog`; `required` is announced as a description when the role does not accept `aria-required`; the state accent (`--ui-danger`, `--ui-success`, `--ui-warning`) is never used as text: that is what `--ui-*-text` is for; the `DatePicker` names the day without zero padding so that the name contains the visible text.
