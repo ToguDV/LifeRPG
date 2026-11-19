@@ -217,69 +217,7 @@ test.describe('estados abiertos', () => {
             page.getByRole('dialog', { name: 'Elegir fecha' }),
           ).toBeVisible()
         },
-        /*
-          Known finding from REVISION.md §3: axe flags
-          `label-content-name-mismatch` on the day cells (visible "1" vs.
-          accessible "01 de noviembre de 2026"). Only this rule is disabled,
-          and the probe below proves the exclusion is still exactly that
-          finding. It is an open bug, not an accepted baseline.
-        */
-        { disableRules: ['label-content-name-mismatch'] },
       )
     })
   }
-})
-
-/*
-  Probe for the known finding: with the rule enabled inside the calendar,
-  every node must be a day button. This keeps the exclusion honest and
-  reports the finding in every run until the DatePicker is fixed.
-*/
-test('DatePicker abierto · hallazgo conocido label-content-name-mismatch', async ({
-  page,
-}, testInfo) => {
-  await gotoGallery(page)
-
-  const trigger = page.getByRole('button', { name: /^Fecha de partida/ })
-  await trigger.scrollIntoViewIfNeeded()
-  await trigger.click()
-  await expect(page.getByRole('dialog', { name: 'Elegir fecha' })).toBeVisible()
-  await settle(page)
-
-  const results = await auditPage(page, {
-    onlyRules: ['label-content-name-mismatch'],
-    include: '[role="dialog"][aria-label="Elegir fecha"]',
-  })
-
-  const nodes = results.violations.flatMap((rule) => rule.nodes)
-  const targets = nodes.map((node) => node.target.join(' '))
-
-  /*
-    Anything outside a day button means the rule regressed elsewhere and the
-    exclusion has to be revisited.
-  */
-  for (const target of targets) {
-    expect(target, `unexpected known-issue target: ${target}`).toMatch(
-      /^button\[aria-label=/,
-    )
-  }
-
-  testInfo.annotations.push({
-    type: 'known-issue',
-    description:
-      nodes.length > 0
-        ? `REVISION.md §3 still reproduces: label-content-name-mismatch on ${nodes.length} DatePicker day cells`
-        : 'REVISION.md §3 no longer reproduces: remove the disableRules exclusion from the DatePicker open-state audit',
-  })
-
-  await testInfo.attach('datepicker-known-label-content-name-mismatch.json', {
-    body: JSON.stringify(targets, null, 2),
-    contentType: 'application/json',
-  })
-
-  console.log(
-    nodes.length > 0
-      ? `[known issue] DatePicker label-content-name-mismatch: ${nodes.length} day cells (visible day number vs. full "01 …" accessible name). Open finding; excluded in the open-state audit.`
-      : '[known issue] DatePicker label-content-name-mismatch no longer reproduces; remove the exclusion.',
-  )
 })

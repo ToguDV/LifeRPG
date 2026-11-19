@@ -36,6 +36,17 @@ const WEEKDAYS = [
   { short: 'D', long: 'domingo' },
 ] as const
 
+/*
+  The grid prints the day as a plain number ("1"), so the accessible name
+  must not pad it ("01 de noviembre de 2026" does not contain "1" under
+  WCAG 2.5.3). `formatDate` keeps the two-digit day for prose and the trigger.
+*/
+const dayNameFormatter = new Intl.DateTimeFormat('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
 export interface DatePickerProps {
   value?: Date | null
   defaultValue?: Date | null
@@ -360,7 +371,7 @@ export function DatePicker({
                       data-outside={outside ? 'true' : undefined}
                       data-disabled={disabledDate ? 'true' : undefined}
                       tabIndex={focused ? 0 : -1}
-                      aria-label={formatDate(date)}
+                      aria-label={dayNameFormatter.format(date)}
                       aria-disabled={disabledDate || undefined}
                       onClick={() => selectDate(date)}
                       onFocus={() => {
