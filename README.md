@@ -19,7 +19,7 @@ pnpm install
 pnpm dev
 ```
 
-Open the URL Vite prints (by default `http://localhost:5173`).
+Open the URL Vite prints (by default `http://localhost:5174`).
 
 E2E verification needs Chromium. The pinned Playwright version uses revision `chromium-1248`; if it is not in `~/.cache/ms-playwright`, install it once with `pnpm exec playwright install chromium`.
 

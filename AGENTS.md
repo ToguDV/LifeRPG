@@ -7,7 +7,7 @@
 ## Commands
 
 ```bash
-pnpm dev          # http://localhost:5173
+pnpm dev          # http://localhost:5174
 pnpm typecheck    # TypeScript, no emit
 pnpm lint         # ESLint + check:docs (this file) + check:type (reading floors)
 pnpm test:run     # Vitest on jsdom

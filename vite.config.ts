@@ -33,4 +33,14 @@ function themeManifestPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), themeManifestPlugin()],
+  /*
+    5173 is held by another local app and Vite's silent fallback would make
+    the dev URL drift to whichever port is free. A fixed port keeps the URL
+    in README/AGENTS true; `strictPort` fails loudly instead of moving the
+    gallery to 5175.
+  */
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
 })
