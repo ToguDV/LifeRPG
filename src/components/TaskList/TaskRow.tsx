@@ -103,7 +103,7 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
               {task.note ? <span className={styles.note}>{task.note}</span> : null}
               {task.tag ? (
                 <span className={styles.tag}>
-                  <Icon name="tag" size="xs" aria-hidden="true" />
+                  <Icon name="tag" size="sm" aria-hidden="true" />
                   {task.tag}
                 </span>
               ) : null}
