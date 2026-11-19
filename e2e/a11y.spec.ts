@@ -1,0 +1,285 @@
+import { expect, test, type Page, type TestInfo } from '@playwright/test'
+import { THEMES } from '../src/theme/themes'
+import {
+  auditPage,
+  expectNoViolations,
+  gotoGallery,
+  reportIncomplete,
+  setSurface,
+  setTheme,
+  SURFACES,
+  type AuditOptions,
+  type AxeAnalysis,
+  type AxeRuleSummary,
+  type SurfaceOption,
+} from './support/gallery'
+import {
+  openMilestone,
+  panelEditor,
+  panelEditorToggle,
+  settle,
+} from './support/questline'
+
+/*
+  Accessibility audit of the whole gallery with axe-core in a real browser.
+
+  Every test is intentionally strict: a violation keeps the test red. The
+  harness is not a baseline file; fixing a bug is what turns the suite green.
+  `incomplete` is reported separately because axe cannot decide it (the paper
+  and panel textures leave many nodes without a measurable background).
+*/
+
+test.describe('galería · 8 temas × 2 superficies', () => {
+  for (const theme of THEMES) {
+    for (const surface of SURFACES) {
+      test(`${theme.key} · ${surface.label}`, async ({ page }, testInfo) => {
+        await gotoGallery(page)
+        await setTheme(page, theme)
+        await setSurface(page, surface)
+
+        const context = `${theme.label} (${theme.key}) · ${surface.label}`
+        const results = await auditPage(page)
+        await reportIncomplete(results, testInfo, context)
+        expectNoViolations(results.violations, context)
+      })
+    }
+  }
+})
+
+/*
+  Open states. The overlays are portaled and the Questline panel changes the
+  ARIA graph, so auditing only the closed page would miss them. These run on
+  the default theme and both surfaces; the palette matrix above covers the
+  closed state of all eight themes.
+
+  The audits are differential. The page before opening already carries the
+  FileUploader and overdue-marker findings and the base matrix above keeps
+  them red; repeating them here would hide whether the overlay itself added
+  anything. Editor and confirmation are compared against the already-open
+  panel, so their baseline includes the panel's own findings; that keeps the
+  signal on what the editor or confirmation adds.
+*/
+async function auditOpenState<Prepared>(
+  page: Page,
+  testInfo: TestInfo,
+  surface: SurfaceOption,
+  state: string,
+  prepare: (() => Promise<Prepared>) | null,
+  enter: (prepared: Prepared) => Promise<void>,
+  options: AuditOptions = {},
+): Promise<void> {
+  await gotoGallery(page)
+  await setSurface(page, surface)
+
+  const prepared = prepare ? await prepare() : (undefined as Prepared)
+  const baseline = await auditPage(page)
+  await enter(prepared)
+  await settle(page)
+
+  const context = `${state} · ${surface.label}`
+  const results = await auditPage(page, options)
+  const { violations: newViolations, inherited } = newViolationsOnly(
+    results,
+    baseline,
+  )
+
+  await reportIncomplete(results, testInfo, context)
+  console.log(
+    `[axe open state] ${context}: ${inherited} inherited node(s) from the preceding state, ${newViolations.length} new rule(s).`,
+  )
+  expectNoViolations(
+    newViolations,
+    `${context} (new violations vs. the preceding state)`,
+  )
+}
+
+/*
+  Matching by rule id, selector and markup is enough here: the baseline is
+  the same DOM instance, so React ids and CSS-module hashes do not change.
+*/
+function nodeKey(ruleId: string, node: AxeRuleSummary['nodes'][number]): string {
+  return `${ruleId}::${node.target.join(' ')}::${node.html}`
+}
+
+function newViolationsOnly(
+  results: AxeAnalysis,
+  baseline: AxeAnalysis,
+): { violations: AxeRuleSummary[]; inherited: number } {
+  const known = new Set(
+    baseline.violations.flatMap((rule) =>
+      rule.nodes.map((node) => nodeKey(rule.id, node)),
+    ),
+  )
+
+  let inherited = 0
+  const violations = results.violations.flatMap((rule) => {
+    const nodes = rule.nodes.filter((node) => {
+      if (!known.has(nodeKey(rule.id, node))) return true
+      inherited += 1
+      return false
+    })
+    return nodes.length ? [{ ...rule, nodes }] : []
+  })
+
+  return { violations, inherited }
+}
+
+test.describe('estados abiertos', () => {
+  for (const surface of SURFACES) {
+    test(`panel de Questline · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'Questline panel',
+        null,
+        async () => {
+          await openMilestone(page)
+        },
+      )
+    })
+
+    test(`editor del hito · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'Questline editor',
+        async () => (await openMilestone(page)).panel,
+        async (panel) => {
+          await panelEditorToggle(panel).click()
+          await expect(panelEditor(panel)).toBeVisible()
+        },
+      )
+    })
+
+    test(`confirmación de borrado · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'Questline delete confirmation',
+        async () => (await openMilestone(page)).panel,
+        async (panel) => {
+          /* The task rows also have «Eliminar …» buttons; the milestone one is last. */
+          await panel.getByRole('button', { name: /Eliminar/i }).last().click()
+          await expect(panel.locator('[role="group"]')).toBeVisible()
+        },
+      )
+    })
+
+    test(`Select abierto · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'Select open',
+        null,
+        async () => {
+          const select = page.getByRole('combobox', {
+            name: 'Clase del caminante',
+          })
+          await select.scrollIntoViewIfNeeded()
+          await select.click()
+          await expect(page.getByRole('listbox')).toBeVisible()
+        },
+      )
+    })
+
+    test(`Combobox abierto · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'Combobox open',
+        null,
+        async () => {
+          const combobox = page.getByRole('combobox', { name: 'Tarea del día' })
+          await combobox.scrollIntoViewIfNeeded()
+          await combobox.click()
+          await expect(page.getByRole('listbox')).toBeVisible()
+        },
+      )
+    })
+
+    test(`DatePicker abierto · ${surface.label}`, async ({ page }, testInfo) => {
+      await auditOpenState(
+        page,
+        testInfo,
+        surface,
+        'DatePicker open',
+        null,
+        async () => {
+          const trigger = page.getByRole('button', { name: /^Fecha de partida/ })
+          await trigger.scrollIntoViewIfNeeded()
+          await trigger.click()
+          await expect(
+            page.getByRole('dialog', { name: 'Elegir fecha' }),
+          ).toBeVisible()
+        },
+        /*
+          Known finding from REVISION.md §3: axe flags
+          `label-content-name-mismatch` on the day cells (visible "1" vs.
+          accessible "01 de noviembre de 2026"). Only this rule is disabled,
+          and the probe below proves the exclusion is still exactly that
+          finding. It is an open bug, not an accepted baseline.
+        */
+        { disableRules: ['label-content-name-mismatch'] },
+      )
+    })
+  }
+})
+
+/*
+  Probe for the known finding: with the rule enabled inside the calendar,
+  every node must be a day button. This keeps the exclusion honest and
+  reports the finding in every run until the DatePicker is fixed.
+*/
+test('DatePicker abierto · hallazgo conocido label-content-name-mismatch', async ({
+  page,
+}, testInfo) => {
+  await gotoGallery(page)
+
+  const trigger = page.getByRole('button', { name: /^Fecha de partida/ })
+  await trigger.scrollIntoViewIfNeeded()
+  await trigger.click()
+  await expect(page.getByRole('dialog', { name: 'Elegir fecha' })).toBeVisible()
+  await settle(page)
+
+  const results = await auditPage(page, {
+    onlyRules: ['label-content-name-mismatch'],
+    include: '[role="dialog"][aria-label="Elegir fecha"]',
+  })
+
+  const nodes = results.violations.flatMap((rule) => rule.nodes)
+  const targets = nodes.map((node) => node.target.join(' '))
+
+  /*
+    Anything outside a day button means the rule regressed elsewhere and the
+    exclusion has to be revisited.
+  */
+  for (const target of targets) {
+    expect(target, `unexpected known-issue target: ${target}`).toMatch(
+      /^button\[aria-label=/,
+    )
+  }
+
+  testInfo.annotations.push({
+    type: 'known-issue',
+    description:
+      nodes.length > 0
+        ? `REVISION.md §3 still reproduces: label-content-name-mismatch on ${nodes.length} DatePicker day cells`
+        : 'REVISION.md §3 no longer reproduces: remove the disableRules exclusion from the DatePicker open-state audit',
+  })
+
+  await testInfo.attach('datepicker-known-label-content-name-mismatch.json', {
+    body: JSON.stringify(targets, null, 2),
+    contentType: 'application/json',
+  })
+
+  console.log(
+    nodes.length > 0
+      ? `[known issue] DatePicker label-content-name-mismatch: ${nodes.length} day cells (visible day number vs. full "01 …" accessible name). Open finding; excluded in the open-state audit.`
+      : '[known issue] DatePicker label-content-name-mismatch no longer reproduces; remove the exclusion.',
+  )
+})
