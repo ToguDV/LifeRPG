@@ -13,15 +13,19 @@ pnpm dev
 
 Abre la URL que imprime Vite (por defecto `http://localhost:5173`).
 
+La verificación E2E necesita Chromium. La versión fijada de Playwright usa la revisión `chromium-1248`; si no está en `~/.cache/ms-playwright`, instálala una vez con `pnpm exec playwright install chromium`.
+
 | Comando | Qué hace |
 | --- | --- |
 | `pnpm dev` | Servidor de desarrollo con recarga en caliente. |
 | `pnpm build` | Comprueba tipos y genera `dist/` para producción. |
 | `pnpm preview` | Sirve la build de producción. |
-| `pnpm typecheck` | Solo la comprobación de TypeScript (incluye `tests/`). |
+| `pnpm typecheck` | Solo la comprobación de TypeScript (incluye `tests/` y `e2e/`). |
 | `pnpm lint` | ESLint: correctitud y accesibilidad (`jsx-a11y`), sin reglas de estilo. |
 | `pnpm test` | Vitest en modo watch. |
 | `pnpm test:run` | Vitest una sola vez, para verificación. |
+| `pnpm test:e2e` | Auditoría en Chromium real: axe en los 8 temas × 2 superficies, estados abiertos, overflow a 320–1440 px, teclado/foco y sendero. |
+| `pnpm test:e2e:report` | Abre el informe HTML de la última ejecución E2E. |
 
 ## Stack
 
@@ -30,6 +34,7 @@ Abre la URL que imprime Vite (por defecto `http://localhost:5173`).
 - **CSS custom properties** como única fuente de verdad para el diseño.
 - **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + reglas de hooks) sin reglas de estilo: no reformatea el código.
 - **Vitest + Testing Library** sobre jsdom, para las interacciones que originaron los bugs de la revisión.
+- **Playwright + axe-core** sobre Chromium real para la verificación de accesibilidad, overflow y teclado (`pnpm test:e2e`).
 - **Tipografías locales** en `public/fonts` (subconjunto latin de IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch y Caveat).
 - Popovers, calendarios, ruedas y menús propios; sin dependencias de fechas o de componentes.
 
@@ -93,7 +98,9 @@ No hay que tocar ningún componente ni `index.html`: el script de arranque se ge
 - Cierre por clic fuera y por pérdida de foco.
 - `Questline` deriva el bloqueo y el vencimiento del estado de las tareas; los hitos bloqueados se abren para preparar la lista, pero sus checkboxes están deshabilitados. El cierre de un hito se anuncia en una región `status`.
 - `prefers-reduced-motion` desactiva animaciones y transiciones.
-- Auditoría axe-core WCAG 2 A/AA y buenas prácticas sobre el estado inicial de la galería: **0 violaciones**. La auditoría fue externa; el control automático que queda en el repositorio es `pnpm lint` (`jsx-a11y`) más la suite de `tests/`, que cubre nombre accesible del listbox, `aria-controls`, `required` y las descripciones de `TaskRow`.
+- `pnpm test:e2e` audita la galería completa con axe-core (WCAG 2.0/2.1 A y AA + best practices) en los **8 temas × 2 superficies**, más el panel, el editor y la confirmación de borrado de `Questline` y los popovers de Select, Combobox y DatePicker. Los estados abiertos se comparan con el estado anterior para que un hallazgo heredado no oculte el que introduce el overlay.
+- **Hallazgos abiertos** en la primera ejecución del arnés (los tests están en rojo a propósito, no hay línea base): `label-content-name-mismatch` en las tres zonas de `FileUploader` (el nombre accesible es la label del campo y no contiene el texto visible de la zona); contraste del marcador vencido de `Questline` sobre panel en Pergamino, Nord y Gruvbox; contraste del número del índice activo en Nord (4.42:1); texto del panel de `Questline` sobre papel en Pergamino (4.18–4.2:1); botón de borrado sobre panel (4.02:1). El `DatePicker` conserva el hallazgo conocido de `REVISION.md` §3 en las celdas de día: está documentado en el test y excluido solo en esa pasada. Detalle con selectores y ratios en [`e2e/FINDINGS.md`](e2e/FINDINGS.md).
+- axe deja cientos de nodos de `color-contrast` en `incomplete` sobre las texturas de papel y panel. El arnés los imprime y los adjunta por separado; **no cuentan como aprobados** y el contraste sigue necesitando revisión manual.
 
 Atajos principales:
 
@@ -113,7 +120,10 @@ LifeRPG/
   public/fonts/              fuentes locales .woff2
   eslint.config.js           flat config: correctitud y accesibilidad, sin estilo
   vitest.config.ts           Vitest + jsdom + setup de Testing Library
+  playwright.config.ts       E2E: Vite en 4317, Chromium, trazas al fallar
   tests/                     un archivo por asunto, escritos contra roles y nombres
+  e2e/                       axe (8 temas × 2 superficies), overflow y teclado
+  e2e/FINDINGS.md            hallazgos abiertos de la primera pasada
   src/
     App.tsx
     main.tsx
