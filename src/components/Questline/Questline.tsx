@@ -10,22 +10,20 @@ import { cx } from '../../lib/cx'
 import { startOfDay } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
 import { Button } from '../Button/Button'
-import { EmptyState } from '../EmptyState/EmptyState'
-import { Icon, type IconName } from '../Icon/Icon'
+import { Icon } from '../Icon/Icon'
 import { QuestNodePanel } from './QuestNodePanel'
+import { QuestRail } from './QuestRail'
 import {
   countQuestTasks,
   createQuestId,
-  formatQuestNumber,
-  getBlockingNode,
-  getQuestDeadline,
+  getBlockingNodes,
   getQuestNodeStates,
-  type QuestDeadline,
   type QuestNode,
   type QuestNodePatch,
   type QuestNodeState,
+  type QuestTask,
 } from './questline-model'
-import { useQuestTrail } from './useQuestTrail'
+import { domFragment } from './questline-dom'
 import styles from './Questline.module.css'
 
 /*
@@ -56,38 +54,6 @@ export interface QuestlineProps {
   newNodeTitle?: string
   emptyState?: ReactNode
   className?: string
-}
-
-const STATE_ICON: Record<QuestNodeState, IconName | null> = {
-  locked: 'lock',
-  active: null,
-  complete: 'check',
-  overdue: 'alert',
-}
-
-const STATE_WORD: Record<QuestNodeState, string> = {
-  locked: 'Bloqueado.',
-  active: 'En curso.',
-  complete: 'Cumplido.',
-  overdue: 'Vencido.',
-}
-
-/*
-   The rail keeps the numbers short: state lives in the marker, the icon and
-   a screen-reader word, while the handwritten line carries progress and date.
-*/
-function stopMeta(
-  tally: { done: number; total: number },
-  deadline: QuestDeadline,
-): string {
-  const parts = [tally.total ? `${tally.done} de ${tally.total}` : 'Sin tareas']
-  if (deadline.tone !== 'none') parts.push(deadline.shortLabel)
-  return parts.join(' · ')
-}
-
-/* DOM ids accept only `[A-Za-z0-9_-]`; milestone ids are free-form. */
-function domFragment(value: string): string {
-  return value.replace(/[^A-Za-z0-9_-]+/g, '-')
 }
 
 function quotedList(titles: string[]): string {
@@ -181,10 +147,7 @@ export function Questline({
   const [status, setStatus] = useState('')
   const [today, setToday] = useState(() => startOfDay(new Date()))
 
-  const railRef = useRef<HTMLOListElement>(null)
   const addRowRef = useRef<HTMLDivElement>(null)
-  const stopRefs = useRef<Array<HTMLLIElement | null>>([])
-  const markerRefs = useRef<Array<HTMLSpanElement | null>>([])
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([])
 
   const previousStates = useRef<Map<string, QuestNodeState> | null>(null)
@@ -194,7 +157,6 @@ export function Questline({
   const keptDrafts = useRef<Set<string>>(new Set())
 
   const states = getQuestNodeStates(nodes, today)
-  const trail = useQuestTrail(railRef, stopRefs, markerRefs, nodes)
 
   const completeCount = states.filter((state) => state === 'complete').length
   const tallies = nodes.map(countQuestTasks)
@@ -272,62 +234,39 @@ export function Questline({
     else addRowRef.current?.querySelector('button')?.focus()
   }
 
-  const toggleTask = (nodeId: string, taskId: string, done: boolean) => {
+  /* Every task mutation marks the draft as touched and rewrites one node. */
+  const updateTasks = (
+    nodeId: string,
+    updater: (tasks: QuestTask[]) => QuestTask[],
+  ) => {
     keepDraft(nodeId)
     setNodes((previous) =>
       previous.map((node) =>
-        node.id === nodeId
-          ? {
-              ...node,
-              tasks: node.tasks.map((task) =>
-                task.id === taskId ? { ...task, done } : task,
-              ),
-            }
-          : node,
+        node.id === nodeId ? { ...node, tasks: updater(node.tasks) } : node,
       ),
     )
   }
 
-  const addTask = (nodeId: string, title: string) => {
-    keepDraft(nodeId)
-    setNodes((previous) =>
-      previous.map((node) =>
-        node.id === nodeId
-          ? {
-              ...node,
-              tasks: [...node.tasks, { id: createQuestId('task'), title, done: false }],
-            }
-          : node,
-      ),
+  const toggleTask = (nodeId: string, taskId: string, done: boolean) =>
+    updateTasks(nodeId, (tasks) =>
+      tasks.map((task) => (task.id === taskId ? { ...task, done } : task)),
     )
-  }
 
-  const renameTask = (nodeId: string, taskId: string, title: string) => {
-    keepDraft(nodeId)
-    setNodes((previous) =>
-      previous.map((node) =>
-        node.id === nodeId
-          ? {
-              ...node,
-              tasks: node.tasks.map((task) =>
-                task.id === taskId ? { ...task, title } : task,
-              ),
-            }
-          : node,
-      ),
-    )
-  }
+  const addTask = (nodeId: string, title: string) =>
+    updateTasks(nodeId, (tasks) => [
+      ...tasks,
+      { id: createQuestId('task'), title, done: false },
+    ])
 
-  const deleteTask = (nodeId: string, taskId: string) => {
-    keepDraft(nodeId)
-    setNodes((previous) =>
-      previous.map((node) =>
-        node.id === nodeId
-          ? { ...node, tasks: node.tasks.filter((task) => task.id !== taskId) }
-          : node,
-      ),
+  const renameTask = (nodeId: string, taskId: string, title: string) =>
+    updateTasks(nodeId, (tasks) =>
+      tasks.map((task) => (task.id === taskId ? { ...task, title } : task)),
     )
-  }
+
+  const deleteTask = (nodeId: string, taskId: string) =>
+    updateTasks(nodeId, (tasks) =>
+      tasks.filter((task) => task.id !== taskId),
+    )
 
   /*
     Cancel (or closing the panel) while the freshly added milestone is still
@@ -453,98 +392,18 @@ export function Questline({
         </p>
       </div>
 
-      {nodes.length ? (
-        <div className={styles.railWrap}>
-          <ol
-            className={styles.rail}
-            ref={railRef}
-            aria-label={routeLabel || 'Hitos'}
-          >
-            {nodes.map((node, index) => {
-              const state = states[index]
-              const tally = tallies[index]
-              const deadline = getQuestDeadline(
-                node.deadline,
-                state === 'complete',
-                today,
-              )
-              const open = node.id === openId
-              const isGoal = index === nodes.length - 1
-              const panelId = `${baseId}-${index}-${domFragment(node.id)}-panel`
-              const meta = `${isGoal ? 'Meta · ' : ''}${stopMeta(tally, deadline)}`
-              const stateIcon = isGoal ? 'flag' : STATE_ICON[state]
-
-              return (
-                <li
-                  key={node.id}
-                  ref={(element) => {
-                    stopRefs.current[index] = element
-                  }}
-                  className={styles.stop}
-                  data-state={state}
-                  data-open={open ? 'true' : undefined}
-                >
-                  <button
-                    ref={(element) => {
-                      triggerRefs.current[index] = element
-                    }}
-                    type="button"
-                    className={styles.trigger}
-                    aria-expanded={open}
-                    aria-controls={open ? panelId : undefined}
-                    onClick={() => toggleNode(node.id)}
-                  >
-                    <span className="visually-hidden">Hito {index + 1}.</span>
-                    <span
-                      ref={(element) => {
-                        markerRefs.current[index] = element
-                      }}
-                      className={styles.marker}
-                      aria-hidden="true"
-                    >
-                      {formatQuestNumber(index + 1)}
-                    </span>
-                    <span className={styles.stopTitle}>{node.title}</span>
-                    <span className={styles.stopMeta}>
-                      <span className="visually-hidden">{STATE_WORD[state]}</span>
-                      {stateIcon ? <Icon name={stateIcon} size="xs" aria-hidden="true" /> : null}
-                      <span>{meta}</span>
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ol>
-
-          {trail.paths.length ? (
-            <svg
-              className={styles.trail}
-              width={trail.width}
-              height={trail.height}
-              aria-hidden="true"
-              focusable="false"
-            >
-              {trail.paths.map((path, index) => (
-                <path
-                  key={index}
-                  d={path.d}
-                  className={path.done ? styles.trailDone : styles.trailPending}
-                />
-              ))}
-            </svg>
-          ) : null}
-        </div>
-      ) : (
-        <div className={styles.emptyWrap}>
-          {emptyState ?? (
-            <EmptyState
-              icon="scroll"
-              title="La ruta está en blanco"
-              description="Añade el primer hito y la travesía empezará a dibujarse."
-            />
-          )}
-        </div>
-      )}
+      <QuestRail
+        nodes={nodes}
+        states={states}
+        tallies={tallies}
+        today={today}
+        openId={openId}
+        baseId={baseId}
+        routeLabel={routeLabel}
+        emptyState={emptyState}
+        triggerRefs={triggerRefs}
+        onToggleNode={toggleNode}
+      />
 
       {openNode ? (
         <QuestNodePanel
@@ -553,7 +412,9 @@ export function Questline({
           index={openIndex}
           total={nodes.length}
           state={states[openIndex]}
-          blockingTitle={getBlockingNode(nodes, openIndex)?.title}
+          blockingTitles={getBlockingNodes(nodes, openIndex).map(
+            (blocking) => blocking.title,
+          )}
           panelId={`${baseId}-${openIndex}-${domFragment(openNode.id)}-panel`}
           headingId={`${baseId}-${openIndex}-${domFragment(openNode.id)}-heading`}
           editing={editingId === openNode.id}

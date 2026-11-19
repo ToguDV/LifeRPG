@@ -135,15 +135,24 @@
   box-shadow: 0 0 0 var(--space-0-5) var(--ui-accent-soft), var(--shadow-sm);
 }
 
-.stop[data-state="overdue"] .marker {
-  border-color: var(--ui-danger);
-  color: var(--ui-danger);
-}
-
 .stop[data-state="locked"] .marker {
   border-style: var(--border-style-dashed);
   background-color: var(--ui-surface-sunken);
   color: var(--ui-text-muted);
+}
+
+/*
+  A blocked milestone still runs out of time. Keep the dashed lock and the
+  muted number on the sunken disc, and add the danger border so the deadline
+  is not lost behind the locked state.
+*/
+.stop[data-overdue="true"] .marker {
+  border-color: var(--ui-danger);
+}
+
+/* The overdue milestone keeps its danger number on the raised disc. */
+.stop[data-state="overdue"] .marker {
+  color: var(--ui-danger);
 }
 
 .stop[data-open="true"] .marker {
@@ -188,7 +197,7 @@
   color: var(--ui-success);
 }
 
-.stop[data-state="overdue"] .stopMeta {
+.stop[data-overdue="true"] .stopMeta {
   color: var(--ui-danger);
 }
 

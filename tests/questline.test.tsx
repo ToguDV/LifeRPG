@@ -319,6 +319,87 @@ describe('Questline · borrado y borradores', () => {
 })
 
 describe('Questline · estado, nombres e ids', () => {
+  const STATE_CASES = [
+    {
+      state: 'active',
+      nodes: [
+        {
+          id: 'provisiones',
+          title: 'Provisiones',
+          tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+        },
+      ],
+      title: 'Provisiones',
+      word: 'En curso.',
+      label: 'En curso',
+    },
+    {
+      state: 'complete',
+      nodes: [
+        {
+          id: 'provisiones',
+          title: 'Provisiones',
+          tasks: [{ id: 'odre', title: 'Llenar el odre', done: true }],
+        },
+      ],
+      title: 'Provisiones',
+      word: 'Cumplido.',
+      label: 'Cumplido',
+    },
+    {
+      state: 'overdue',
+      nodes: [
+        {
+          id: 'provisiones',
+          title: 'Provisiones',
+          deadline: '2025-01-10',
+          tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+        },
+      ],
+      title: 'Provisiones',
+      word: 'Vencido.',
+      label: 'Vencido',
+    },
+    {
+      state: 'locked',
+      nodes: [
+        {
+          id: 'provisiones',
+          title: 'Provisiones',
+          tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+        },
+        {
+          id: 'cima',
+          title: 'La cima',
+          tasks: [{ id: 'bandera', title: 'Clavar la bandera', done: false }],
+        },
+      ],
+      title: 'La cima',
+      word: 'Bloqueado.',
+      label: 'Bloqueado',
+    },
+  ]
+
+  it.each(STATE_CASES)(
+    'expone el estado $state en el raíl y en el panel',
+    async ({ nodes, title, word, label }) => {
+      vi.useFakeTimers({ toFake: ['Date'] })
+      vi.setSystemTime(new Date(2025, 0, 12, 12))
+
+      const user = renderChain(nodes)
+      const trigger = screen.getByRole('button', {
+        name: new RegExp(title),
+      })
+
+      expect(trigger).toHaveAccessibleName(
+        new RegExp(word.replace('.', '\\.')),
+      )
+
+      await user.click(trigger)
+      expect(screen.getByText(label)).toBeVisible()
+    },
+  )
+
   it('anuncia en texto el estado de cada hito, incluido el activo', () => {
     renderChain([
       { id: 'hecho', title: 'Provisiones', tasks: [{ id: 'odre', title: 'Llenar el odre', done: true }] },
@@ -345,6 +426,35 @@ describe('Questline · estado, nombres e ids', () => {
     ])
 
     expect(screen.getByRole('button', { name: /El pozo/ })).toHaveAccessibleName(/Vencido/)
+  })
+
+  it('avisa del plazo vencido de un hito bloqueado sin cambiar su estado', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2025, 0, 12, 12))
+
+    const user = renderChain([
+      {
+        id: 'provisiones',
+        title: 'Provisiones',
+        tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+      },
+      {
+        id: 'pozo',
+        title: 'El pozo',
+        deadline: '2025-01-10',
+        tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+      },
+    ])
+
+    const trigger = screen.getByRole('button', { name: /El pozo/ })
+    expect(trigger).toHaveAccessibleName(/Bloqueado/)
+
+    await user.click(trigger)
+    const panel = screen.getByRole('region', { name: 'El pozo' })
+
+    expect(panel).toHaveAttribute('data-overdue', 'true')
+    expect(panel).toHaveTextContent('Venció el')
+    expect(screen.getByText('Bloqueado')).toBeVisible()
   })
 
   it('usa un nombre en español por defecto', () => {

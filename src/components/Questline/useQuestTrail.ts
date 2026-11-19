@@ -32,6 +32,11 @@ interface TrailPoint {
  * measured and drawn in an SVG behind the stops. Wrapping keeps the line
  * connected: the trail leaves the row, drops into the gap between rows and
  * comes back to the first stop of the next one.
+ *
+ * The effect re-runs on every `nodes` change, even a rename that cannot move a
+ * marker. That is deliberate at this scale: `sameTrail` already skips the
+ * state update when the path is identical, and memoising the geometry would
+ * add a second cache to keep in sync with wrapping and font metrics.
  */
 function buildBend(
   a: TrailPoint,

@@ -1,22 +1,21 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { cx } from '../../lib/cx'
-import { dateKey } from '../../lib/date'
-import { Badge, type BadgeVariant } from '../Badge/Badge'
+import { Badge } from '../Badge/Badge'
 import { Button } from '../Button/Button'
-import { Checkbox } from '../Checkbox/Checkbox'
-import { DatePicker } from '../DatePicker/DatePicker'
 import { Icon } from '../Icon/Icon'
 import { TextInput } from '../TextInput/TextInput'
 import {
   countQuestTasks,
   formatQuestNumber,
   getQuestDeadline,
-  parseDeadlineKey,
   type QuestNode,
   type QuestNodePatch,
   type QuestNodeState,
   type QuestTask,
 } from './questline-model'
+import { STATE_META } from './questline-state'
+import { QuestDeleteConfirm } from './QuestDeleteConfirm'
+import { QuestNodeEditor } from './QuestNodeEditor'
+import { QuestTaskRow } from './QuestTaskRow'
 import styles from './QuestNodePanel.module.css'
 
 export interface QuestNodePanelProps {
@@ -24,8 +23,8 @@ export interface QuestNodePanelProps {
   index: number
   total: number
   state: QuestNodeState
-  /** First unanswered milestone; it holds the gate closed. */
-  blockingTitle?: string
+  /** Every unfinished milestone behind this one, oldest first. */
+  blockingTitles: string[]
   panelId: string
   headingId: string
   editing: boolean
@@ -39,26 +38,12 @@ export interface QuestNodePanelProps {
   onDeleteTask: (taskId: string) => void
 }
 
-const STATE_LABEL: Record<QuestNodeState, string> = {
-  locked: 'Bloqueado',
-  active: 'En curso',
-  complete: 'Cumplido',
-  overdue: 'Vencido',
-}
-
-const STATE_VARIANT: Record<QuestNodeState, BadgeVariant> = {
-  locked: 'outline',
-  active: 'accent',
-  complete: 'success',
-  overdue: 'danger',
-}
-
 export function QuestNodePanel({
   node,
   index,
   total,
   state,
-  blockingTitle,
+  blockingTitles,
   panelId,
   headingId,
   editing,
@@ -86,11 +71,6 @@ export function QuestNodePanel({
   const editorId = `${panelId}-editor`
   const locked = state === 'locked'
 
-  const [draftTitle, setDraftTitle] = useState(node.title)
-  const [draftDeadline, setDraftDeadline] = useState<Date | null>(() =>
-    parseDeadlineKey(node.deadline),
-  )
-  const [titleError, setTitleError] = useState<string | null>(null)
   const [newTitle, setNewTitle] = useState('')
   const [taskError, setTaskError] = useState<string | null>(null)
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
@@ -100,14 +80,6 @@ export function QuestNodePanel({
   const [pendingFocus, setPendingFocus] = useState<{ taskId: string | null } | null>(
     null,
   )
-
-  /* Opening the editor always starts from the stored milestone, never a stale draft. */
-  useEffect(() => {
-    if (!editing) return
-    setDraftTitle(node.title)
-    setDraftDeadline(parseDeadlineKey(node.deadline))
-    setTitleError(null)
-  }, [editing, node.title, node.deadline])
 
   /*
     The confirmation replaces the button that had the focus: hand it to
@@ -188,6 +160,7 @@ export function QuestNodePanel({
 
   const tally = countQuestTasks(node)
   const deadline = getQuestDeadline(node.deadline, state === 'complete')
+  const overdue = deadline.tone === 'overdue'
   const deadlineLine =
     deadline.tone === 'none'
       ? 'Sin fecha límite'
@@ -202,25 +175,6 @@ export function QuestNodePanel({
   const finishEditing = () => {
     onEditingChange(false)
     editToolRef.current?.querySelector('button')?.focus()
-  }
-
-  const submitNode = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const title = draftTitle.trim()
-    if (!title) {
-      setTitleError('El hito necesita un nombre.')
-      return
-    }
-    onUpdateNode({
-      title,
-      deadline: draftDeadline ? dateKey(draftDeadline) : null,
-    })
-    finishEditing()
-  }
-
-  const cancelEditing = () => {
-    setTitleError(null)
-    finishEditing()
   }
 
   const submitTask = (event: FormEvent<HTMLFormElement>) => {
@@ -291,7 +245,7 @@ export function QuestNodePanel({
     }
     if (editing) {
       event.preventDefault()
-      cancelEditing()
+      finishEditing()
       return
     }
     if (editingTaskId) {
@@ -329,6 +283,7 @@ export function QuestNodePanel({
       aria-labelledby={headingId}
       tabIndex={-1}
       data-state={state}
+      data-overdue={overdue ? 'true' : undefined}
     >
       <div className={styles.head}>
         <div className={styles.headMain}>
@@ -339,7 +294,9 @@ export function QuestNodePanel({
             <h4 id={headingId} className={styles.title}>
               {node.title}
             </h4>
-            <Badge variant={STATE_VARIANT[state]}>{STATE_LABEL[state]}</Badge>
+            <Badge variant={STATE_META[state].badgeVariant}>
+              {STATE_META[state].label}
+            </Badge>
           </div>
           {/*
             The note is the author's margin aside, not a task or a deadline.
@@ -367,7 +324,7 @@ export function QuestNodePanel({
               aria-expanded={editing}
               aria-controls={editing ? editorId : undefined}
               iconLeft={<Icon name={editing ? 'close' : 'edit'} size="sm" />}
-              onClick={() => (editing ? cancelEditing() : onEditingChange(true))}
+              onClick={() => (editing ? finishEditing() : onEditingChange(true))}
             />
           </span>
           <Button
@@ -382,42 +339,12 @@ export function QuestNodePanel({
       </div>
 
       {editing ? (
-        <form id={editorId} className={styles.editor} onSubmit={submitNode} noValidate>
-          <TextInput
-            label="Nombre del hito"
-            autoFocus
-            value={draftTitle}
-            onChange={(event) => {
-              setDraftTitle(event.target.value)
-              if (titleError) setTitleError(null)
-            }}
-            error={titleError ?? undefined}
-            required
-          />
-          <div className={styles.deadlineRow}>
-            <DatePicker
-              label="Fecha límite"
-              optional
-              value={draftDeadline}
-              onChange={setDraftDeadline}
-              fieldClassName={styles.deadlineField}
-              placeholder="Sin fecha"
-            />
-            {draftDeadline ? (
-              <Button variant="ghost" size="sm" onClick={() => setDraftDeadline(null)}>
-                Quitar fecha
-              </Button>
-            ) : null}
-          </div>
-          <div className={styles.editorActions}>
-            <Button type="submit" variant="primary" size="sm">
-              Guardar hito
-            </Button>
-            <Button variant="ghost" size="sm" onClick={cancelEditing}>
-              Cancelar
-            </Button>
-          </div>
-        </form>
+        <QuestNodeEditor
+          node={node}
+          editorId={editorId}
+          onUpdateNode={onUpdateNode}
+          onDone={finishEditing}
+        />
       ) : null}
 
       {locked ? (
@@ -426,98 +353,39 @@ export function QuestNodePanel({
             <Icon name="lock" size="sm" />
           </span>
           <span className={styles.lockText}>
-            Se desbloquea al completar
-            {blockingTitle ? ` «${blockingTitle}»` : ' el hito anterior'}. Puedes
-            preparar la lista, pero todavía no marcarla.
+            {blockingTitles.length > 1
+              ? `Se desbloquea al completar los hitos anteriores, empezando por «${blockingTitles[0]}».`
+              : blockingTitles.length === 1
+                ? `Se desbloquea al completar «${blockingTitles[0]}».`
+                : 'Se desbloquea al completar el hito anterior.'}{' '}
+            Puedes preparar la lista, pero todavía no marcarla.
           </span>
         </p>
       ) : null}
 
       <ul className={styles.taskList} aria-label={`Tareas de «${node.title}»`}>
         {node.tasks.map((task) => (
-          <li
+          <QuestTaskRow
             key={task.id}
-            ref={(element) => {
+            task={task}
+            locked={locked}
+            editing={editingTaskId === task.id}
+            draft={taskDraft}
+            error={taskEditError}
+            rowRef={(element) => {
               if (element) taskRowRefs.current.set(task.id, element)
               else taskRowRefs.current.delete(task.id)
             }}
-            className={styles.task}
-          >
-            {editingTaskId === task.id ? (
-              <form
-                className={styles.taskEdit}
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  saveTask(task.id)
-                }}
-              >
-                <TextInput
-                  aria-label={`Título de «${task.title}»`}
-                  value={taskDraft}
-                  onChange={(event) => {
-                    setTaskDraft(event.target.value)
-                    if (taskEditError) setTaskEditError(null)
-                  }}
-                  error={taskEditError ?? undefined}
-                  size="sm"
-                  autoFocus
-                  fieldClassName={styles.taskEditField}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Escape') {
-                      event.preventDefault()
-                      cancelTaskEdit()
-                    }
-                  }}
-                />
-                <div className={styles.taskTools}>
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    iconOnly
-                    aria-label="Guardar cambios"
-                    iconLeft={<Icon name="check" size="sm" />}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    iconOnly
-                    aria-label="Cancelar edición"
-                    iconLeft={<Icon name="close" size="sm" />}
-                    onClick={cancelTaskEdit}
-                  />
-                </div>
-              </form>
-            ) : (
-              <>
-                <Checkbox
-                  label={task.title}
-                  checked={task.done}
-                  disabled={locked}
-                  strikeWhenChecked
-                  onChange={(event) => onToggleTask(task.id, event.target.checked)}
-                />
-                <div className={cx(styles.taskTools, styles.taskToolsIdle)}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    iconOnly
-                    aria-label={`Editar «${task.title}»`}
-                    iconLeft={<Icon name="edit" size="sm" />}
-                    onClick={() => startTaskEdit(task)}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    iconOnly
-                    aria-label={`Eliminar «${task.title}»`}
-                    iconLeft={<Icon name="trash" size="sm" />}
-                    onClick={() => removeTask(task.id)}
-                  />
-                </div>
-              </>
-            )}
-          </li>
+            onStartEdit={() => startTaskEdit(task)}
+            onDraftChange={(value) => {
+              setTaskDraft(value)
+              if (taskEditError) setTaskEditError(null)
+            }}
+            onSubmit={() => saveTask(task.id)}
+            onCancelEdit={cancelTaskEdit}
+            onToggle={(done) => onToggleTask(task.id, done)}
+            onDelete={() => removeTask(task.id)}
+          />
         ))}
       </ul>
 
@@ -559,31 +427,17 @@ export function QuestNodePanel({
             : locked
               ? 'La ruta espera tu firma.'
               : index === total - 1
-                ? 'Completa este hito para cerrar la travesía.'
+                ? 'Completa este hito para terminar la travesía.'
                 : 'Completa este hito para abrir el siguiente.'}
         </p>
         {confirmDelete ? (
-          <div
-            className={styles.confirm}
-            role="group"
-            aria-label="Confirmar la eliminación del hito"
-          >
-            <p className={styles.confirmText} role="alert">
-              ¿Eliminar «{node.title}»
-              {node.tasks.length
-                ? ` y sus ${node.tasks.length} ${node.tasks.length === 1 ? 'tarea' : 'tareas'}`
-                : ''}
-              ? No se puede deshacer.
-            </p>
-            <Button variant="danger" size="sm" onClick={onDeleteNode}>
-              Sí, eliminar el hito
-            </Button>
-            <span ref={cancelDeleteRef}>
-              <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(false)}>
-                Cancelar
-              </Button>
-            </span>
-          </div>
+          <QuestDeleteConfirm
+            title={node.title}
+            taskCount={node.tasks.length}
+            cancelRef={cancelDeleteRef}
+            onConfirm={onDeleteNode}
+            onCancel={() => setConfirmDelete(false)}
+          />
         ) : (
           <span ref={deleteToolRef}>
             <Button

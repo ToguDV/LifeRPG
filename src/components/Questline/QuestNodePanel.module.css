@@ -43,7 +43,7 @@
   min-width: 0;
 }
 
-.panel[data-state="overdue"] .kicker {
+.panel[data-overdue="true"] .kicker {
   color: var(--ui-danger);
 }
 

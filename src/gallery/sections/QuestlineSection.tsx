@@ -12,7 +12,7 @@ import styles from './sections.module.css'
 
 /**
  * Deadlines are relative to today so the demo keeps showing all three
- * states — closed, overdue and still ahead — whenever the gallery is opened.
+ * states — completed, overdue and still ahead — whenever the gallery is opened.
  */
 function makeSeed(): QuestNode[] {
   const today = new Date()
@@ -87,7 +87,7 @@ function makeSeed(): QuestNode[] {
 export function QuestlineSection({ canvas }: SectionProps) {
   const [nodes, setNodes] = useState<QuestNode[]>(makeSeed)
 
-  const closed = nodes.filter(isQuestNodeComplete).length
+  const completed = nodes.filter(isQuestNodeComplete).length
   const done = nodes.reduce(
     (sum, node) => sum + node.tasks.filter((task) => task.done).length,
     0,
@@ -104,7 +104,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="La ruta del invierno"
-      description="Una línea de hitos; cada uno con su lista de tareas y su fecha. Al cerrar todas sus tareas, el siguiente hito abre la puerta y el sendero se entinta. Tareas, plazos y nombres se editan aquí mismo."
+      description="Una línea de hitos; cada uno con su lista de tareas y su fecha. Al completar todas sus tareas, el siguiente hito abre la puerta y el sendero se entinta. Tareas, plazos y nombres se editan aquí mismo."
       folio="10"
       tilt="right"
     >
@@ -118,8 +118,8 @@ export function QuestlineSection({ canvas }: SectionProps) {
 
         <div className={styles.questFoot}>
           <DemoNote muted>
-            {closed} de {nodes.length} hitos cerrados · {done} de {total} tareas
-            cumplidas. Un hito sin tareas no se considera cerrado.
+            {completed} de {nodes.length} hitos completados · {done} de {total} tareas
+            cumplidas. Un hito sin tareas no se considera completado.
           </DemoNote>
           <Button
             variant="secondary"

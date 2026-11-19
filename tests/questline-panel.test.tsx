@@ -53,6 +53,61 @@ describe('QuestNodePanel', () => {
     expect(screen.getByRole('button', { name: 'Guardar hito' })).toBeVisible()
   })
 
+  it('con varios pendientes, no promete que el primero baste para desbloquear', async () => {
+    const user = renderChain([
+      {
+        id: 'provisiones',
+        title: 'Provisiones',
+        tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+      },
+      {
+        id: 'pozo',
+        title: 'El pozo',
+        tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+      },
+      {
+        id: 'cima',
+        title: 'La cima',
+        tasks: [{ id: 'bandera', title: 'Clavar la bandera', done: false }],
+      },
+    ])
+
+    await user.click(screen.getByRole('button', { name: /La cima/ }))
+
+    expect(
+      screen.getByText(
+        /Se desbloquea al completar los hitos anteriores, empezando por «Provisiones»\./,
+      ),
+    ).toBeVisible()
+  })
+
+  it('nombra el único bloqueo cuando los anteriores ya están cumplidos', async () => {
+    const user = renderChain([
+      {
+        id: 'provisiones',
+        title: 'Provisiones',
+        tasks: [{ id: 'odre', title: 'Llenar el odre', done: true }],
+      },
+      {
+        id: 'pozo',
+        title: 'El pozo',
+        tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+      },
+      {
+        id: 'cima',
+        title: 'La cima',
+        tasks: [{ id: 'bandera', title: 'Clavar la bandera', done: false }],
+      },
+    ])
+
+    await user.click(screen.getByRole('button', { name: /La cima/ }))
+
+    expect(
+      screen.getByText(/Se desbloquea al completar «El pozo»\./),
+    ).toBeVisible()
+    expect(screen.queryByText(/hitos anteriores/)).not.toBeInTheDocument()
+  })
+
   it('recibe el foco al abrirse por teclado y lo devuelve al disparador con Escape', async () => {
     const user = renderChain()
     await user.tab()
@@ -74,7 +129,7 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Provisiones/ }))
 
     expect(
-      screen.getByText('Completa este hito para cerrar la travesía.'),
+      screen.getByText('Completa este hito para terminar la travesía.'),
     ).toBeVisible()
 
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))

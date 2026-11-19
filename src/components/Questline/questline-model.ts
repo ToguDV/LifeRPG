@@ -91,15 +91,13 @@ export function isQuestNodeComplete(node: QuestNode): boolean {
 }
 
 /**
- * The first unfinished milestone behind `index`, which is the one holding
- * the gate closed. With a consistent chain it is always `index - 1`, but
- * the search survives hand-edited data.
+ * Every unfinished milestone before `index`, oldest first: all of them hold
+ * the gate closed. A blocked milestone is unfinished too, so the immediate
+ * predecessor is not always the only blocker and the rail's derived state
+ * cannot be trusted to name just one.
  */
-export function getBlockingNode(nodes: QuestNode[], index: number): QuestNode | null {
-  for (let position = 0; position < index; position += 1) {
-    if (!isQuestNodeComplete(nodes[position])) return nodes[position]
-  }
-  return null
+export function getBlockingNodes(nodes: QuestNode[], index: number): QuestNode[] {
+  return nodes.slice(0, index).filter((node) => !isQuestNodeComplete(node))
 }
 
 /**
