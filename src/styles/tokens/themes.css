@@ -833,7 +833,12 @@
 
 /* Light paper needs a touch more ink for small hints and meta labels. */
 [data-paper="light"] {
-  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 30%, var(--ink-2) 70%);
+  /*
+    16 px muted notes sit on the sunken sheet too (#d6d0c2), where the old
+    30/70 mix measured 4.32:1. At 20/80 it reaches 4.59:1 there and 5.36:1
+    on the sheet itself.
+  */
+  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 20%, var(--ink-2) 80%);
   /*
     The state accents are warm inks on light paper. At 11–15 px they need
     more body than the badge border: 5.17:1 for success and 4.99:1 for
@@ -860,4 +865,14 @@
     papers by a hair.
   */
   --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 88%, var(--ink-2) 12%);
+}
+
+/*
+  Nord's paper accent (#d08770) is lighter than the other palettes: the
+  parchment ink on it lands at 4.39:1, under AA for the 14 px milestone
+  marker. Stone-0 keeps the same family and reaches 5.13:1, and it is the
+  ink the panel mapping already uses.
+*/
+[data-theme="nord"] {
+  --ui-paper-accent-contrast: var(--stone-0);
 }

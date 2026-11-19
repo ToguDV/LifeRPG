@@ -23,6 +23,13 @@ The 18 failures were five real findings, not infrastructure noise:
 
 Details of the original pass and of the measured ratios: `git log -p e2e/FINDINGS.md`.
 
+## Later findings
+
+| # | Finding | Status |
+| --- | --- | --- |
+| A11Y-06 | `color-contrast` of the completed milestone marker in Nord + Paper: 4.39:1 (`--parch` on `--accent-paper`, 14 px). The matrix missed it while it audited in the middle of the theme transition; a layout change made the settled state deterministic | Fixed: Nord's `--ui-paper-accent-contrast` is `--stone-0` (5.13:1) |
+| A11Y-07 | `color-contrast` of `Field`'s “opcional” label in Pergamino + Paper: 4.32:1 (`--ui-text-muted` on the sunken sheet). axe left it in `incomplete` — “background colour could not be determined due to a pseudo element”: the old 1 px margin rule ran through the card. The frame removed that pseudo-element and made the node measurable | Fixed: the light-paper muted ink moves from 30/70 to 20/80 (4.59:1 on the sunken sheet) |
+
 ---
 
 ## Harness rules
