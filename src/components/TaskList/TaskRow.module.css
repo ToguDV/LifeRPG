@@ -1,6 +1,6 @@
 .row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 0 var(--space-2);
   padding: var(--space-3) var(--space-2);
@@ -17,9 +17,14 @@
   background-color: var(--ui-field-bg);
 }
 
-.boxWrap {
-  display: flex;
-  padding-top: var(--space-0-5);
+/* The single `<label>` covers the box and the body: the row stays clickable. */
+.control {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0 var(--space-2);
+  min-width: 0;
+  cursor: pointer;
 }
 
 .input {
@@ -35,16 +40,12 @@
   border: 0;
 }
 
-.boxLabel {
-  display: inline-flex;
-  cursor: pointer;
-}
-
 .box {
   display: inline-grid;
   place-items: center;
   width: var(--checkbox-size);
   height: var(--checkbox-size);
+  margin-top: var(--space-0-5);
   color: var(--ui-accent-contrast);
   border: var(--border-width) solid color-mix(in srgb, var(--ui-text) 48%, transparent);
   border-radius: var(--radius-xs);
@@ -69,18 +70,18 @@
     transform var(--duration-base) var(--ease-spring);
 }
 
-.input:checked + .boxLabel .box {
+.input:checked + .box {
   border-color: var(--ui-accent);
   background-color: var(--ui-accent);
   transform: rotate(1deg);
 }
 
-.input:checked + .boxLabel .check {
+.input:checked + .box .check {
   opacity: 1;
   transform: scale(1) rotate(-2deg);
 }
 
-.input:focus-visible + .boxLabel .box {
+.input:focus-visible + .box {
   outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
   outline-offset: var(--focus-ring-offset);
 }
@@ -91,7 +92,6 @@
   gap: var(--space-1);
   min-width: 0;
   padding-top: calc(var(--space-1) / 4);
-  cursor: pointer;
 }
 
 .line {

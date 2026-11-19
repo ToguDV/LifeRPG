@@ -42,6 +42,8 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
     readers in focus mode. The `title` stays as a pointer aid only.
   */
   const describedBy = cx(priorityId, task.overdue ? overdueId : undefined)
+  const nameId = `${inputId}-name`
+  const action = `${task.done ? 'Desmarcar' : 'Marcar'} «${task.title}»`
 
   return (
     <li
@@ -49,55 +51,65 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
       data-done={task.done ? 'true' : 'false'}
       data-overdue={task.overdue ? 'true' : undefined}
     >
-      <span className={styles.boxWrap}>
+      {/*
+        One labelling mechanism: a single native `<label>` wraps the box and
+        the row body, so the whole row stays clickable. The checkbox name is
+        an explicit reference to the hidden action phrase inside that same
+        label, which keeps the exact «Marcar/Desmarcar «título»» name and the
+        visible title inside it (WCAG 2.5.3). The old `aria-label` on the
+        input plus two `<label for>` elements made axe unable to decide the
+        name (`form-field-multiple-labels`).
+      */}
+      <label htmlFor={inputId} className={styles.control}>
+        <span id={nameId} className="visually-hidden">
+          {action}
+        </span>
         <input
           id={inputId}
           type="checkbox"
           checked={task.done}
-          aria-label={`${task.done ? 'Desmarcar' : 'Marcar'} «${task.title}»`}
+          aria-labelledby={nameId}
           aria-describedby={describedBy}
           onChange={(event) => onToggle(task.id, event.target.checked)}
           className={styles.input}
         />
-        <label htmlFor={inputId} className={styles.boxLabel}>
-          <span className={styles.box} aria-hidden="true">
-            <Icon name="check" size="xs" className={styles.check} />
-          </span>
-        </label>
-      </span>
-
-      <label htmlFor={inputId} className={styles.body}>
-        <span className={styles.line}>
-          <span className={styles.title}>
-            <span
-              className={styles.priority}
-              data-priority={priority}
-              title={PRIORITY_LABEL[priority]}
-              aria-hidden="true"
-            />
-            <span id={priorityId} className="visually-hidden">
-              {PRIORITY_LABEL[priority]}.
-            </span>
-            <span>{task.title}</span>
-          </span>
-          {task.overdue ? (
-            <span id={overdueId} className="visually-hidden">
-              Vencida.
-            </span>
-          ) : null}
-          {task.due ? <span className={styles.due}>{task.due}</span> : null}
+        <span className={styles.box} aria-hidden="true">
+          <Icon name="check" size="xs" className={styles.check} />
         </span>
-        {task.note || task.tag ? (
-          <span className={styles.meta}>
-            {task.note ? <span className={styles.note}>{task.note}</span> : null}
-            {task.tag ? (
-              <span className={styles.tag}>
-                <Icon name="tag" size="xs" aria-hidden="true" />
-                {task.tag}
+
+        <span className={styles.body}>
+          <span className={styles.line}>
+            <span className={styles.title}>
+              <span
+                className={styles.priority}
+                data-priority={priority}
+                title={PRIORITY_LABEL[priority]}
+                aria-hidden="true"
+              />
+              <span id={priorityId} className="visually-hidden">
+                {PRIORITY_LABEL[priority]}.
+              </span>
+              <span>{task.title}</span>
+            </span>
+            {task.overdue ? (
+              <span id={overdueId} className="visually-hidden">
+                Vencida.
               </span>
             ) : null}
+            {task.due ? <span className={styles.due}>{task.due}</span> : null}
           </span>
-        ) : null}
+          {task.note || task.tag ? (
+            <span className={styles.meta}>
+              {task.note ? <span className={styles.note}>{task.note}</span> : null}
+              {task.tag ? (
+                <span className={styles.tag}>
+                  <Icon name="tag" size="xs" aria-hidden="true" />
+                  {task.tag}
+                </span>
+              ) : null}
+            </span>
+          ) : null}
+        </span>
       </label>
 
       {onDelete ? (

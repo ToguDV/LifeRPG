@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { FileUploader } from '../src/components/FileUploader/FileUploader'
@@ -63,5 +63,34 @@ describe('FileUploader accept', () => {
 
     expect(screen.getByText('foto.png')).toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveTextContent('«dibujo.gif» no es un formato permitido.')
+  })
+})
+
+/*
+  WCAG 2.5.3: the dropzone is named by the field label and by the visible
+  instruction inside it, so a voice-control user can say what they read.
+*/
+describe('FileUploader nombre accesible', () => {
+  it('incluye la etiqueta del campo y la instrucción visible', () => {
+    render(<FileUploader label="Mapas y provisiones" />)
+
+    expect(
+      screen.getByRole('button', {
+        name: /Mapas y provisiones.*Arrastra tus archivos aquí.*elige desde el estante/i,
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('actualiza el nombre cuando la zona está en modo arrastre', () => {
+    render(<FileUploader label="Mapas y provisiones" />)
+
+    const zone = screen.getByRole('button', { name: /Arrastra tus archivos aquí/i })
+    fireEvent.dragEnter(zone)
+
+    expect(
+      screen.getByRole('button', {
+        name: /Mapas y provisiones.*Suelta aquí los archivos.*elige desde el estante/i,
+      }),
+    ).toBeInTheDocument()
   })
 })

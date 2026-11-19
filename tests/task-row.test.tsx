@@ -57,4 +57,13 @@ describe('TaskRow', () => {
     expect(screen.getByRole('checkbox')).toHaveAccessibleDescription(/prioridad media/i)
     expect(screen.getByRole('checkbox')).not.toHaveAccessibleDescription(/vencida/i)
   })
+
+  it('marca al pulsar el título: la fila entera sigue siendo clicable', async () => {
+    const onToggle = renderRow()
+    const user = userEvent.setup()
+
+    await user.click(screen.getByText('Vigilar el paso'))
+
+    expect(onToggle).toHaveBeenCalledWith('vigilar', true)
+  })
 })

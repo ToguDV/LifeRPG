@@ -17,6 +17,7 @@ Este documento es el parte de la primera pasada. No es una lista de excepciones:
 - **Causa:** el `div` con `role="button"` toma su nombre de la label del campo («Mapas y provisiones»), pero su texto visible dice «Arrastra tus archivos aquí / o elige desde el estante». El nombre accesible no contiene ese texto.
 - **Impacto:** un usuario de control por voz no puede activar la zona diciendo lo que lee en pantalla; un lector de pantalla anuncia solo el nombre del campo, no la instrucción visible.
 - **Sugerencia (no aplicada):** que el texto visible forme parte del nombre accesible o que la zona no sea el control nombrado por la label. La decisión de copy/estructura es del propietario del componente.
+- **Estado: resuelto.** La zona se nombra con la label del campo **y** las dos líneas visibles de la instrucción (`aria-labelledby` → label + título + texto). Nombre resultante: «Mapas y provisiones Arrastra tus archivos aquí o elige desde el estante»; con el arrastre activo, «… Suelta aquí los archivos …». La descripción (`hint`/error) no cambia.
 
 ## A11Y-02 · Contraste del marcador de hito vencido sobre panel
 
@@ -58,13 +59,15 @@ Este documento es el parte de la primera pasada. No es una lista de excepciones:
 - **Medición:** **4.02:1** (`#b57462` sobre `#2e251e`, 11 px). Mínimo 4.5:1.
 - **Impacto:** la acción destructiva es la que peor se lee del panel.
 
-## Hallazgo conocido · `DatePicker` y `label-content-name-mismatch`
+## Hallazgo conocido · `DatePicker` y `label-content-name-mismatch` (resuelto)
+
+- **Estado: resuelto.** El nombre accesible de cada celda usa el día sin relleno («1 de noviembre de 2026»), que contiene el texto visible «1». El `aria-label` de las celdas ya no usa `formatDate`, que conserva el día a dos dígitos para la prosa y el disparador. La exclusión `disableRules` y la sonda del hallazgo se retiraron: el estado abierto audita la regla sin excepciones.
 
 - **Regla:** `label-content-name-mismatch` · impacto **serious** · WCAG 2.5.3.
 - **Dónde:** calendario abierto (`role="dialog"`, «Elegir fecha»), celdas de día con número de un dígito.
 - **Selector observado:** `button[aria-label="01 de noviembre de 2026"]` … `…09…` y los días 1–9 del mes siguiente visible (18 celdas en la pasada).
 - **Causa:** el texto visible es «1» y el nombre accesible «01 de noviembre de 2026»; «1» no está contenido en «01». Es el hallazgo anterior de `REVISION.md` §3.
-- **Tratamiento:** la pasada completa del estado abierto desactiva **solo** esta regla (`disableRules`) y un test separado la vuelve a ejecutar dentro del diálogo: imprime los targets, los adjunta y anota el run. Si la regla desaparece, el test lo avisa y pide retirar la exclusión. No es una línea base: es un bug abierto.
+- **Tratamiento:** la pasada completa del estado abierto ya no desactiva esta regla; el test del `DatePicker` abierto la ejecuta como cualquier otra. No hay línea base ni sonda separada: si el nombre vuelve a perder el número visible, el test se pone rojo.
 
 ---
 
@@ -78,7 +81,7 @@ axe no puede determinar el contraste de **310–351 nodos** por pasada: las text
 
 No se contabilizan como violaciones ni como pases. El contraste real de esos nodos sigue pendiente de revisión manual o de una herramienta que componga las capas.
 
-`form-field-multiple-labels` (5 nodos, `TaskRow`) queda en `incomplete`: el checkbox tiene `aria-label` descriptivo y además una `<label>` visible. axe no puede decidir cuál gana. Requiere revisión manual/lector de pantalla.
+`form-field-multiple-labels` (5 nodos, `TaskRow`) ya no aparece: cada checkbox tiene una sola `<label>` nativa que envuelve la caja y el cuerpo, y su nombre viene de `aria-labelledby` a la frase de acción oculta dentro de esa misma label. «Marcar/Desmarcar «título»» se conserva exacto, la fila sigue clicable y la descripción (`aria-describedby`) no cambia.
 
 ## Lo que sí pasa en esta pasada
 

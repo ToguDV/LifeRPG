@@ -265,10 +265,21 @@ export function FileUploader({
         /*
           The visible label names the control the user actually operates.
           The hidden file input is out of the tab order, so pointing `for` at
-          it does not name the dropzone; the visible instruction text inside
-          the zone still describes the action on its own.
+          it does not name the dropzone. The instruction inside the zone is
+          visible text, so it must be part of the accessible name as well
+          (WCAG 2.5.3: a voice-control user says what they read). With no
+          label the control falls back to its text content, which already
+          contains the same instruction.
         */
-        aria-labelledby={label ? getFieldLabelId(fieldId) : undefined}
+        aria-labelledby={
+          label
+            ? [
+                getFieldLabelId(fieldId),
+                `${fieldId}-dropzone-title`,
+                `${fieldId}-dropzone-text`,
+              ].join(' ')
+            : undefined
+        }
         aria-describedby={messageId}
         data-drag={dragActive ? 'active' : undefined}
         data-disabled={disabled ? 'true' : undefined}
@@ -283,10 +294,10 @@ export function FileUploader({
         <span className={styles.zoneIcon} aria-hidden="true">
           <Icon name="upload" size="lg" />
         </span>
-        <span className={styles.zoneTitle}>
+        <span id={`${fieldId}-dropzone-title`} className={styles.zoneTitle}>
           {dragActive ? 'Suelta aquí los archivos' : 'Arrastra tus archivos aquí'}
         </span>
-        <span className={styles.zoneText}>
+        <span id={`${fieldId}-dropzone-text`} className={styles.zoneText}>
           o <span className={styles.browse}>elige desde el estante</span>
         </span>
       </div>
