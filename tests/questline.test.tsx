@@ -22,6 +22,20 @@ function renderChain(nodes: QuestNode[] = CHAIN) {
   return userEvent.setup()
 }
 
+/*
+  The chain's live region. The milestone panel may grow its own announcements,
+  so pick the region reporting chain events and fall back to the last one (the
+  chain region renders after the panel and the add row).
+*/
+function chainStatus(): HTMLElement {
+  const regions = screen.getAllByRole('status')
+  return (
+    regions.find((region) =>
+      /(cumplido|desbloque|bloquead|eliminado|travesía)/i.test(region.textContent ?? ''),
+    ) ?? regions[regions.length - 1]
+  )
+}
+
 afterEach(() => {
   vi.useRealTimers()
 })
@@ -54,7 +68,7 @@ describe('Questline', () => {
     await user.click(screen.getByRole('button', { name: /Provisiones/ }))
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(
+    expect(chainStatus()).toHaveTextContent(
       /Hito «Provisiones» cumplido. Se ha desbloqueado «El pozo»./,
     )
 
@@ -71,7 +85,7 @@ describe('Questline', () => {
     await user.click(screen.getByRole('button', { name: /El pozo/ }))
 
     expect(screen.getByRole('checkbox', { name: 'Bajar el farol' })).toBeDisabled()
-    expect(screen.getByRole('status')).toBeEmptyDOMElement()
+    expect(chainStatus()).toBeEmptyDOMElement()
   })
 
   it('añade, renombra y elimina tareas del hito abierto', async () => {
@@ -188,14 +202,14 @@ describe('Questline · anuncios y estado de la cadena', () => {
 
     await user.click(screen.getByRole('button', { name: /Provisiones/ }))
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
-    expect(screen.getByRole('status')).toHaveTextContent(/Se ha bloqueado «La cima»\./)
+    expect(chainStatus()).toHaveTextContent(/Se ha bloqueado «La cima»\./)
 
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(
+    expect(chainStatus()).toHaveTextContent(
       /Hito «Provisiones» cumplido\. Se ha desbloqueado «La cima»\./,
     )
-    expect(screen.getByRole('status')).not.toHaveTextContent(/El pozo/)
+    expect(chainStatus()).not.toHaveTextContent(/El pozo/)
   })
 
   it('anuncia la travesía completa al reabrir y cerrar un hito sin posteriores', async () => {
@@ -205,10 +219,10 @@ describe('Questline · anuncios y estado de la cadena', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(
+    expect(chainStatus()).toHaveTextContent(
       /Hito «Provisiones» cumplido\. La travesía está completa\./,
     )
-    expect(screen.getByRole('status')).not.toHaveTextContent(/desbloqueado/)
+    expect(chainStatus()).not.toHaveTextContent(/desbloqueado/)
   })
 
   it('anuncia el rebloqueo al añadir una tarea a un hito cumplido', async () => {
@@ -224,7 +238,7 @@ describe('Questline · anuncios y estado de la cadena', () => {
     )
     await user.click(screen.getByRole('button', { name: 'Añadir' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(/Se ha bloqueado «El pozo»\./)
+    expect(chainStatus()).toHaveTextContent(/Se ha bloqueado «El pozo»\./)
   })
 
   it('anuncia el rebloqueo de un hito al reabrir uno anterior', async () => {
@@ -236,7 +250,7 @@ describe('Questline · anuncios y estado de la cadena', () => {
     await user.click(screen.getByRole('button', { name: /Provisiones/ }))
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(/Se ha bloqueado «El pozo»\./)
+    expect(chainStatus()).toHaveTextContent(/Se ha bloqueado «El pozo»\./)
 
     await user.click(screen.getByRole('button', { name: /El pozo/ }))
     expect(screen.getByRole('checkbox', { name: 'Bajar el farol' })).toBeDisabled()
@@ -254,10 +268,10 @@ describe('Questline · borrado y borradores', () => {
     await user.click(screen.getByRole('button', { name: 'Eliminar hito' }))
     await user.click(screen.getByRole('button', { name: 'Sí, eliminar el hito' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(
+    expect(chainStatus()).toHaveTextContent(
       'Hito «Provisiones» eliminado del camino.',
     )
-    expect(screen.getByRole('status')).not.toHaveTextContent(/El pozo.*cumplido/i)
+    expect(chainStatus()).not.toHaveTextContent(/El pozo.*cumplido/i)
   })
 
   it('conserva el mensaje de borrado cuando la cadena cambia de estado', async () => {
@@ -270,10 +284,10 @@ describe('Questline · borrado y borradores', () => {
     await user.click(screen.getByRole('button', { name: 'Eliminar hito' }))
     await user.click(screen.getByRole('button', { name: 'Sí, eliminar el hito' }))
 
-    expect(screen.getByRole('status')).toHaveTextContent(
+    expect(chainStatus()).toHaveTextContent(
       /Hito «Provisiones» eliminado del camino\./,
     )
-    expect(screen.getByRole('status')).toHaveTextContent(/Se ha desbloqueado «El pozo»\./)
+    expect(chainStatus()).toHaveTextContent(/Se ha desbloqueado «El pozo»\./)
   })
 
   it('descarta el hito borrador si se cancela la creación', async () => {
