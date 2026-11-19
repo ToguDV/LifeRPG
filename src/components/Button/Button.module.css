@@ -139,15 +139,16 @@
 }
 
 .danger {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
   border-color: color-mix(in srgb, var(--ui-danger) 42%, transparent);
   background-color: var(--ui-danger-soft);
 }
 
 .danger:hover:not(:disabled) {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
   border-color: var(--ui-danger);
-  background-color: color-mix(in srgb, var(--ui-danger) 20%, transparent);
+  /* Stronger tint would lower the label below 4.5:1; the border carries the hover. */
+  background-color: var(--ui-danger-soft);
 }
 
 /* ---------- shapes ---------- */

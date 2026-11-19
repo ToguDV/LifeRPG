@@ -56,17 +56,17 @@
 
 .success .icon {
   background-color: var(--ui-success-soft);
-  color: var(--ui-success);
+  color: var(--ui-success-text);
 }
 
 .warning .icon {
   background-color: var(--ui-warning-soft);
-  color: var(--ui-warning);
+  color: var(--ui-warning-text);
 }
 
 .danger .icon {
   background-color: var(--ui-danger-soft);
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }
 
 .body {
