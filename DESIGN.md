@@ -74,7 +74,9 @@ Vive en `src/styles/tokens/themes.css`. Cada tema define, como mínimo:
 - `--ribbon-1…3`: cera / botón primario.
 - `--vital-1…3`: salud, resistencia, saciedad y estados.
 - `--ribbon-*`, `--map-*`, `--xp-*`, `--pin-*`: acentos específicos del mundo.
-- `--accent-panel`, `--accent-paper`, `--danger-*`, `--success-*`, `--warning-*`: decisiones semánticas del tema.
+- `--accent-panel`, `--accent-paper`, `--danger-*`, `--success-*`, `--warning-*`: decisiones semánticas del tema, incluida la variante `-text` de cada estado.
+
+La variante `-text` es la única que puede usarse como `color`; el token base queda para bordes y rellenos y `-soft` para fondos.
 
 ### 3.2 Semántica de superficie
 
@@ -108,7 +110,7 @@ Los componentes consumen, entre otros:
 | Campos | `--ui-field-bg`, `--ui-field-bg-hover`, `--ui-focus` |
 | Acción | `--ui-accent`, `--ui-accent-strong`, `--ui-accent-soft`, `--ui-accent-contrast` |
 | Botón principal | `--ui-primary-bg`, `--ui-primary-bg-hi`, `--ui-primary-bg-lo`, `--ui-primary-text`, `--ui-primary-edge` |
-| Estados | `--ui-danger`, `--ui-success`, `--ui-warning` (+ `-soft`) |
+| Estados | `--ui-danger`, `--ui-success`, `--ui-warning` (+ `-soft`, `-text`) |
 | Sombras | `--shadow-sm/md/lg/xl`, `--shadow-inset`, `--shadow-wax` |
 | Foco | `--ui-focus`, `--focus-ring-width`, `--focus-ring-offset`, `--focus-ring-style` |
 
@@ -175,11 +177,14 @@ El resultado es que el mismo control cambia de temperatura al alternar Papel / P
 
 Decisiones concretas para mantener legibilidad sin perder la estética:
 
-- El texto “muted” del papel claro se mezcla 50/50 entre `--ink-3` e `--ink-2`; antes se perdía por debajo de 4.5:1.
+- El texto “muted” del papel claro se mezcla 30/70 entre `--ink-3` e `--ink-2`; con 50/50 se quedaba en 4.22:1 sobre el pozo del panel de Questline.
+- El texto “muted” del papel oscuro se mezcla 88/12 entre `--ink-3` e `--ink-2`: Rose Pine caía a 4.29:1 sobre su hoja hundida.
 - El texto “muted” del panel se mezcla 70/30 entre `--bone-faint` y `--bone-dim`; mantiene la jerarquía y gana contraste.
+- Los acentos de estado tienen dos roles por superficie. `--ui-danger`, `--ui-success` y `--ui-warning` siguen siendo borde, relleno y punto del badge; `--ui-danger-text`, `--ui-success-text` y `--ui-warning-text` son los únicos que se usan como texto. La variante se declara por tema y superficie (`--danger-panel-text`, `--danger-paper-text`, …) y se mezcla hacia la tinta de la superficie solo cuando el acento base no llega a 4.5:1: el marcador vencido de Nord pasa de 2.74:1 a 4.86:1 sobre `--panel-1`; el botón de peligro de Pergamino, de 4.02:1 a 5.59:1 sobre su tinte; el kicker cumplido de Pergamino, de 4.18:1 a 5.51:1. En papel claro, la mezcla final de éxito y aviso baja a 65/35 y 55/45 para cubrir también el tinte del badge y la hoja hundida.
+- El acento fuerte de panel de Nord se mezcla 92/8 con `--bone`: el número del índice activo estaba en 4.42:1 sobre `--ui-accent-soft` y pasa a 4.66:1. No se bajó el tamaño de 11 px.
 - El botón primario no usa el color de cinta sin más: `--ui-primary-bg` mezcla un 72 % de `--ribbon-2` con un 28 % de `--stone-0`.
 - El gradiente primario concentra el brillo en el 24 % superior; el centro y el texto descansan sobre el color oscuro. Esto permite blanco sobre cera en todos los temas, incluidos Catppuccin, Rosé Pine y Tokyo Night.
-- Los estados de error usan `--danger-paper` / `--danger-panel` según superficie; no se reutiliza el rojo de salud sin contexto.
+- Los estados de error usan `--danger-paper` / `--danger-panel` para borde y relleno, y su variante `-text` para el mensaje; no se reutiliza el rojo de salud sin contexto.
 - El foco es un borde discontinuo de 1 px con offset de 3 px. En controles compactos se usa el offset ajustado de 1 px.
 
 ### 4.5 Añadir un tema
@@ -300,14 +305,14 @@ Cada tema tiene:
 - Un **papel** (`--parch`, `--paper-raised`) con tinta propia (`--ink-*`).
 - Un **panel** (`--panel-*`) con tinta hueso (`--bone-*`).
 - Una **cinta** (`--ribbon-*`) para la acción principal.
-- **Estados** del mundo (`--vital-*`) y estados de UI (`--danger-*`, `--success-*`, `--warning-*`).
+- **Estados** del mundo (`--vital-*`) y estados de UI (`--danger-*`, `--success-*`, `--warning-*`, con sus variantes `-text`).
 
 ### 7.2 Controles
 
 - Fondo de campo: tinte de tinta al 4 % sobre papel; pozo oscuro sobre panel.
 - Borde: 1 px con mezcla del texto; hover sube el borde a un tono más fuerte.
 - Foco: borde de acento + anillo de 1 px, outline discontinuo.
-- Error: borde y mensaje en `--ui-danger`; el label también cambia.
+- Error: borde en `--ui-danger` y mensaje en `--ui-danger-text`; el label también cambia a la variante de texto.
 - Deshabilitado: `opacity: 0.45` y cursor `not-allowed`; no se depende solo del color.
 - Selección: fondo de acento con texto de contraste; el check/radio usan `--ui-accent-contrast`.
 
