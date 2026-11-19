@@ -292,6 +292,7 @@ All families are served locally from `public/fonts` (latin subsets of Google Fon
 
 - No sustained uppercase in paragraphs.
 - Nothing readable goes below `--text-prose` (15 px); a handwritten note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step.
+- The italic is not used for running prose. IM Fell's italic is 16 % narrower per glyph and its stems are thinner, so at 15 px it is the hardest body text in the kit, over the paper grain: descriptions, hints and asides are set in roman. The slant stays for placeholders and short quotes, where it marks an empty field or a borrowed voice and there is no paragraph to read.
 - Uppercase labels always carry `letter-spacing` and a small size; contrast was adjusted so they remain legible.
 - Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
 - Month names come already capitalised from `Intl`, so no extra casing rule is applied to the heading.

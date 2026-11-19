@@ -58,12 +58,7 @@
   color: var(--ui-text-muted);
 }
 
-.hint {
-  font-style: italic;
-}
-
 .error {
-  font-style: normal;
   color: var(--ui-danger-text);
 }
 
