@@ -74,7 +74,7 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Provisiones/ }))
 
     expect(
-      screen.getByText('Completa este hito para cerrar la travesía.'),
+      screen.getByText('Completa este hito para terminar la travesía.'),
     ).toBeVisible()
 
     await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
