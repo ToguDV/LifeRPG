@@ -1,4 +1,3 @@
-import { dateKey } from '../../lib/date'
 import { formatDate, formatShortDate, startOfDay } from '../../lib/format'
 
 /**
@@ -69,10 +68,6 @@ export function parseDeadlineKey(value: string | undefined): Date | null {
     return null
   }
   return date
-}
-
-export function deadlineToKey(date: Date | null): string | undefined {
-  return date ? dateKey(date) : undefined
 }
 
 /** Whole days from today to the deadline; negative once it has passed. */
