@@ -63,7 +63,7 @@ export function Select({
   error,
   optional,
   labelAside,
-  placeholder = 'Elige una opción',
+  placeholder = 'Choose an option',
   size = 'md',
   disabled,
   required,

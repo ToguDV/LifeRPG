@@ -46,7 +46,7 @@ export function Tooltip({ content, children, side = 'top', delay = 240, id }: To
   const [open, setOpen] = useState(false)
   const landmarkLabel =
     getTriggerLabel(children) ??
-    (typeof content === 'string' && content.trim() ? content : 'Información adicional')
+    (typeof content === 'string' && content.trim() ? content : 'Additional information')
 
   const floating = useFloating({
     open,

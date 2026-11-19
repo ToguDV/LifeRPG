@@ -10,52 +10,52 @@ import { TimePicker } from '../src/components/TimePicker/TimePicker'
   required state is announced as a visually hidden description. These tests
   assert the announced text, not the markup that carries it.
 */
-describe('required anunciado', () => {
-  it('DatePicker describe el campo como obligatorio', () => {
-    render(<DatePicker label="Fecha" required />)
+describe('announced required state', () => {
+  it('DatePicker describes the field as required', () => {
+    render(<DatePicker label="Date" required />)
 
-    expect(screen.getByRole('button', { name: /fecha/i })).toHaveAccessibleDescription(
-      'Campo obligatorio',
+    expect(screen.getByRole('button', { name: /date/i })).toHaveAccessibleDescription(
+      'Required',
     )
   })
 
-  it('TimePicker describe el campo como obligatorio', () => {
-    render(<TimePicker label="Hora" required />)
+  it('TimePicker describes the field as required', () => {
+    render(<TimePicker label="Time" required />)
 
-    expect(screen.getByRole('button', { name: /hora/i })).toHaveAccessibleDescription(
-      'Campo obligatorio',
+    expect(screen.getByRole('button', { name: /time/i })).toHaveAccessibleDescription(
+      'Required',
     )
   })
 
-  it('CheckboxGroup describe el grupo como obligatorio', () => {
+  it('CheckboxGroup describes the group as required', () => {
     render(
-      <CheckboxGroup label="Equipo" required>
+      <CheckboxGroup label="Party" required>
         <Checkbox label="Lee" />
       </CheckboxGroup>,
     )
 
-    expect(screen.getByRole('group', { name: 'Equipo' })).toHaveAccessibleDescription(
-      'Campo obligatorio',
+    expect(screen.getByRole('group', { name: 'Party' })).toHaveAccessibleDescription(
+      'Required',
     )
   })
 
-  it('RadioGroup describe el grupo como obligatorio', () => {
+  it('RadioGroup describes the group as required', () => {
     render(
-      <RadioGroup label="Ruta" required>
-        <Radio value="norte" label="Norte" />
+      <RadioGroup label="Route" required>
+        <Radio value="north" label="North" />
       </RadioGroup>,
     )
 
-    expect(screen.getByRole('group', { name: 'Ruta' })).toHaveAccessibleDescription(
-      'Campo obligatorio',
+    expect(screen.getByRole('group', { name: 'Route' })).toHaveAccessibleDescription(
+      'Required',
     )
   })
 
-  it('no anuncia obligatoriedad cuando no se pide', () => {
-    render(<TimePicker label="Hora" />)
+  it('does not announce required when it is not asked for', () => {
+    render(<TimePicker label="Time" />)
 
-    expect(screen.getByRole('button', { name: /hora/i })).not.toHaveAccessibleDescription(
-      /campo obligatorio/i,
+    expect(screen.getByRole('button', { name: /time/i })).not.toHaveAccessibleDescription(
+      /required/i,
     )
   })
 })

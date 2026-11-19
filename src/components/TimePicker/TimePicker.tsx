@@ -240,7 +240,7 @@ export function TimePicker({
   error,
   optional,
   labelAside,
-  placeholder = 'Elegir hora',
+  placeholder = 'Pick a time',
   size = 'md',
   disabled,
   required,
@@ -364,7 +364,7 @@ export function TimePicker({
 
       {requiredId ? (
         <span id={requiredId} className="visually-hidden">
-          Campo obligatorio
+          Required
         </span>
       ) : null}
 
@@ -382,17 +382,17 @@ export function TimePicker({
         onClose={close}
         id={dialogId}
         role="dialog"
-        ariaLabel="Elegir hora"
+        ariaLabel="Pick a time"
         className={styles.picker}
       >
         <div className={styles.header}>
-          <p className={styles.title}>Hora del día</p>
-          <p className={styles.subtitle}>Las campanas no esperan.</p>
+          <p className={styles.title}>Time of day</p>
+          <p className={styles.subtitle}>The bells do not wait.</p>
         </div>
 
         <div className={styles.columns}>
           <TimeWheel
-            label="Hora"
+            label="Hour"
             options={hourOptions}
             value={draft.hours}
             onChange={(hours) => setDraft((previous) => ({ ...previous, hours }))}
@@ -402,7 +402,7 @@ export function TimePicker({
             format={(hour) => String(hour).padStart(2, '0')}
           />
           <TimeWheel
-            label="Minuto"
+            label="Minute"
             options={minuteOptions}
             value={draft.minutes}
             onChange={(minutes) => setDraft((previous) => ({ ...previous, minutes }))}
@@ -414,16 +414,16 @@ export function TimePicker({
 
         <div className={styles.footer}>
           <Button variant="ghost" size="sm" onClick={setNow}>
-            Ahora
+            Now
           </Button>
           <div className={styles.footerActions}>
             {clearable ? (
               <Button variant="ghost" size="sm" onClick={clear}>
-                Limpiar
+                Clear
               </Button>
             ) : null}
             <Button variant="primary" size="sm" onClick={apply}>
-              Aplicar
+              Apply
             </Button>
           </div>
         </div>

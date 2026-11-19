@@ -34,18 +34,18 @@ export interface QuestNodePatch {
 
 export interface QuestDeadline {
   tone: QuestDeadlineTone
-  /** Long, readable date: «12 de enero de 2026». */
+  /** Long, readable date: “12 January 2026”. */
   dateLabel: string | null
-  /** Short date for the rail: «12 ene». */
+  /** Short date for the rail: “12 Jan”. */
   shortLabel: string
-  /** What the date means today: «Vence hoy», «Faltan 3 días», «Vencido»… */
+  /** What the date means today: “Due today”, “3 days left”, “Overdue”… */
   statusLabel: string
 }
 
 const DAY_MS = 86_400_000
 const DEADLINE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 
-/** Two digits for markers and headings: 1 → «01». */
+/** Two digits for markers and headings: 1 → “01”. */
 export function formatQuestNumber(value: number): string {
   return String(value).padStart(2, '0')
 }
@@ -134,8 +134,8 @@ export function getQuestDeadline(
     return {
       tone: 'none',
       dateLabel: null,
-      shortLabel: 'sin fecha',
-      statusLabel: 'Sin fecha límite',
+      shortLabel: 'no date',
+      statusLabel: 'No deadline',
     }
   }
 
@@ -143,24 +143,24 @@ export function getQuestDeadline(
   const shortLabel = formatShortDate(date)
 
   if (complete) {
-    return { tone: 'done', dateLabel, shortLabel, statusLabel: 'Cumplido' }
+    return { tone: 'done', dateLabel, shortLabel, statusLabel: 'Completed' }
   }
 
   const days = daysUntilDeadline(deadline, today) ?? 0
   if (days < 0) {
-    return { tone: 'overdue', dateLabel, shortLabel, statusLabel: 'Vencido' }
+    return { tone: 'overdue', dateLabel, shortLabel, statusLabel: 'Overdue' }
   }
   if (days === 0) {
-    return { tone: 'today', dateLabel, shortLabel, statusLabel: 'Vence hoy' }
+    return { tone: 'today', dateLabel, shortLabel, statusLabel: 'Due today' }
   }
   if (days === 1) {
-    return { tone: 'soon', dateLabel, shortLabel, statusLabel: 'Vence mañana' }
+    return { tone: 'soon', dateLabel, shortLabel, statusLabel: 'Due tomorrow' }
   }
   return {
     tone: days <= 7 ? 'soon' : 'later',
     dateLabel,
     shortLabel,
-    statusLabel: `Faltan ${days} días`,
+    statusLabel: `${days} days left`,
   }
 }
 

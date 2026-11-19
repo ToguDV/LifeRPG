@@ -21,65 +21,65 @@ export function ExtrasSection({ canvas }: SectionProps) {
           Badge · ProgressBar · Divider · Toast
         </Badge>
       }
-      title="Señales al borde"
-      description="Las piezas que no piden atención hasta que la merecen: etiquetas, medidores, divisores y avisos que entran por la esquina inferior."
+      title="Signals at the edge"
+      description="The pieces that ask for nothing until they earn it: tags, meters, dividers, and notices that come in from the lower corner."
       folio="08"
       tilt="left"
     >
       <DemoGrid>
-        <DemoGroup label="Etiquetas">
+        <DemoGroup label="Tags">
           <DemoRow>
             <Badge variant="neutral" icon={<Icon name="tag" />}>
-              Provisiones
+              Provisions
             </Badge>
             <Badge variant="accent" dot>
-              En curso
+              In progress
             </Badge>
             <Badge variant="success" icon={<Icon name="check" />}>
-              Sellada
+              Sealed
             </Badge>
             <Badge variant="warning" dot>
-              Vence hoy
+              Due today
             </Badge>
             <Badge variant="danger" icon={<Icon name="alert" />}>
-              Peligro
+              Danger
             </Badge>
             <Badge variant="outline" size="md">
-              Borrador
+              Draft
             </Badge>
           </DemoRow>
         </DemoGroup>
 
-        <DemoGroup label="Medidores">
+        <DemoGroup label="Meters">
           <ProgressBar
-            label="Experiencia"
+            label="Experience"
             variant="xp"
             value={68}
             max={100}
-            hint="Faltan 32 puntos para el nivel 08."
+            hint="32 points to level 08."
           />
           <ProgressBar
-            label="Tareas del día"
+            label="Tasks today"
             variant="success"
             value={3}
             max={5}
             valueText="3 / 5"
           />
           <ProgressBar
-            label="Sello del invierno"
+            label="Winter seal"
             variant="danger"
             value={86}
             max={100}
-            hint="Demasiado cerca de la grieta."
+            hint="Too close to the crack."
           />
         </DemoGroup>
 
-        <DemoGroup label="Divisores" span>
-          <Divider variant="ornament" label="La Marca Hueca" />
+        <DemoGroup label="Dividers" span>
+          <Divider variant="ornament" label="The Hollow Mark" />
           <Divider variant="line" />
         </DemoGroup>
 
-        <DemoGroup label="Notificaciones" span>
+        <DemoGroup label="Notices" span>
           <DemoRow>
             <Button
               variant="secondary"
@@ -87,12 +87,12 @@ export function ExtrasSection({ canvas }: SectionProps) {
               onClick={() =>
                 toast({
                   variant: 'success',
-                  title: 'Tarea sellada',
-                  description: '«Llenar el odre» quedó registrada en el diario.',
+                  title: 'Task sealed',
+                  description: '“Fill the waterskin” is on record in the journal.',
                 })
               }
             >
-              Éxito
+              Success
             </Button>
             <Button
               variant="secondary"
@@ -100,12 +100,12 @@ export function ExtrasSection({ canvas }: SectionProps) {
               onClick={() =>
                 toast({
                   variant: 'warning',
-                  title: 'El hielo cruje',
-                  description: 'Cruzar el vado hoy no es aconsejable.',
+                  title: 'The ice is creaking',
+                  description: 'Crossing the ford today is not advisable.',
                 })
               }
             >
-              Aviso
+              Warning
             </Button>
             <Button
               variant="danger"
@@ -113,13 +113,13 @@ export function ExtrasSection({ canvas }: SectionProps) {
               onClick={() =>
                 toast({
                   variant: 'danger',
-                  title: 'Se ha roto el sello',
-                  description: 'El farol de latón no volverá esta noche.',
+                  title: 'The seal has broken',
+                  description: 'The brass lantern will not return tonight.',
                   duration: 6000,
                 })
               }
             >
-              Peligro
+              Danger
             </Button>
             <Button
               variant="ghost"
@@ -127,20 +127,20 @@ export function ExtrasSection({ canvas }: SectionProps) {
               onClick={() =>
                 toast({
                   variant: 'info',
-                  title: 'Nueva página en blanco',
-                  description: 'El diario está listo para otra jornada.',
+                  title: 'A new blank page',
+                  description: 'The journal is ready for another day.',
                 })
               }
             >
-              Información
+              Information
             </Button>
           </DemoRow>
           <DemoNote muted>
-            Los avisos se apilan, se pueden cerrar y se pausan al pasar el cursor.
+            Notices stack, can be dismissed, and pause on hover.
           </DemoNote>
           <p className={styles.aside}>
-            El medidor de experiencia usa la tinta del tema (no la del papel) para que la
-            barra conserve su brillo sobre cualquier material.
+            The experience meter uses theme ink (not paper ink) so the bar keeps its glow
+            on any material.
           </p>
         </DemoGroup>
       </DemoGrid>

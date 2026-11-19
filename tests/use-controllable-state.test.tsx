@@ -25,7 +25,7 @@ function BatchedCounter({ onChange }: { onChange?: (value: number) => void }) {
 }
 
 describe('useControllableState', () => {
-  it('compone dos actualizaciones funcionales en el mismo tick', async () => {
+  it('composes two functional updates in the same tick', async () => {
     const onChange = vi.fn()
     const user = userEvent.setup()
     render(<BatchedCounter onChange={onChange} />)

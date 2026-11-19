@@ -10,47 +10,47 @@ import styles from './sections.module.css'
 
 const PROVISIONS = [
   {
-    id: 'pan',
-    label: 'Pan de centeno',
-    description: 'Dura más de lo que parece.',
+    id: 'bread',
+    label: 'Rye bread',
+    description: 'It lasts longer than it looks.',
   },
   {
-    id: 'cuerda',
-    label: 'Cuerda de cáñamo',
-    description: 'Doce brazas, algo gastada.',
+    id: 'rope',
+    label: 'Hemp rope',
+    description: 'Twelve fathoms, a little worn.',
   },
   {
-    id: 'farol',
-    label: 'Farol de latón',
-    description: 'Prestado; conviene devolverlo.',
+    id: 'lantern',
+    label: 'Brass lantern',
+    description: 'Borrowed; best returned.',
   },
 ]
 
 const PACES = [
   {
-    value: 'paso',
-    label: 'Paso firme',
-    description: 'Llegas seco y temprano.',
+    value: 'steady',
+    label: 'Steady pace',
+    description: 'You arrive dry and early.',
   },
   {
-    value: 'sigilo',
-    label: 'Paso de zorro',
-    description: 'Más lento, menos ruido.',
+    value: 'fox',
+    label: 'Fox step',
+    description: 'Slower, quieter.',
   },
   {
-    value: 'carrera',
-    label: 'A la carrera',
-    description: 'El aliento decide por ti.',
+    value: 'run',
+    label: 'At a run',
+    description: 'Your breath decides for you.',
   },
 ]
 
 export function SelectionSection({ canvas }: SectionProps) {
   const [provisions, setProvisions] = useState<Record<string, boolean>>({
-    pan: true,
-    cuerda: false,
-    farol: true,
+    bread: true,
+    rope: false,
+    lantern: true,
   })
-  const [pace, setPace] = useState('paso')
+  const [pace, setPace] = useState('steady')
   const [notices, setNotices] = useState(true)
   const [silent, setSilent] = useState(false)
 
@@ -68,16 +68,16 @@ export function SelectionSection({ canvas }: SectionProps) {
           Checkbox · Radio · Switch
         </Badge>
       }
-      title="Decisiones pequeñas"
-      description="Tres formas de elegir: varias, una sola, o ninguna. La cera del control se adapta al papel y al panel sin cambiar de forma."
+      title="Small decisions"
+      description="Three ways to choose: several, just one, or none. The wax of the control adapts to paper and panel without changing shape."
       folio="02"
       tilt="left"
     >
       <DemoGrid columns={3}>
-        <DemoGroup label="Casillas">
+        <DemoGroup label="Checkboxes">
           <CheckboxGroup
-            label="Provisiones para el viaje"
-            hint="Marca lo que cargará el zurrón."
+            label="Provisions for the journey"
+            hint="Tick what the satchel will carry."
           >
             <Checkbox
               checked={allSelected}
@@ -88,8 +88,8 @@ export function SelectionSection({ canvas }: SectionProps) {
                   Object.fromEntries(PROVISIONS.map((item) => [item.id, next])),
                 )
               }}
-              label="Todo el equipo"
-              description="Una sola decisión para las tres provisiones."
+              label="The whole kit"
+              description="One decision for all three provisions."
             />
             <span className={styles.groupBreak} aria-hidden="true" />
             {PROVISIONS.map((item) => (
@@ -108,21 +108,21 @@ export function SelectionSection({ canvas }: SectionProps) {
             ))}
             <Checkbox
               disabled
-              label="Reliquia olvidada"
-              description="No se puede tocar."
+              label="Forgotten relic"
+              description="It cannot be touched."
             />
           </CheckboxGroup>
           <DemoNote live>
-            {selectedCount} de {PROVISIONS.length} provisiones en el zurrón.
+            {selectedCount} of {PROVISIONS.length} provisions in the satchel.
           </DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Radios">
+        <DemoGroup label="Radio buttons">
           <RadioGroup
-            label="Ritmo de la marcha"
+            label="Marching pace"
             value={pace}
             onChange={setPace}
-            hint="Solo una senda a la vez."
+            hint="Only one trail at a time."
           >
             {PACES.map((item) => (
               <Radio
@@ -133,35 +133,35 @@ export function SelectionSection({ canvas }: SectionProps) {
               />
             ))}
           </RadioGroup>
-          <DemoNote live>Elegido: {paceLabel}.</DemoNote>
+          <DemoNote live>Chosen: {paceLabel}.</DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Conmutadores">
+        <DemoGroup label="Switches">
           <div className={styles.controlStack}>
             <Switch
               checked={notices}
               onChange={(event) => setNotices(event.target.checked)}
-              label="Avisos del diario"
-              description="Un susurro cuando una tarea vence."
+              label="Journal notices"
+              description="A whisper when a task falls due."
             />
             <Switch
               checked={silent}
               onChange={(event) => setSilent(event.target.checked)}
-              label="Modo silencioso"
-              description="Ni una pluma se mueve."
+              label="Silent mode"
+              description="Not a feather stirs."
               size="sm"
             />
             <Switch
               checked
               disabled
-              label="Sello del gremio"
-              description="Siempre encendido, por juramento."
+              label="Guild seal"
+              description="Always on, by oath."
               size="sm"
             />
           </div>
           <DemoNote live>
-            {notices ? 'Los avisos están despiertos' : 'Los avisos duermen'} ·{' '}
-            {silent ? 'silencio' : 'voz'}.
+            {notices ? 'Notices are awake' : 'Notices are asleep'} ·{' '}
+            {silent ? 'silence' : 'voice'}.
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

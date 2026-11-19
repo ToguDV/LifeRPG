@@ -11,26 +11,26 @@ describe('Card title', () => {
   it('keeps the ribboned title as the heading of the card', () => {
     render(
       <Card
-        title="Contexto de la partida"
-        kicker="04 · Contexto"
-        description="La lista de tareas del día."
+        title="Session context"
+        kicker="04 · Context"
+        description="The day's task list."
         folio="04"
       />,
     )
 
     expect(
-      screen.getByRole('heading', { level: 3, name: 'Contexto de la partida' }),
+      screen.getByRole('heading', { level: 3, name: 'Session context' }),
     ).toBeVisible()
-    expect(screen.getByText('04 · Contexto')).toBeVisible()
-    expect(screen.getByText('La lista de tareas del día.')).toBeVisible()
+    expect(screen.getByText('04 · Context')).toBeVisible()
+    expect(screen.getByText("The day's task list.")).toBeVisible()
     expect(screen.getByRole('img', { name: 'Folio 04' })).toBeVisible()
   })
 
   it('keeps the plain heading on the panel surface', () => {
-    render(<Card surface="panel" title="Registro de campaña" />)
+    render(<Card surface="panel" title="Campaign log" />)
 
     expect(
-      screen.getByRole('heading', { level: 3, name: 'Registro de campaña' }),
+      screen.getByRole('heading', { level: 3, name: 'Campaign log' }),
     ).toBeVisible()
   })
 })

@@ -17,8 +17,8 @@ The 18 failures were five real findings, not infrastructure noise:
 | A11Y-02 | `color-contrast` of the overdue milestone marker: 2.74:1 Nord+Panel, 3.68 Pergamino, 3.81 Gruvbox (and 2.46–4.04 on paper, which axe left in `incomplete`) | Fixed: `--ui-danger-text` per surface |
 | A11Y-03 | `color-contrast` of the active index number in Nord: 4.42:1 | Fixed: Nord's strong panel accent at 4.66:1 |
 | A11Y-04 | `color-contrast` of the Questline panel on Pergamino paper: 4.18 kicker, 4.20 note/tally/labels | Fixed: `--ui-success-text` and light-paper `--ui-text-muted` |
-| A11Y-05 | `color-contrast` of the «Sí, eliminar el hito» button in Pergamino+Panel: 4.02:1 | Fixed: `--ui-danger-text` |
-| — | Known `DatePicker` finding (`REVISION.md` §3): visible cell «1», name «01 de noviembre de 2026» | Fixed: day name without padding. The `disableRules` exclusion was removed and the probe deleted |
+| A11Y-05 | `color-contrast` of the “Yes, delete the milestone” button in Pergamino+Panel: 4.02:1 | Fixed: `--ui-danger-text` |
+| — | Known `DatePicker` finding (`REVISION.md` §3): visible cell “1”, name “01 November 2026” | Fixed: day name without padding. The `disableRules` exclusion was removed and the probe deleted |
 | — | `incomplete` `form-field-multiple-labels` in `TaskRow` (5 nodes) | Fixed: a single native `<label>` |
 
 Details of the original pass and of the measured ratios: `git log -p e2e/FINDINGS.md`.

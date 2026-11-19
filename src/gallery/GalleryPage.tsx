@@ -22,26 +22,26 @@ import { useActiveSection } from './useActiveSection'
 import styles from './GalleryPage.module.css'
 
 const SECTION_COMPONENTS: Record<SectionId, ComponentType<SectionProps>> = {
-  acciones: ActionsSection,
-  seleccion: SelectionSection,
-  campos: FieldsSection,
-  listas: ListsSection,
-  ajustes: NumbersSection,
-  'fecha-hora': DateTimeSection,
-  archivos: FilesSection,
-  complementos: ExtrasSection,
-  contexto: ContextSection,
-  travesia: QuestlineSection,
-  contenedores: ContainersSection,
+  actions: ActionsSection,
+  selection: SelectionSection,
+  fields: FieldsSection,
+  lists: ListsSection,
+  settings: NumbersSection,
+  'date-time': DateTimeSection,
+  files: FilesSection,
+  extras: ExtrasSection,
+  context: ContextSection,
+  questline: QuestlineSection,
+  containers: ContainersSection,
 }
 
 const SECTION_IDS: readonly SectionId[] = SECTIONS.map((section) => section.id)
 
 const TOP_LINKS = [
-  { id: 'acciones', label: 'Acciones' },
-  { id: 'campos', label: 'Campos' },
-  { id: 'fecha-hora', label: 'Fechas' },
-  { id: 'contexto', label: 'Contexto' },
+  { id: 'actions', label: 'Actions' },
+  { id: 'fields', label: 'Fields' },
+  { id: 'date-time', label: 'Dates' },
+  { id: 'context', label: 'Context' },
 ]
 
 function SurfaceToggle({
@@ -52,17 +52,17 @@ function SurfaceToggle({
   onChange: (value: SurfaceValue) => void
 }) {
   return (
-    <div className={styles.surfaceToggle} role="group" aria-label="Superficie de muestra">
+    <div className={styles.surfaceToggle} role="group" aria-label="Sample surface">
       <button
         type="button"
         className={styles.surfaceOption}
         aria-pressed={value === 'paper'}
-        aria-label="Papel"
+        aria-label="Paper"
         onClick={() => onChange('paper')}
-        title="Ver los controles sobre papel"
+        title="View the controls on paper"
       >
         <Icon name="scroll" size="xs" />
-        <span className={styles.surfaceLabel}>Papel</span>
+        <span className={styles.surfaceLabel}>Paper</span>
       </button>
       <button
         type="button"
@@ -70,7 +70,7 @@ function SurfaceToggle({
         aria-pressed={value === 'panel'}
         aria-label="Panel"
         onClick={() => onChange('panel')}
-        title="Ver los controles sobre panel oscuro"
+        title="View the controls on the dark panel"
       >
         <Icon name="shield" size="xs" />
         <span className={styles.surfaceLabel}>Panel</span>
@@ -85,8 +85,8 @@ export function GalleryPage() {
 
   return (
     <div className={styles.page} id="top">
-      <a className={styles.skipLink} href="#contenido">
-        Saltar al contenido
+      <a className={styles.skipLink} href="#content">
+        Skip to content
       </a>
 
       <Atmosphere />
@@ -94,15 +94,15 @@ export function GalleryPage() {
       <div className={styles.content}>
         <header className={styles.topbar}>
           <div className={styles.topbarInner}>
-            <a className={styles.brand} href="#top" aria-label="Códice de Componentes, volver arriba">
+            <a className={styles.brand} href="#top" aria-label="Component Codex, back to top">
               <span className={styles.brandMark} aria-hidden="true">
                 <span className={styles.diamond} />
               </span>
-              <span className={styles.brandFull}>Códice de Componentes</span>
-              <span className={styles.brandShort}>Códice</span>
+              <span className={styles.brandFull}>Component Codex</span>
+              <span className={styles.brandShort}>Codex</span>
             </a>
 
-            <nav className={styles.topLinks} aria-label="Secciones principales">
+            <nav className={styles.topLinks} aria-label="Main sections">
               {TOP_LINKS.map((link) => (
                 <a key={link.id} href={`#${link.id}`}>
                   {link.label}
@@ -123,16 +123,16 @@ export function GalleryPage() {
               <Icon name="compass" size="2xl" />
             </div>
             <div className={styles.mastheadTitle}>
-              <p className={styles.kicker}>LifeRPG UI · Cuaderno de invierno</p>
-              <h1 id="page-title">El Kit del Invierno</h1>
+              <p className={styles.kicker}>LifeRPG UI · Winter notebook</p>
+              <h1 id="page-title">The Winter Kit</h1>
               <p className={styles.sub}>
-                Componentes para un diario de tareas, forjados en papel gastado, tinta vieja y
-                ocho paletas que cambian el clima sin tocar la estructura.
+                Components for a task journal, forged in worn paper, old ink, and eight
+                palettes that change the weather without touching the structure.
               </p>
             </div>
             <div className={styles.mastheadMeta}>
               <p className={styles.volume}>Vol. I</p>
-              <p className={styles.quote}>«La herramienta también narra.»</p>
+              <p className={styles.quote}>“The tool narrates too.”</p>
             </div>
           </section>
 
@@ -143,31 +143,31 @@ export function GalleryPage() {
             <span />
           </div>
 
-          <section className={styles.intro} aria-label="Cómo leer esta galería">
+          <section className={styles.intro} aria-label="How to read this gallery">
             <div className={styles.introText}>
-              <p className={styles.introKicker}>Cómo leer este códice</p>
+              <p className={styles.introKicker}>How to read this codex</p>
               <p>
-                Cada control está vivo: escribe, arrastra, abre calendarios y ruedas. Cambia la
-                tinta con el selector de temas y alterna el lienzo entre <b>Papel</b> y{' '}
-                <b>Panel</b> para comprobar cómo responden los tokens de superficie.
+                Every control is live: type, drag, open calendars and wheels. Change the ink
+                with the theme picker and switch the canvas between <b>Paper</b> and{' '}
+                <b>Panel</b> to see how the surface tokens respond.
               </p>
               <p className={styles.introHand}>
-                Ningún color, espacio o tipo está escrito a mano: todo sale del mismo códice de
-                tokens.
+                No color, spacing, or type is hardcoded: everything comes from the same
+                token codex.
               </p>
             </div>
             <ul className={styles.stats}>
               <li>
                 <b>08</b>
-                <span>Temas</span>
+                <span>Themes</span>
               </li>
               <li>
                 <b>13</b>
-                <span>Controles</span>
+                <span>Controls</span>
               </li>
               <li>
                 <b>{String(SECTIONS.length).padStart(2, '0')}</b>
-                <span>Secciones</span>
+                <span>Sections</span>
               </li>
             </ul>
           </section>
@@ -175,8 +175,8 @@ export function GalleryPage() {
 
         <div className={styles.layout}>
           <aside className={styles.index}>
-            <p className={styles.indexKicker}>Índice del códice</p>
-            <nav className={styles.indexNav} aria-label="Índice de componentes">
+            <p className={styles.indexKicker}>Codex index</p>
+            <nav className={styles.indexNav} aria-label="Component index">
               {SECTIONS.map((section) => (
                 <a
                   key={section.id}
@@ -194,11 +194,11 @@ export function GalleryPage() {
             </nav>
             <div className={styles.indexFoot}>
               <span className={styles.diamond} aria-hidden="true" />
-              <p>«Cada control responde a los ocho temas.»</p>
+              <p>“Every control answers to all eight themes.”</p>
             </div>
           </aside>
 
-          <main className={styles.main} id="contenido" tabIndex={-1}>
+          <main className={styles.main} id="content" tabIndex={-1}>
             {SECTIONS.map((meta) => {
               const Section = SECTION_COMPONENTS[meta.id]
               return (
@@ -215,14 +215,14 @@ export function GalleryPage() {
 
         <footer className={styles.footer}>
           <span className={styles.diamond} aria-hidden="true" />
-          <span>Compilado en la Marca Hueca</span>
+          <span>Compiled in the Hollow Mark</span>
           <span className={styles.footerLine} aria-hidden="true" />
-          <b>Año 812</b>
+          <b>Year 812</b>
           <span className={styles.footerLine} aria-hidden="true" />
-          <span>tinta, ceniza y cera</span>
+          <span>ink, ash, and wax</span>
           <span className={styles.diamond} aria-hidden="true" />
           <p className={styles.footerTech}>
-            React 19 · TypeScript · CSS Modules · design tokens · fuentes locales
+            React 19 · TypeScript · CSS Modules · design tokens · local fonts
           </p>
         </footer>
       </div>

@@ -83,7 +83,7 @@ export function QuestNodePanel({
 
   /*
     The confirmation replaces the button that had the focus: hand it to
-    Cancel while it is open, and give it back to «Eliminar hito» on cancel.
+    Cancel while it is open, and give it back to “Delete milestone” on cancel.
   */
   useEffect(() => {
     if (confirmDelete) {
@@ -163,14 +163,14 @@ export function QuestNodePanel({
   const overdue = deadline.tone === 'overdue'
   const deadlineLine =
     deadline.tone === 'none'
-      ? 'Sin fecha límite'
+      ? 'No deadline'
       : deadline.tone === 'done'
-        ? `Plazo: ${deadline.dateLabel}`
+        ? `Deadline: ${deadline.dateLabel}`
         : deadline.tone === 'overdue'
-          ? `Venció el ${deadline.dateLabel}`
+          ? `Was due on ${deadline.dateLabel}`
           : deadline.tone === 'today'
-            ? 'Vence hoy'
-            : `Vence el ${deadline.dateLabel}`
+            ? 'Due today'
+            : `Due on ${deadline.dateLabel}`
 
   const finishEditing = () => {
     onEditingChange(false)
@@ -181,7 +181,7 @@ export function QuestNodePanel({
     event.preventDefault()
     const title = newTitle.trim()
     if (!title) {
-      setTaskError('La tarea necesita un nombre.')
+      setTaskError('The task needs a name.')
       return
     }
     setTaskError(null)
@@ -208,7 +208,7 @@ export function QuestNodePanel({
   const saveTask = (taskId: string) => {
     const title = taskDraft.trim()
     if (!title) {
-      setTaskEditError('La tarea necesita un nombre.')
+      setTaskEditError('The task needs a name.')
       return
     }
     onRenameTask(taskId, title)
@@ -288,7 +288,7 @@ export function QuestNodePanel({
       <div className={styles.head}>
         <div className={styles.headMain}>
           <p className={styles.kicker}>
-            Hito {formatQuestNumber(index + 1)} de {formatQuestNumber(total)} · {deadlineLine}
+            Milestone {formatQuestNumber(index + 1)} of {formatQuestNumber(total)} · {deadlineLine}
           </p>
           <div className={styles.titleRow}>
             <h4 id={headingId} className={styles.title}>
@@ -306,9 +306,9 @@ export function QuestNodePanel({
           {node.note ? <p className={styles.note}>{node.note}</p> : null}
           <p className={styles.tally}>
             {tally.total
-              ? `${tally.done} de ${tally.total} ${tally.total === 1 ? 'tarea' : 'tareas'}`
-              : 'Sin tareas todavía'}
-            {tally.total && tally.done === tally.total ? ' · cumplido' : null}
+              ? `${tally.done} of ${tally.total} ${tally.total === 1 ? 'task' : 'tasks'}`
+              : 'No tasks yet'}
+            {tally.total && tally.done === tally.total ? ' · completed' : null}
           </p>
         </div>
 
@@ -319,7 +319,7 @@ export function QuestNodePanel({
               size="sm"
               iconOnly
               aria-label={
-                editing ? 'Descartar los cambios del hito' : 'Editar el hito'
+                editing ? 'Discard milestone changes' : 'Edit milestone'
               }
               aria-expanded={editing}
               aria-controls={editing ? editorId : undefined}
@@ -331,7 +331,7 @@ export function QuestNodePanel({
             variant="ghost"
             size="sm"
             iconOnly
-            aria-label="Cerrar el panel"
+            aria-label="Close panel"
             iconLeft={<Icon name="chevron-up" size="sm" />}
             onClick={onClose}
           />
@@ -354,16 +354,16 @@ export function QuestNodePanel({
           </span>
           <span className={styles.lockText}>
             {blockingTitles.length > 1
-              ? `Se desbloquea al completar los hitos anteriores, empezando por «${blockingTitles[0]}».`
+              ? `It unlocks when the previous milestones are completed, starting with “${blockingTitles[0]}”.`
               : blockingTitles.length === 1
-                ? `Se desbloquea al completar «${blockingTitles[0]}».`
-                : 'Se desbloquea al completar el hito anterior.'}{' '}
-            Puedes preparar la lista, pero todavía no marcarla.
+                ? `It unlocks when “${blockingTitles[0]}” is completed.`
+                : 'It unlocks when the previous milestone is completed.'}{' '}
+            You can prepare the list, but not check it off yet.
           </span>
         </p>
       ) : null}
 
-      <ul className={styles.taskList} aria-label={`Tareas de «${node.title}»`}>
+      <ul className={styles.taskList} aria-label={`Tasks in “${node.title}”`}>
         {node.tasks.map((task) => (
           <QuestTaskRow
             key={task.id}
@@ -391,14 +391,14 @@ export function QuestNodePanel({
 
       {node.tasks.length === 0 ? (
         <p className={styles.emptyTasks}>
-          Este hito todavía no tiene tareas. Añade la primera y empezará a contar.
+          This milestone has no tasks yet. Add the first one and it will start to count.
         </p>
       ) : null}
 
       <form ref={addFormRef} className={styles.addTask} onSubmit={submitTask}>
         <TextInput
-          aria-label={`Nueva tarea en «${node.title}»`}
-          placeholder="Añadir una tarea a este hito…"
+          aria-label={`New task in “${node.title}”`}
+          placeholder="Add a task to this milestone…"
           value={newTitle}
           onChange={(event) => {
             setNewTitle(event.target.value)
@@ -414,7 +414,7 @@ export function QuestNodePanel({
           size="sm"
           iconLeft={<Icon name="plus" size="sm" />}
         >
-          Añadir
+          Add
         </Button>
       </form>
 
@@ -422,13 +422,13 @@ export function QuestNodePanel({
         <p className={styles.footNote}>
           {state === 'complete'
             ? index === total - 1
-              ? 'La travesía está completa.'
-              : 'El camino sigue.'
+              ? 'The journey is complete.'
+              : 'The path goes on.'
             : locked
-              ? 'La ruta espera tu firma.'
+              ? 'The route awaits your signature.'
               : index === total - 1
-                ? 'Completa este hito para terminar la travesía.'
-                : 'Completa este hito para abrir el siguiente.'}
+                ? 'Complete this milestone to finish the journey.'
+                : 'Complete this milestone to open the next one.'}
         </p>
         {confirmDelete ? (
           <QuestDeleteConfirm
@@ -446,7 +446,7 @@ export function QuestNodePanel({
               iconLeft={<Icon name="trash" size="sm" />}
               onClick={() => setConfirmDelete(true)}
             >
-              Eliminar hito
+              Delete milestone
             </Button>
           </span>
         )}

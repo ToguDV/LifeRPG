@@ -12,11 +12,11 @@ function makeDemoFiles(): File[] {
     <circle cx="60" cy="60" r="42" fill="none" stroke="#c1b69a" stroke-width="2" opacity=".5"/>
     <path d="M60 20c2.4 14.6 11.4 23.6 26 26-14.6 2.4-23.6 11.4-26 26-2.4-14.6-11.4-23.6-26-26 14.6-2.4 23.6-11.4 26-26Z" fill="#c1b69a"/>
   </svg>`
-  const map = 'Carta de navegación de la Marca Hueca.\n'.repeat(2200)
+  const map = 'Navigation chart of the Hollow Mark.\n'.repeat(2200)
 
   return [
-    new File([emblem], 'atalaya.svg', { type: 'image/svg+xml' }),
-    new File([map], 'mapa-del-norte.pdf', { type: 'application/pdf' }),
+    new File([emblem], 'watchtower.svg', { type: 'image/svg+xml' }),
+    new File([map], 'north-map.pdf', { type: 'application/pdf' }),
   ]
 }
 
@@ -32,47 +32,47 @@ export function FilesSection({ canvas }: SectionProps) {
           FileUploader
         </Badge>
       }
-      title="Mapas, sellos y provisiones"
-      description="Arrastra, suelta o abre el estante. La lista muestra el nombre y el peso; los archivos que no pasan el filtro se explican en rojo en lugar de desaparecer en silencio."
+      title="Maps, seals, and provisions"
+      description="Drag, drop, or open the shelf. The list shows name and weight; files that fail the filter are explained in red instead of vanishing quietly."
       folio="07"
       tilt="right"
     >
       <DemoGrid>
-        <DemoGroup label="Carga múltiple" span>
+        <DemoGroup label="Multiple upload" span>
           <FileUploader
-            label="Mapas y provisiones"
+            label="Maps and provisions"
             accept="image/*,.pdf"
             multiple
             maxFiles={3}
             maxSize={5 * 1024 * 1024}
             value={files}
             onChange={setFiles}
-            hint="Hasta tres archivos; imágenes o PDF de 5 MB como máximo."
+            hint="Up to three files; images or PDFs, 5 MB max."
           />
           <DemoNote live>
-            {files.length} de 3 archivos en el zurrón.
+            {files.length} of 3 files in the satchel.
           </DemoNote>
           <DemoNote muted>
-            Prueba a soltar un archivo de otro formato o uno demasiado pesado: la lista
-            explicará el motivo.
+            Try dropping a file in another format, or one that is too heavy: the list will
+            explain why.
           </DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Carga única">
+        <DemoGroup label="Single upload">
           <FileUploader
-            label="Sello del gremio"
+            label="Guild seal"
             accept="image/png,image/jpeg"
             maxSize={2 * 1024 * 1024}
-            hint="PNG o JPG, hasta 2 MB. Sustituye el sello anterior."
+            hint="PNG or JPG, up to 2 MB. Replaces the previous seal."
           />
         </DemoGroup>
 
-        <DemoGroup label="Estado deshabilitado">
+        <DemoGroup label="Disabled state">
           <FileUploader
-            label="Archivo sellado"
+            label="Sealed file"
             accept=".pdf"
             disabled
-            hint="El gremio ya cerró el registro."
+            hint="The guild has already closed the register."
           />
         </DemoGroup>
       </DemoGrid>

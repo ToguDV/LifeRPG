@@ -155,10 +155,6 @@
   color: var(--ui-text);
 }
 
-.title::first-letter {
-  text-transform: uppercase;
-}
-
 .grid {
   display: flex;
   flex-direction: column;

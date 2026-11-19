@@ -17,47 +17,47 @@ type Filter = 'all' | 'open' | 'done'
 
 const INITIAL_TASKS: Task[] = [
   {
-    id: 'odre',
-    title: 'Llenar el odre en el arroyo',
-    note: '— el hielo ya cruje',
+    id: 'waterskin',
+    title: 'Fill the waterskin at the stream',
+    note: '— the ice is already creaking',
     done: false,
-    due: 'al alba',
-    tag: 'Supervivencia',
+    due: 'at dawn',
+    tag: 'Survival',
     priority: 'high',
   },
   {
-    id: 'tablones',
-    title: 'Entregar tres tablones a Alderic',
-    note: '— faltan dos',
+    id: 'planks',
+    title: 'Deliver three planks to Alderic',
+    note: '— two still missing',
     done: false,
-    due: 'antes del anochecer',
-    tag: 'Ofrenda',
+    due: 'before nightfall',
+    tag: 'Offering',
     priority: 'normal',
   },
   {
-    id: 'farol',
-    title: 'Devolver el farol de latón',
-    note: '— prestado al herrero',
+    id: 'lantern',
+    title: 'Return the brass lantern',
+    note: '— borrowed from the smith',
     done: true,
-    due: 'cumplido',
-    tag: 'Deuda',
+    due: 'completed',
+    tag: 'Debt',
     priority: 'low',
   },
   {
-    id: 'atalaya',
-    title: 'Visitar la atalaya del norte',
-    note: '— arde cada séptima noche',
+    id: 'watchtower',
+    title: 'Visit the north watchtower',
+    note: '— it burns every seventh night',
     done: false,
-    due: 'día 17',
-    tag: 'Exploración',
+    due: 'day 17',
+    tag: 'Exploration',
     priority: 'normal',
     overdue: true,
   },
   {
-    id: 'pescado',
-    title: 'Ahumar el pescado',
+    id: 'fish',
+    title: 'Smoke the fish',
     done: true,
-    tag: 'Provisiones',
+    tag: 'Provisions',
     priority: 'low',
   },
 ]
@@ -95,8 +95,8 @@ export function ContextSection({ canvas }: SectionProps) {
     if (task) {
       toast({
         variant: 'info',
-        title: 'Tachado del diario',
-        description: `«${task.title}» ya no ocupa una línea.`,
+        title: 'Struck from the journal',
+        description: `“${task.title}” no longer takes up a line.`,
       })
     }
   }
@@ -110,8 +110,8 @@ export function ContextSection({ canvas }: SectionProps) {
       id: makeTaskId(),
       title,
       done: false,
-      due: 'hoy',
-      tag: 'Nueva',
+      due: 'today',
+      tag: 'New',
       priority: 'normal',
     }
 
@@ -120,8 +120,8 @@ export function ContextSection({ canvas }: SectionProps) {
     setFilter('all')
     toast({
       variant: 'success',
-      title: 'Tarea añadida',
-      description: `«${title}» entró en el diario.`,
+      title: 'Task added',
+      description: `“${title}” joined the journal.`,
     })
   }
 
@@ -134,31 +134,31 @@ export function ContextSection({ canvas }: SectionProps) {
           TaskList · TaskRow · EmptyState
         </Badge>
       }
-      title="El diario en marcha"
-      description="Todas las piezas anteriores, ahora con una tarea real entre manos: añade, marca, filtra y elimina. El estado vive en la página; los tokens siguen mandando."
+      title="The journal at work"
+      description="Every earlier piece, now with a real task in hand: add, tick, filter, and delete. The state lives in the page; the tokens still rule."
       folio="09"
       tilt="right"
     >
       <div className={styles.taskApp}>
         <header className={styles.taskHeader}>
           <div>
-            <p className={styles.taskKicker}>Parte del día · folio 12</p>
-            <h4 className={styles.taskTitle}>Antes de que cierre la puerta</h4>
+            <p className={styles.taskKicker}>Day report · folio 12</p>
+            <h4 className={styles.taskTitle}>Before the door closes</h4>
             <p className={styles.taskSub}>
-              Lo que quede sin hacer dormirá con la escarcha.
+              Whatever is left undone will sleep with the frost.
             </p>
           </div>
           <Badge variant={openCount === 0 ? 'success' : 'accent'} dot>
             {openCount === 0
-              ? 'Todo en orden'
-              : `${openCount} ${openCount === 1 ? 'pendiente' : 'pendientes'}`}
+              ? 'All in order'
+              : `${openCount} ${openCount === 1 ? 'open task' : 'open tasks'}`}
           </Badge>
         </header>
 
         <form className={styles.addForm} onSubmit={addTask}>
           <TextInput
-            aria-label="Nueva tarea"
-            placeholder="Añadir una tarea al diario…"
+            aria-label="New task"
+            placeholder="Add a task to the journal…"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             fieldClassName={styles.addField}
@@ -169,13 +169,13 @@ export function ContextSection({ canvas }: SectionProps) {
             iconLeft={<Icon name="plus" />}
             disabled={!draft.trim()}
           >
-            Añadir
+            Add
           </Button>
         </form>
 
         <div className={styles.taskToolbar}>
           <ProgressBar
-            label="Progreso del día"
+            label="Day progress"
             variant="success"
             value={doneCount}
             max={Math.max(tasks.length, 1)}
@@ -183,15 +183,15 @@ export function ContextSection({ canvas }: SectionProps) {
             className={styles.taskProgress}
           />
           <RadioGroup
-            label="Mostrar"
+            label="Show"
             orientation="horizontal"
             value={filter}
             onChange={(value) => setFilter(value as Filter)}
             className={styles.filterGroup}
           >
-            <Radio value="all" label={`Todas (${tasks.length})`} />
-            <Radio value="open" label={`Pendientes (${openCount})`} />
-            <Radio value="done" label={`Hechas (${doneCount})`} />
+            <Radio value="all" label={`All (${tasks.length})`} />
+            <Radio value="open" label={`Open (${openCount})`} />
+            <Radio value="done" label={`Done (${doneCount})`} />
           </RadioGroup>
         </div>
 
@@ -200,19 +200,19 @@ export function ContextSection({ canvas }: SectionProps) {
             tasks={filtered}
             onToggle={toggleTask}
             onDelete={deleteTask}
-            ariaLabel="Tareas del diario"
+            ariaLabel="Journal tasks"
             emptyState={
               <EmptyState
                 icon={filter === 'done' ? 'check' : 'feather'}
-                title={filter === 'done' ? 'Nada sellado todavía' : 'Todo en orden'}
+                title={filter === 'done' ? 'Nothing sealed yet' : 'All in order'}
                 description={
                   filter === 'done'
-                    ? 'Marca una tarea como hecha y aparecerá aquí, con la tinta seca.'
-                    : 'No quedan tareas con ese filtro. La nieve cubre el camino.'
+                    ? 'Mark a task as done and it will show up here, with the ink dry.'
+                    : 'No tasks match that filter. Snow covers the trail.'
                 }
                 action={
                   <Button variant="ghost" onClick={() => setFilter('all')}>
-                    Ver todas
+                    View all
                   </Button>
                 }
               />
@@ -221,7 +221,7 @@ export function ContextSection({ canvas }: SectionProps) {
         </div>
 
         <p className={styles.taskFoot}>
-          {doneCount} de {tasks.length} selladas · {filter === 'all' ? 'todo el diario' : filter === 'open' ? 'solo pendientes' : 'solo hechas'}
+          {doneCount} of {tasks.length} sealed · {filter === 'all' ? 'the whole journal' : filter === 'open' ? 'open only' : 'done only'}
         </p>
       </div>
     </Card>

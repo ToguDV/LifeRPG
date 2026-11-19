@@ -27,21 +27,21 @@ import { Popover } from '../Popover/Popover'
 import styles from './DatePicker.module.css'
 
 const WEEKDAYS = [
-  { short: 'L', long: 'lunes' },
-  { short: 'M', long: 'martes' },
-  { short: 'X', long: 'miércoles' },
-  { short: 'J', long: 'jueves' },
-  { short: 'V', long: 'viernes' },
-  { short: 'S', long: 'sábado' },
-  { short: 'D', long: 'domingo' },
+  { short: 'M', long: 'Monday' },
+  { short: 'T', long: 'Tuesday' },
+  { short: 'W', long: 'Wednesday' },
+  { short: 'T', long: 'Thursday' },
+  { short: 'F', long: 'Friday' },
+  { short: 'S', long: 'Saturday' },
+  { short: 'S', long: 'Sunday' },
 ] as const
 
 /*
   The grid prints the day as a plain number ("1"), so the accessible name
-  must not pad it ("01 de noviembre de 2026" does not contain "1" under
+  must not pad it ("01 November 2026" does not contain "1" under
   WCAG 2.5.3). `formatDate` keeps the two-digit day for prose and the trigger.
 */
-const dayNameFormatter = new Intl.DateTimeFormat('es-ES', {
+const dayNameFormatter = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -81,7 +81,7 @@ export function DatePicker({
   error,
   optional,
   labelAside,
-  placeholder = 'Elegir fecha',
+  placeholder = 'Pick a date',
   size = 'md',
   disabled,
   required,
@@ -277,7 +277,7 @@ export function DatePicker({
 
       {requiredId ? (
         <span id={requiredId} className="visually-hidden">
-          Campo obligatorio
+          Required
         </span>
       ) : null}
 
@@ -291,7 +291,7 @@ export function DatePicker({
         onClose={close}
         id={dialogId}
         role="dialog"
-        ariaLabel="Elegir fecha"
+        ariaLabel="Pick a date"
         className={styles.calendar}
       >
         <div className={styles.header}>
@@ -299,7 +299,7 @@ export function DatePicker({
             <button
               type="button"
               className={styles.navButton}
-              aria-label="Año anterior"
+              aria-label="Previous year"
               onClick={() => changeYear(-1)}
             >
               <Icon name="chevrons-left" size="xs" />
@@ -307,7 +307,7 @@ export function DatePicker({
             <button
               type="button"
               className={styles.navButton}
-              aria-label="Mes anterior"
+              aria-label="Previous month"
               onClick={() => changeMonth(-1)}
             >
               <Icon name="chevron-left" size="xs" />
@@ -320,7 +320,7 @@ export function DatePicker({
             <button
               type="button"
               className={styles.navButton}
-              aria-label="Mes siguiente"
+              aria-label="Next month"
               onClick={() => changeMonth(1)}
             >
               <Icon name="chevron-right" size="xs" />
@@ -328,7 +328,7 @@ export function DatePicker({
             <button
               type="button"
               className={styles.navButton}
-              aria-label="Año siguiente"
+              aria-label="Next year"
               onClick={() => changeYear(1)}
             >
               <Icon name="chevrons-right" size="xs" />

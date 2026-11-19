@@ -19,7 +19,7 @@ function getFileInput(): HTMLInputElement {
 
 function setup(accept: string) {
   const user = userEvent.setup({ applyAccept: false })
-  render(<FileUploader label="Adjuntos" accept={accept} />)
+  render(<FileUploader label="Attachments" accept={accept} />)
   return user
 }
 
@@ -30,39 +30,39 @@ async function upload(accept: string, file: File) {
 }
 
 describe('FileUploader accept', () => {
-  it('acepta cualquier archivo con */*', async () => {
-    await upload('*/*', new File(['hola'], 'nota.txt', { type: 'text/plain' }))
+  it('accepts any file with */*', async () => {
+    await upload('*/*', new File(['hello'], 'note.txt', { type: 'text/plain' }))
 
-    expect(screen.getByText('nota.txt')).toBeInTheDocument()
+    expect(screen.getByText('note.txt')).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
-  it('acepta coincidencias de tipo con image/* y rechaza el resto', async () => {
+  it('accepts type matches with image/* and rejects the rest', async () => {
     const user = setup('image/*')
 
-    await user.upload(getFileInput(), new File(['png'], 'foto.png', { type: 'image/png' }))
-    expect(screen.getByText('foto.png')).toBeInTheDocument()
+    await user.upload(getFileInput(), new File(['png'], 'photo.png', { type: 'image/png' }))
+    expect(screen.getByText('photo.png')).toBeInTheDocument()
 
-    await user.upload(getFileInput(), new File(['pdf'], 'informe.pdf', { type: 'application/pdf' }))
-    expect(screen.getByRole('alert')).toHaveTextContent('«informe.pdf» no es un formato permitido.')
-    expect(screen.queryByText('informe.pdf')).not.toBeInTheDocument()
+    await user.upload(getFileInput(), new File(['pdf'], 'report.pdf', { type: 'application/pdf' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('“report.pdf” is not an allowed format.')
+    expect(screen.queryByText('report.pdf')).not.toBeInTheDocument()
   })
 
-  it('acepta una extensión aunque el navegador no dé MIME', async () => {
-    await upload('.pdf', new File(['pdf'], 'Informe.PDF', { type: '' }))
+  it('accepts an extension even when the browser reports no MIME type', async () => {
+    await upload('.pdf', new File(['pdf'], 'Report.PDF', { type: '' }))
 
-    expect(screen.getByText('Informe.PDF')).toBeInTheDocument()
+    expect(screen.getByText('Report.PDF')).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
-  it('respeta una lista explícita de MIME', async () => {
+  it('honours an explicit MIME list', async () => {
     const user = setup('image/png, image/jpeg')
 
-    await user.upload(getFileInput(), new File(['png'], 'foto.png', { type: 'image/png' }))
-    await user.upload(getFileInput(), new File(['gif'], 'dibujo.gif', { type: 'image/gif' }))
+    await user.upload(getFileInput(), new File(['png'], 'photo.png', { type: 'image/png' }))
+    await user.upload(getFileInput(), new File(['gif'], 'drawing.gif', { type: 'image/gif' }))
 
-    expect(screen.getByText('foto.png')).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveTextContent('«dibujo.gif» no es un formato permitido.')
+    expect(screen.getByText('photo.png')).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent('“drawing.gif” is not an allowed format.')
   })
 })
 
@@ -70,26 +70,26 @@ describe('FileUploader accept', () => {
   WCAG 2.5.3: the dropzone is named by the field label and by the visible
   instruction inside it, so a voice-control user can say what they read.
 */
-describe('FileUploader nombre accesible', () => {
-  it('incluye la etiqueta del campo y la instrucción visible', () => {
-    render(<FileUploader label="Mapas y provisiones" />)
+describe('FileUploader accessible name', () => {
+  it('includes the field label and the visible instruction', () => {
+    render(<FileUploader label="Maps and provisions" />)
 
     expect(
       screen.getByRole('button', {
-        name: /Mapas y provisiones.*Arrastra tus archivos aquí.*elige desde el estante/i,
+        name: /Maps and provisions.*Drag your files here.*browse the shelf/i,
       }),
     ).toBeInTheDocument()
   })
 
-  it('actualiza el nombre cuando la zona está en modo arrastre', () => {
-    render(<FileUploader label="Mapas y provisiones" />)
+  it('updates the name while the zone is in drag mode', () => {
+    render(<FileUploader label="Maps and provisions" />)
 
-    const zone = screen.getByRole('button', { name: /Arrastra tus archivos aquí/i })
+    const zone = screen.getByRole('button', { name: /Drag your files here/i })
     fireEvent.dragEnter(zone)
 
     expect(
       screen.getByRole('button', {
-        name: /Mapas y provisiones.*Suelta aquí los archivos.*elige desde el estante/i,
+        name: /Maps and provisions.*Drop the files here.*browse the shelf/i,
       }),
     ).toBeInTheDocument()
   })

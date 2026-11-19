@@ -8,9 +8,9 @@ import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
 const RESISTANCE_MARKS = [
-  { value: 0, label: 'Agotada' },
-  { value: 50, label: 'Firme' },
-  { value: 100, label: 'Plena' },
+  { value: 0, label: 'Spent' },
+  { value: 50, label: 'Steady' },
+  { value: 100, label: 'Full' },
 ]
 
 const VIGIL_MARKS = [
@@ -36,15 +36,15 @@ export function NumbersSection({ canvas }: SectionProps) {
           Slider · RangeSlider · Stepper
         </Badge>
       }
-      title="Medir el pulso"
-      description="Deslizadores con marcas y burbujas de valor, un rango de dos pulgares y contadores con límites. Todos responden al teclado y respetan los topes."
+      title="Taking the pulse"
+      description="Sliders with marks and value bubbles, a two-thumb range, and counters with limits. All of them answer to the keyboard and respect the bounds."
       folio="05"
       tilt="right"
     >
       <DemoGrid columns={3}>
-        <DemoGroup label="Deslizador">
+        <DemoGroup label="Slider">
           <Slider
-            label="Resistencia"
+            label="Resistance"
             min={0}
             max={100}
             step={5}
@@ -53,20 +53,20 @@ export function NumbersSection({ canvas }: SectionProps) {
             showValue
             formatValue={(value) => `${value}%`}
             marks={RESISTANCE_MARKS}
-            hint="Baja al cruzar el vado o pasar la noche al raso."
+            hint="It drops when you cross the ford or sleep in the open."
           />
           <DemoNote live>
             {resistance >= 80
-              ? 'Aún puedes con el invierno.'
+              ? 'You can still handle the winter.'
               : resistance >= 40
-                ? 'El paso es firme, pero conviene comer.'
-                : 'Cada legua pesa. Busca refugio.'}
+                ? 'The pace is steady, but you should eat.'
+                : 'Every league weighs. Find shelter.'}
           </DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Rango de dos pulgares">
+        <DemoGroup label="Two-thumb range">
           <RangeSlider
-            label="Guardias de la noche"
+            label="Night watches"
             min={0}
             max={24}
             step={1}
@@ -74,46 +74,46 @@ export function NumbersSection({ canvas }: SectionProps) {
             onChange={setVigil}
             formatValue={(value) => `${value} h`}
             marks={VIGIL_MARKS}
-            hint="Desde el ocaso hasta el alba."
+            hint="From dusk until dawn."
           />
           <DemoNote live>
-            {vigil[1] - vigil[0]} horas de vigilia; {24 - (vigil[1] - vigil[0])} para
-            dormir.
+            {vigil[1] - vigil[0]} hours awake; {24 - (vigil[1] - vigil[0])} for
+            sleep.
           </DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Contadores">
+        <DemoGroup label="Counters">
           <Stepper
-            label="Raciones de viaje"
+            label="Travel rations"
             min={0}
             max={20}
             step={1}
             value={rations}
             onChange={setRations}
-            suffix="días"
-            hint="Cada ración aguanta una jornada."
+            suffix="days"
+            hint="Each ration lasts one day on the road."
           />
           <Stepper
-            label="Antorchas"
+            label="Torches"
             min={0}
             max={12}
             step={1}
             size="sm"
             value={torches}
             onChange={setTorches}
-            suffix="uds."
+            suffix="units"
           />
           <Stepper
-            label="Sello bloqueado"
+            label="Locked seal"
             min={0}
             max={9}
             defaultValue={3}
-            suffix="uds."
+            suffix="units"
             disabled
-            hint="Emitido por el gremio; no se puede cambiar."
+            hint="Issued by the guild; it cannot be changed."
           />
           <DemoNote>
-            {rations} raciones y {torches} antorchas en el zurrón.
+            {rations} rations and {torches} torches in the satchel.
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

@@ -2,12 +2,12 @@ import { expect, type Locator, type Page } from '@playwright/test'
 
 /*
   Stable hooks into the Questline demo. The selectors use the gallery's
-  section id, the rail's structure and ARIA state, not the Spanish copy that
+  section id, the rail's structure and ARIA state, not the visible copy that
   the component refactor may retouch.
 */
 
 export function questlineSection(page: Page): Locator {
-  return page.locator('#travesia')
+  return page.locator('#questline')
 }
 
 export function questlineTriggers(page: Page): Locator {

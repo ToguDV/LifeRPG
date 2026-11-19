@@ -20,65 +20,65 @@ function makeSeed(): QuestNode[] {
 
   return [
     {
-      id: 'provisiones',
-      title: 'Las provisiones',
-      note: 'El odre, la sal y la yesca.',
+      id: 'provisions',
+      title: 'The provisions',
+      note: 'The waterskin, the salt, and the tinder.',
       deadline: deadline(-4),
       tasks: [
-        { id: 'odre', title: 'Llenar el odre en el arroyo', done: true },
-        { id: 'sal', title: 'Sellar la sal en el paño encerado', done: true },
-        { id: 'yesca', title: 'Cambiar la yesca del yesquero', done: true },
+        { id: 'waterskin', title: 'Fill the waterskin at the stream', done: true },
+        { id: 'salt', title: 'Seal the salt in the waxed cloth', done: true },
+        { id: 'tinder', title: 'Change the tinder in the firebox', done: true },
       ],
     },
     {
-      id: 'pozo',
-      title: 'El pozo ciego',
-      note: 'Nadie baja dos veces con el mismo cubo.',
+      id: 'well',
+      title: 'The blind well',
+      note: 'Nobody goes down twice with the same bucket.',
       deadline: deadline(-1),
       tasks: [
-        { id: 'cuerda', title: 'Atar la cuerda al cabrestante', done: true },
-        { id: 'farol', title: 'Bajar el farol de latón', done: false },
-        { id: 'agua', title: 'Subir el cubo sin tocar el fondo', done: false },
+        { id: 'rope', title: 'Tie the rope to the winch', done: true },
+        { id: 'lantern', title: 'Lower the brass lantern', done: false },
+        { id: 'water', title: 'Raise the bucket without touching the bottom', done: false },
       ],
     },
     {
-      id: 'atalaya',
-      title: 'La atalaya del norte',
-      note: 'Arde cada séptima noche.',
+      id: 'watchtower',
+      title: 'The north watchtower',
+      note: 'It burns every seventh night.',
       deadline: deadline(5),
       tasks: [
-        { id: 'lena', title: 'Subir la leña seca', done: false },
-        { id: 'senal', title: 'Encender la señal al anochecer', done: false },
+        { id: 'firewood', title: 'Carry the dry firewood up', done: false },
+        { id: 'signal', title: 'Light the signal at dusk', done: false },
       ],
     },
     {
-      id: 'tablones',
-      title: 'Los tablones de Alderic',
+      id: 'planks',
+      title: 'Alderic’s planks',
       deadline: deadline(11),
       tasks: [
-        { id: 'cortar', title: 'Cortar tres tablones de pino', done: false },
-        { id: 'secar', title: 'Dejarlos secar bajo la nieve', done: false },
-        { id: 'entregar', title: 'Entregarlos antes del deshielo', done: false },
+        { id: 'cut', title: 'Cut three pine planks', done: false },
+        { id: 'dry', title: 'Leave them to dry under the snow', done: false },
+        { id: 'deliver', title: 'Deliver them before the thaw', done: false },
       ],
     },
     {
-      id: 'paso',
-      title: 'El paso de la Marca',
-      note: 'La nieve borra el camino cada mañana.',
+      id: 'pass',
+      title: 'The Hollow Mark pass',
+      note: 'The snow erases the path every morning.',
       deadline: deadline(17),
       tasks: [
-        { id: 'guia', title: 'Tender la cuerda guía', done: false },
-        { id: 'marcas', title: 'Clavar las marcas de la ruta', done: false },
+        { id: 'guide', title: 'Run the guide rope', done: false },
+        { id: 'markers', title: 'Drive the route markers', done: false },
       ],
     },
     {
-      id: 'puerta',
-      title: 'La puerta hueca',
-      note: 'Al otro lado, el invierno termina.',
+      id: 'door',
+      title: 'The hollow door',
+      note: 'On the other side, winter ends.',
       deadline: deadline(24),
       tasks: [
-        { id: 'llave', title: 'Encontrar la llave de hueso', done: false },
-        { id: 'umbral', title: 'Cruzar el umbral antes del deshielo', done: false },
+        { id: 'key', title: 'Find the bone key', done: false },
+        { id: 'threshold', title: 'Cross the threshold before the thaw', done: false },
       ],
     },
   ]
@@ -103,8 +103,8 @@ export function QuestlineSection({ canvas }: SectionProps) {
           Questline · QuestNode · QuestTask
         </Badge>
       }
-      title="La ruta del invierno"
-      description="Una línea de hitos; cada uno con su lista de tareas y su fecha. Al completar todas sus tareas, el siguiente hito abre la puerta y el sendero se entinta. Tareas, plazos y nombres se editan aquí mismo."
+      title="The winter route"
+      description="A line of milestones, each with its own task list and date. Once every task on a milestone is complete, the next one opens its door and the trail takes ink. Tasks, deadlines, and names are edited right here."
       folio="10"
       tilt="right"
     >
@@ -112,14 +112,14 @@ export function QuestlineSection({ canvas }: SectionProps) {
         <Questline
           nodes={nodes}
           onChange={setNodes}
-          label="Travesía de la Marca Hueca"
-          addNodeLabel="Añadir hito"
+          label="Journey of the Hollow Mark"
+          addNodeLabel="Add milestone"
         />
 
         <div className={styles.questFoot}>
           <DemoNote muted>
-            {completed} de {nodes.length} hitos completados · {done} de {total} tareas
-            cumplidas. Un hito sin tareas no se considera completado.
+            {completed} of {nodes.length} milestones completed · {done} of {total} tasks
+            done. A milestone with no tasks does not count as complete.
           </DemoNote>
           <Button
             variant="secondary"
@@ -127,7 +127,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
             iconLeft={<Icon name="scroll" size="sm" />}
             onClick={() => setNodes(makeSeed())}
           >
-            Volver al parte inicial
+            Back to the first report
           </Button>
         </div>
       </div>

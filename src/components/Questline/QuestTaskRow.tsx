@@ -48,7 +48,7 @@ export function QuestTaskRow({
           }}
         >
           <TextInput
-            aria-label={`Título de «${task.title}»`}
+            aria-label={`Title of “${task.title}”`}
             value={draft}
             onChange={(event) => onDraftChange(event.target.value)}
             error={error ?? undefined}
@@ -68,14 +68,14 @@ export function QuestTaskRow({
               variant="ghost"
               size="sm"
               iconOnly
-              aria-label="Guardar cambios"
+              aria-label="Save changes"
               iconLeft={<Icon name="check" size="sm" />}
             />
             <Button
               variant="ghost"
               size="sm"
               iconOnly
-              aria-label="Cancelar edición"
+              aria-label="Cancel edit"
               iconLeft={<Icon name="close" size="sm" />}
               onClick={onCancelEdit}
             />
@@ -95,7 +95,7 @@ export function QuestTaskRow({
               variant="ghost"
               size="sm"
               iconOnly
-              aria-label={`Editar «${task.title}»`}
+              aria-label={`Edit “${task.title}”`}
               iconLeft={<Icon name="edit" size="sm" />}
               onClick={onStartEdit}
             />
@@ -103,7 +103,7 @@ export function QuestTaskRow({
               variant="ghost"
               size="sm"
               iconOnly
-              aria-label={`Eliminar «${task.title}»`}
+              aria-label={`Delete “${task.title}”`}
               iconLeft={<Icon name="trash" size="sm" />}
               onClick={onDelete}
             />

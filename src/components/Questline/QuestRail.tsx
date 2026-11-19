@@ -51,8 +51,8 @@ export function QuestRail({
         {emptyState ?? (
           <EmptyState
             icon="scroll"
-            title="La ruta está en blanco"
-            description="Añade el primer hito y la travesía empezará a dibujarse."
+            title="The route is blank"
+            description="Add the first milestone and the journey will start to draw itself."
           />
         )}
       </div>
@@ -61,7 +61,7 @@ export function QuestRail({
 
   return (
     <div className={styles.railWrap}>
-      <ol className={styles.rail} ref={railRef} aria-label={routeLabel || 'Hitos'}>
+      <ol className={styles.rail} ref={railRef} aria-label={routeLabel || 'Milestones'}>
         {nodes.map((node, index) => {
           const state = states[index]
           const deadline = getQuestDeadline(

@@ -145,19 +145,19 @@ async function measureAt(
   }
 }
 
-test.describe('overflow horizontal', () => {
-  test('galería completa', async ({ page }) => {
+test.describe('horizontal overflow', () => {
+  test('full gallery', async ({ page }) => {
     await gotoGallery(page)
-    await measureAt(page, 'galería completa')
+    await measureAt(page, 'full gallery')
   })
 
-  test('Questline con el panel abierto', async ({ page }) => {
+  test('Questline with the panel open', async ({ page }) => {
     await gotoGallery(page)
     await openMilestone(page)
-    await measureAt(page, 'Questline · panel abierto')
+    await measureAt(page, 'Questline · panel open')
   })
 
-  test('hito con título sin espacios', async ({ page }) => {
+  test('milestone with an unbroken title', async ({ page }) => {
     await gotoGallery(page)
     const { panel } = await openMilestone(page)
 
@@ -169,6 +169,6 @@ test.describe('overflow horizontal', () => {
     await expect(panelHeading(panel)).toHaveText(NO_SPACE_TITLE)
     await settle(page)
 
-    await measureAt(page, 'Questline · título sin espacios')
+    await measureAt(page, 'Questline · unbroken title')
   })
 })

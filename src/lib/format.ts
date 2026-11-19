@@ -1,20 +1,20 @@
-const dateFormatter = new Intl.DateTimeFormat('es-ES', {
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'long',
   year: 'numeric',
 })
 
-const monthFormatter = new Intl.DateTimeFormat('es-ES', {
+const monthFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   year: 'numeric',
 })
 
-const shortDateFormatter = new Intl.DateTimeFormat('es-ES', {
+const shortDateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'short',
 })
 
-const sizeFormatter = new Intl.NumberFormat('es-ES', {
+const sizeFormatter = new Intl.NumberFormat('en-GB', {
   maximumFractionDigits: 1,
   minimumFractionDigits: 0,
 })
@@ -27,7 +27,7 @@ export function formatMonth(date: Date): string {
   return monthFormatter.format(date)
 }
 
-/** Compact date for rails and chips: «12 ene». Never carries the year. */
+/** Compact date for rails and chips: “12 Jan”. Never carries the year. */
 export function formatShortDate(date: Date): string {
   return shortDateFormatter.format(date).replace(/\.$/, '')
 }

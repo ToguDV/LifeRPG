@@ -9,7 +9,7 @@ import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
 const INITIAL_NOTES =
-  'La atalaya del norte arde cada séptima noche. Llevar yesca, una segunda capa de lana y el farol de latón antes de que cierre la puerta.'
+  'The north watchtower burns every seventh night. Bring tinder, a second layer of wool, and the brass lantern before the door closes.'
 
 export function FieldsSection({ canvas }: SectionProps) {
   const [search, setSearch] = useState('')
@@ -24,83 +24,83 @@ export function FieldsSection({ canvas }: SectionProps) {
           TextInput · Textarea
         </Badge>
       }
-      title="Tinta sobre la línea"
-      description="Etiquetas talladas, pistas escritas a mano y errores que no gritan. Los campos comparten la misma geometría de control en papel y en panel."
+      title="Ink on the line"
+      description="Carved labels, handwritten hints, and errors that do not shout. The fields share the same control geometry on paper and panel."
       folio="03"
       tilt="right"
     >
       <DemoGrid>
-        <DemoGroup label="Entradas de una línea">
+        <DemoGroup label="Single-line inputs">
           <TextInput
-            label="Nombre del caminante"
-            defaultValue="Maho de la Marca Hueca"
-            hint="Como aparecerá en el registro del gremio."
+            label="Wanderer’s name"
+            defaultValue="Maho of the Hollow Mark"
+            hint="As it will appear in the guild register."
           />
           <TextInput
-            label="Buscar en el diario"
+            label="Search the journal"
             leadingIcon={<Icon name="search" size="sm" />}
-            placeholder="Tareas, lugares, personas…"
+            placeholder="Tasks, places, people…"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             onClear={() => setSearch('')}
             clearable
-            hint="La búsqueda no distingue mayúsculas."
+            hint="Search is case-insensitive."
           />
           <DemoNote live>
-            {search ? `Buscando «${search}» por los márgenes.` : 'El campo está en silencio.'}
+            {search ? `Searching the margins for “${search}”.` : 'The field is silent.'}
           </DemoNote>
           <TextInput
-            label="Recompensa"
+            label="Reward"
             defaultValue="40"
             inputMode="numeric"
             prefix={<Icon name="spark" size="xs" />}
-            suffix="monedas"
-            hint="El gremio paga en monedas viejas."
+            suffix="coins"
+            hint="The guild pays in old coins."
           />
         </DemoGroup>
 
-        <DemoGroup label="Estados y escala">
+        <DemoGroup label="States and scale">
           <TextInput
-            label="Correo del gremio"
+            label="Guild mail"
             defaultValue="maho@"
-            error="Ese sello no parece válido."
-            hint="Usa una dirección completa."
+            error="That seal does not look valid."
+            hint="Use a full address."
           />
           <TextInput
-            label="Sello del gremio"
+            label="Guild seal"
             defaultValue="MC-812"
             disabled
-            hint="Emitido en la tercera campanada."
+            hint="Issued at the third bell."
           />
           <div className={styles.sizeFields}>
-            <TextInput size="sm" label="Pequeño" placeholder="Corto" />
-            <TextInput size="md" label="Mediano" placeholder="Medio" />
-            <TextInput size="lg" label="Grande" placeholder="Largo" />
+            <TextInput size="sm" label="Small" placeholder="Short" />
+            <TextInput size="md" label="Medium" placeholder="Medium" />
+            <TextInput size="lg" label="Large" placeholder="Long" />
           </div>
-          <DemoNote muted>El alto y el cuerpo cambian; los tokens no.</DemoNote>
+          <DemoNote muted>Height and size change; the tokens do not.</DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Entradas de varias líneas" span>
+        <DemoGroup label="Multi-line inputs" span>
           <Textarea
-            label="Notas de la expedición"
+            label="Expedition notes"
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
             maxLength={220}
             showCount
-            hint="Se guarda al cerrar el diario."
+            hint="Saved when the journal closes."
           />
           <Textarea
-            label="Autoajustable"
-            placeholder="Escribe y el campo crecerá contigo…"
+            label="Auto-growing"
+            placeholder="Type, and the field grows with you…"
             autoGrow
             maxLength={140}
             showCount
-            hint="Sin barra de desplazamiento hasta que el texto pida más."
+            hint="No scrollbar until the text asks for more."
           />
           <Textarea
-            label="Última voluntad"
-            defaultValue="Que el farol vuelva a la viuda."
-            error="Falta la firma del testigo."
+            label="Last will"
+            defaultValue="Let the lantern go back to the widow."
+            error="The witness signature is missing."
             resize="none"
           />
         </DemoGroup>

@@ -23,21 +23,21 @@ export function QuestDeleteConfirm({
     <div
       className={styles.confirm}
       role="group"
-      aria-label="Confirmar la eliminación del hito"
+      aria-label="Confirm milestone deletion"
     >
       <p className={styles.confirmText} role="alert">
-        ¿Eliminar «{title}»
+        Delete “{title}”
         {taskCount
-          ? ` y sus ${taskCount} ${taskCount === 1 ? 'tarea' : 'tareas'}`
+          ? ` and its ${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`
           : ''}
-        ? No se puede deshacer.
+        ? This cannot be undone.
       </p>
       <Button variant="danger" size="sm" onClick={onConfirm}>
-        Sí, eliminar el hito
+        Yes, delete the milestone
       </Button>
       <span ref={cancelRef}>
         <Button variant="ghost" size="sm" onClick={onCancel}>
-          Cancelar
+          Cancel
         </Button>
       </span>
     </div>

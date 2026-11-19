@@ -155,7 +155,7 @@ export function RadioGroup({
         ) : null}
         {requiredId ? (
           <span id={requiredId} className="visually-hidden">
-            Campo obligatorio
+            Required
           </span>
         ) : null}
         <div className={styles.items}>{children}</div>

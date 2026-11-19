@@ -29,7 +29,7 @@ export function TaskList({
           <EmptyState
             icon="feather"
             title="Nada pendiente"
-            description="El diario está en blanco. Añade una tarea y la nieve traerá otra."
+            description="The journal is blank. Add a task and the snow will bring another."
           />
         )}
       </div>

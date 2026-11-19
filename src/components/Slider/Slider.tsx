@@ -287,7 +287,7 @@ export function RangeSlider({
     >
       {/*
         Two thumbs, one name: the group borrows the Field label so the range
-        is announced as "Guardias de la noche" before each thumb's own label.
+        is announced as "Night watch" before each thumb's own label.
         The minimum input keeps `id={fieldId}` so the Field label's `for` stays
         valid; its `aria-label` (like the maximum's) wins as the control name.
       */}
@@ -309,7 +309,7 @@ export function RangeSlider({
               step={step}
               value={low}
               disabled={disabled}
-              aria-label="Valor mínimo"
+              aria-label="Minimum value"
               aria-invalid={error ? true : undefined}
               aria-describedby={messageId}
               aria-valuetext={lowLabel}
@@ -326,7 +326,7 @@ export function RangeSlider({
               step={step}
               value={high}
               disabled={disabled}
-              aria-label="Valor máximo"
+              aria-label="Maximum value"
               aria-invalid={error ? true : undefined}
               aria-describedby={messageId}
               aria-valuetext={highLabel}

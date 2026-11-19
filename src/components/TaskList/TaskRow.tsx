@@ -24,9 +24,9 @@ export interface TaskRowProps {
 }
 
 const PRIORITY_LABEL: Record<TaskPriority, string> = {
-  low: 'Prioridad baja',
-  normal: 'Prioridad media',
-  high: 'Prioridad alta',
+  low: 'Low priority',
+  normal: 'Normal priority',
+  high: 'High priority',
 }
 
 export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
@@ -43,7 +43,7 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
   */
   const describedBy = cx(priorityId, task.overdue ? overdueId : undefined)
   const nameId = `${inputId}-name`
-  const action = `${task.done ? 'Desmarcar' : 'Marcar'} «${task.title}»`
+  const action = `${task.done ? 'Uncheck' : 'Check'} “${task.title}”`
 
   return (
     <li
@@ -55,7 +55,7 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
         One labelling mechanism: a single native `<label>` wraps the box and
         the row body, so the whole row stays clickable. The checkbox name is
         an explicit reference to the hidden action phrase inside that same
-        label, which keeps the exact «Marcar/Desmarcar «título»» name and the
+        label, which keeps the exact “Check/Uncheck ‘title’” name and the
         visible title inside it (WCAG 2.5.3). The old `aria-label` on the
         input plus two `<label for>` elements made axe unable to decide the
         name (`form-field-multiple-labels`).
@@ -93,7 +93,7 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
             </span>
             {task.overdue ? (
               <span id={overdueId} className="visually-hidden">
-                Vencida.
+                Overdue.
               </span>
             ) : null}
             {task.due ? <span className={styles.due}>{task.due}</span> : null}
@@ -116,7 +116,7 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
         <button
           type="button"
           className={styles.delete}
-          aria-label={`Eliminar «${task.title}»`}
+          aria-label={`Delete “${task.title}”`}
           onClick={() => onDelete(task.id)}
         >
           <Icon name="trash" size="sm" />

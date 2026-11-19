@@ -120,9 +120,9 @@ export function FileUploader({
   const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const autoHint = [
-    accept ? `Formatos: ${accept}` : null,
-    maxSize ? `Máximo ${formatFileSize(maxSize)} por archivo` : null,
-    multiple ? `Hasta ${limit} archivos` : null,
+    accept ? `Formats: ${accept}` : null,
+    maxSize ? `Up to ${formatFileSize(maxSize)} per file` : null,
+    multiple ? `Up to ${limit} files` : null,
   ]
     .filter(Boolean)
     .join(' · ')
@@ -136,15 +136,15 @@ export function FileUploader({
 
     for (const file of incoming) {
       if (!matchesAccept(file, accept)) {
-        nextIssues.push(`«${file.name}» no es un formato permitido.`)
+        nextIssues.push(`“${file.name}” is not an allowed format.`)
         continue
       }
       if (maxSize && file.size > maxSize) {
-        nextIssues.push(`«${file.name}» supera el límite de ${formatFileSize(maxSize)}.`)
+        nextIssues.push(`“${file.name}” exceeds the ${formatFileSize(maxSize)} limit.`)
         continue
       }
       if (existingKeys.has(fileKey(file))) {
-        nextIssues.push(`«${file.name}» ya está en la lista.`)
+        nextIssues.push(`“${file.name}” is already in the list.`)
         continue
       }
       accepted.push(file)
@@ -157,8 +157,8 @@ export function FileUploader({
       if (accepted.length > available) {
         nextIssues.push(
           available === 0
-            ? `No puedes añadir más de ${limit} ${limit === 1 ? 'archivo' : 'archivos'}.`
-            : `Solo se añadieron ${available} de ${accepted.length} archivos por el límite de ${limit}.`,
+            ? `You cannot add more than ${limit} ${limit === 1 ? 'file' : 'files'}.`
+            : `Only ${available} of ${accepted.length} files were added because of the ${limit}-file limit.`,
         )
       }
       merged = [...files, ...accepted.slice(0, available)]
@@ -295,10 +295,10 @@ export function FileUploader({
           <Icon name="upload" size="lg" />
         </span>
         <span id={`${fieldId}-dropzone-title`} className={styles.zoneTitle}>
-          {dragActive ? 'Suelta aquí los archivos' : 'Arrastra tus archivos aquí'}
-        </span>
+          {dragActive ? 'Drop the files here' : 'Drag your files here'}
+        </span>{' '}
         <span id={`${fieldId}-dropzone-text`} className={styles.zoneText}>
-          o <span className={styles.browse}>elige desde el estante</span>
+          or <span className={styles.browse}>browse the shelf</span>
         </span>
       </div>
 
@@ -316,7 +316,7 @@ export function FileUploader({
               <button
                 type="button"
                 className={styles.remove}
-                aria-label={`Quitar ${file.name}`}
+                aria-label={`Remove ${file.name}`}
                 onClick={() => removeFile(file)}
                 disabled={disabled}
               >

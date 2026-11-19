@@ -39,47 +39,47 @@ function stubRects(anchor: AnchorBox, floating: { width: number; height: number 
 async function openTooltip(side: 'top' | 'bottom') {
   const user = userEvent.setup()
   render(
-    <Tooltip content="Guardar en el códice" side={side}>
-      <button type="button">Guardar</button>
+    <Tooltip content="Save to the codex" side={side}>
+      <button type="button">Save</button>
     </Tooltip>,
   )
   /* Clicking focuses the button, and focus opens the tooltip synchronously. */
-  await user.click(screen.getByRole('button', { name: 'Guardar' }))
+  await user.click(screen.getByRole('button', { name: 'Save' }))
   return screen.findByRole('tooltip')
 }
 
 describe('Tooltip side', () => {
-  it('respeta side="top" cuando hay espacio encima', async () => {
+  it('honours side="top" when there is room above', async () => {
     stubRects({ top: 300, height: 20 }, { width: 120, height: 40 })
 
     expect(await openTooltip('top')).toHaveAttribute('data-side', 'top')
   })
 
-  it('respeta side="bottom" cuando hay espacio debajo', async () => {
+  it('honours side="bottom" when there is room below', async () => {
     stubRects({ top: 300, height: 20 }, { width: 120, height: 40 })
 
     expect(await openTooltip('bottom')).toHaveAttribute('data-side', 'bottom')
   })
 
-  it('voltea a bottom si no cabe encima', async () => {
+  it('flips to bottom when it does not fit above', async () => {
     stubRects({ top: 10, height: 20 }, { width: 120, height: 40 })
 
     expect(await openTooltip('top')).toHaveAttribute('data-side', 'bottom')
   })
 
-  it('voltea a top si no cabe debajo', async () => {
+  it('flips to top when it does not fit below', async () => {
     const { innerHeight } = window
     stubRects({ top: innerHeight - 30, height: 20 }, { width: 120, height: 40 })
 
     expect(await openTooltip('bottom')).toHaveAttribute('data-side', 'top')
   })
 
-  it('describe el disparador con el contenido mientras está abierto', async () => {
+  it('describes the trigger with the content while open', async () => {
     stubRects({ top: 300, height: 20 }, { width: 120, height: 40 })
     await openTooltip('top')
 
-    expect(screen.getByRole('button', { name: 'Guardar' })).toHaveAccessibleDescription(
-      'Guardar en el códice',
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveAccessibleDescription(
+      'Save to the codex',
     )
   })
 })

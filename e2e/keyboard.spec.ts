@@ -9,7 +9,7 @@ import {
 
 /*
   Keyboard and focus smoke tests. They assert roles, ARIA state and focus
-  ownership instead of Spanish copy, so a wording pass does not break them.
+  ownership instead of visible copy, so a wording pass does not break them.
 */
 
 async function tabUntilFocused(
@@ -28,8 +28,8 @@ async function tabUntilFocused(
   )
 }
 
-test.describe('teclado y foco', () => {
-  test('Questline: Tab al primer hito, Enter abre y Escape vuelve al disparador', async ({
+test.describe('keyboard and focus', () => {
+  test('Questline: Tab to the first milestone, Enter opens and Escape returns to the trigger', async ({
     page,
   }) => {
     await gotoGallery(page)
@@ -57,16 +57,16 @@ test.describe('teclado y foco', () => {
     await expect(trigger).toBeFocused()
   })
 
-  test('ThemePicker: Enter abre, las flechas cambian el tema y Escape devuelve el foco', async ({
+  test('ThemePicker: Enter opens, arrows change the theme and Escape returns focus', async ({
     page,
   }) => {
     await gotoGallery(page)
 
-    const trigger = page.getByRole('button', { name: /^Elegir tema/ })
+    const trigger = page.getByRole('button', { name: /^Choose theme/ })
     await trigger.focus()
     await page.keyboard.press('Enter')
 
-    const options = page.getByRole('radiogroup', { name: 'Temas disponibles' })
+    const options = page.getByRole('radiogroup', { name: 'Available themes' })
     await expect(options).toBeVisible()
     await expect(options.getByRole('radio', { checked: true })).toBeFocused()
 
@@ -81,11 +81,11 @@ test.describe('teclado y foco', () => {
     await expect(trigger).toBeFocused()
   })
 
-  test('Select: flechas, Enter, Escape y retorno del foco', async ({ page }) => {
+  test('Select: arrows, Enter, Escape and focus return', async ({ page }) => {
     await gotoGallery(page)
 
     const select = page.getByRole('combobox', {
-      name: 'Clase del caminante',
+      name: 'Wanderer class',
     })
     await select.focus()
     const before = (await select.textContent())?.trim()
@@ -117,10 +117,10 @@ test.describe('teclado y foco', () => {
     await expect(select).toBeFocused()
   })
 
-  test('Combobox: flechas, Enter, Escape y retorno del foco', async ({ page }) => {
+  test('Combobox: arrows, Enter, Escape and focus return', async ({ page }) => {
     await gotoGallery(page)
 
-    const combobox = page.getByRole('combobox', { name: 'Tarea del día' })
+    const combobox = page.getByRole('combobox', { name: 'Task of the day' })
     await combobox.focus()
     const listbox = page.getByRole('listbox')
     await expect(listbox).toBeVisible()
@@ -147,7 +147,7 @@ test.describe('teclado y foco', () => {
     await expect(combobox).toBeFocused()
   })
 
-  test('sendero: 6–8 hitos, panel abierto y cada path con d', async ({ page }) => {
+  test('trail: 6–8 milestones, panel open and every path has a d', async ({ page }) => {
     await gotoGallery(page)
 
     const triggers = questlineTriggers(page)
@@ -161,7 +161,7 @@ test.describe('teclado y foco', () => {
       The trail is a decorative SVG measured by ResizeObserver. It has width
       and height attributes; the icons do not, so the selector is unambiguous.
     */
-    const trail = page.locator('#travesia svg[width][height]')
+    const trail = page.locator('#questline svg[width][height]')
     await expect(trail).toBeVisible()
     const paths = trail.locator('path')
     await expect(paths).toHaveCount(count - 1)

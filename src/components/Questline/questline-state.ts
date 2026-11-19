@@ -5,7 +5,7 @@ import type { QuestNodeState } from './questline-model'
 export interface QuestStateMeta {
   /** Marker icon on the rail; the current milestone carries none. */
   icon: IconName | null
-  /** Spoken after the milestone number: «Bloqueado.». */
+  /** Spoken after the milestone number: “Locked.”. */
   word: string
   /** Visible badge in the panel. */
   label: string
@@ -20,26 +20,26 @@ export interface QuestStateMeta {
 export const STATE_META: Record<QuestNodeState, QuestStateMeta> = {
   locked: {
     icon: 'lock',
-    word: 'Bloqueado.',
-    label: 'Bloqueado',
+    word: 'Locked.',
+    label: 'Locked',
     badgeVariant: 'outline',
   },
   active: {
     icon: null,
-    word: 'En curso.',
-    label: 'En curso',
+    word: 'In progress.',
+    label: 'In progress',
     badgeVariant: 'accent',
   },
   complete: {
     icon: 'check',
-    word: 'Cumplido.',
-    label: 'Cumplido',
+    word: 'Completed.',
+    label: 'Completed',
     badgeVariant: 'success',
   },
   overdue: {
     icon: 'alert',
-    word: 'Vencido.',
-    label: 'Vencido',
+    word: 'Overdue.',
+    label: 'Overdue',
     badgeVariant: 'danger',
   },
 }

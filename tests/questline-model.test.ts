@@ -23,11 +23,11 @@ function milestone(
 }
 
 function doneTask(id: string): QuestNode['tasks'][number] {
-  return { id, title: `Tarea ${id}`, done: true }
+  return { id, title: `Task ${id}`, done: true }
 }
 
 function pendingTask(id: string): QuestNode['tasks'][number] {
-  return { id, title: `Tarea ${id}`, done: false }
+  return { id, title: `Task ${id}`, done: false }
 }
 
 describe('parseDeadlineKey', () => {
@@ -74,7 +74,7 @@ describe('getQuestNodeStates', () => {
   it('keeps an empty first milestone open but never opens the gate', () => {
     expect(
       getQuestNodeStates(
-        [milestone('borrador', 'Borrador'), milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] })],
+        [milestone('draft', 'Draft'), milestone('well', 'The well', { tasks: [pendingTask('lantern')] })],
         TODAY,
       ),
     ).toEqual(['active', 'locked'])
@@ -82,9 +82,9 @@ describe('getQuestNodeStates', () => {
 
   it('keeps completed milestones editable after an earlier one reopens', () => {
     const nodes = [
-      milestone('provisiones', 'Provisiones', { tasks: [pendingTask('odre')] }),
-      milestone('pozo', 'El pozo', { tasks: [doneTask('farol')] }),
-      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+      milestone('supplies', 'Supplies', { tasks: [pendingTask('skin')] }),
+      milestone('well', 'The well', { tasks: [doneTask('lantern')] }),
+      milestone('summit', 'The summit', { tasks: [pendingTask('flag')] }),
     ]
 
     expect(getQuestNodeStates(nodes, TODAY)).toEqual(['active', 'complete', 'locked'])
@@ -92,9 +92,9 @@ describe('getQuestNodeStates', () => {
 
   it('locks every milestone after the first pending one', () => {
     const nodes = [
-      milestone('provisiones', 'Provisiones', { tasks: [doneTask('odre')] }),
-      milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] }),
-      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+      milestone('supplies', 'Supplies', { tasks: [doneTask('skin')] }),
+      milestone('well', 'The well', { tasks: [pendingTask('lantern')] }),
+      milestone('summit', 'The summit', { tasks: [pendingTask('flag')] }),
     ]
 
     expect(getQuestNodeStates(nodes, TODAY)).toEqual(['complete', 'active', 'locked'])
@@ -102,24 +102,24 @@ describe('getQuestNodeStates', () => {
 
   it('marks an unlocked pending milestone as overdue, including an empty draft', () => {
     const nodes = [
-      milestone('pozo', 'El pozo', {
+      milestone('well', 'The well', {
         deadline: '2025-01-10',
-        tasks: [pendingTask('farol')],
+        tasks: [pendingTask('lantern')],
       }),
-      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+      milestone('summit', 'The summit', { tasks: [pendingTask('flag')] }),
     ]
 
     expect(getQuestNodeStates(nodes, TODAY)).toEqual(['overdue', 'locked'])
     expect(
-      getQuestNodeStates([milestone('borrador', 'Borrador', { deadline: '2025-01-10' })], TODAY),
+      getQuestNodeStates([milestone('draft', 'Draft', { deadline: '2025-01-10' })], TODAY),
     ).toEqual(['overdue'])
   })
 
   it('compares deadlines against the given day, not the render clock', () => {
     const nodes = [
-      milestone('pozo', 'El pozo', {
+      milestone('well', 'The well', {
         deadline: '2025-01-12',
-        tasks: [pendingTask('farol')],
+        tasks: [pendingTask('lantern')],
       }),
     ]
 
@@ -131,25 +131,25 @@ describe('getQuestNodeStates', () => {
 describe('getBlockingNodes', () => {
   it('returns every unfinished milestone behind the index, oldest first', () => {
     const nodes = [
-      milestone('provisiones', 'Provisiones', { tasks: [pendingTask('odre')] }),
-      milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] }),
-      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+      milestone('supplies', 'Supplies', { tasks: [pendingTask('skin')] }),
+      milestone('well', 'The well', { tasks: [pendingTask('lantern')] }),
+      milestone('summit', 'The summit', { tasks: [pendingTask('flag')] }),
     ]
 
     expect(getBlockingNodes(nodes, 2).map((node) => node.id)).toEqual([
-      'provisiones',
-      'pozo',
+      'supplies',
+      'well',
     ])
   })
 
   it('skips finished milestones and stays empty for the first one', () => {
     const nodes = [
-      milestone('provisiones', 'Provisiones', { tasks: [doneTask('odre')] }),
-      milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] }),
-      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+      milestone('supplies', 'Supplies', { tasks: [doneTask('skin')] }),
+      milestone('well', 'The well', { tasks: [pendingTask('lantern')] }),
+      milestone('summit', 'The summit', { tasks: [pendingTask('flag')] }),
     ]
 
-    expect(getBlockingNodes(nodes, 2).map((node) => node.id)).toEqual(['pozo'])
+    expect(getBlockingNodes(nodes, 2).map((node) => node.id)).toEqual(['well'])
     expect(getBlockingNodes(nodes, 0)).toEqual([])
   })
 })
@@ -159,8 +159,8 @@ describe('getQuestDeadline', () => {
     expect(getQuestDeadline(undefined, false, TODAY)).toEqual({
       tone: 'none',
       dateLabel: null,
-      shortLabel: 'sin fecha',
-      statusLabel: 'Sin fecha límite',
+      shortLabel: 'no date',
+      statusLabel: 'No deadline',
     })
     expect(getQuestDeadline('2023-02-29', false, TODAY).tone).toBe('none')
   })
@@ -168,27 +168,27 @@ describe('getQuestDeadline', () => {
   it('covers every tone on the calendar', () => {
     const done = getQuestDeadline('2025-01-12', true, TODAY)
     expect(done.tone).toBe('done')
-    expect(done.statusLabel).toBe('Cumplido')
+    expect(done.statusLabel).toBe('Completed')
 
     expect(getQuestDeadline('2025-01-11', false, TODAY)).toMatchObject({
       tone: 'overdue',
-      statusLabel: 'Vencido',
+      statusLabel: 'Overdue',
     })
     expect(getQuestDeadline('2025-01-12', false, TODAY)).toMatchObject({
       tone: 'today',
-      statusLabel: 'Vence hoy',
+      statusLabel: 'Due today',
     })
     expect(getQuestDeadline('2025-01-13', false, TODAY)).toMatchObject({
       tone: 'soon',
-      statusLabel: 'Vence mañana',
+      statusLabel: 'Due tomorrow',
     })
     expect(getQuestDeadline('2025-01-15', false, TODAY)).toMatchObject({
       tone: 'soon',
-      statusLabel: 'Faltan 3 días',
+      statusLabel: '3 days left',
     })
     expect(getQuestDeadline('2025-01-20', false, TODAY)).toMatchObject({
       tone: 'later',
-      statusLabel: 'Faltan 8 días',
+      statusLabel: '8 days left',
     })
   })
 
@@ -206,10 +206,10 @@ describe('getQuestDeadline', () => {
 
 describe('task helpers', () => {
   it('counts done and total tasks', () => {
-    expect(countQuestTasks(milestone('vacio', 'Vacío'))).toEqual({ done: 0, total: 0 })
+    expect(countQuestTasks(milestone('empty', 'Empty'))).toEqual({ done: 0, total: 0 })
     expect(
       countQuestTasks(
-        milestone('pozo', 'El pozo', {
+        milestone('well', 'The well', {
           tasks: [doneTask('a'), pendingTask('b'), doneTask('c')],
         }),
       ),
@@ -217,13 +217,13 @@ describe('task helpers', () => {
   })
 
   it('only closes a milestone with at least one task and all of them done', () => {
-    expect(isQuestNodeComplete(milestone('vacio', 'Vacío'))).toBe(false)
+    expect(isQuestNodeComplete(milestone('empty', 'Empty'))).toBe(false)
     expect(
-      isQuestNodeComplete(milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] })),
+      isQuestNodeComplete(milestone('well', 'The well', { tasks: [pendingTask('lantern')] })),
     ).toBe(false)
     expect(
       isQuestNodeComplete(
-        milestone('pozo', 'El pozo', { tasks: [doneTask('a'), doneTask('b')] }),
+        milestone('well', 'The well', { tasks: [doneTask('a'), doneTask('b')] }),
       ),
     ).toBe(true)
   })

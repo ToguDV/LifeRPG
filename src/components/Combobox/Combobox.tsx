@@ -68,7 +68,7 @@ export function Combobox({
   error,
   optional,
   labelAside,
-  placeholder = 'Busca o escribe…',
+  placeholder = 'Search or type…',
   size = 'md',
   disabled,
   required,
@@ -291,7 +291,7 @@ export function Combobox({
           <button
             type="button"
             className={styles.clear}
-            aria-label="Limpiar selección"
+            aria-label="Clear selection"
             onClick={() => {
               setCurrent('')
               setQuery('')
@@ -379,7 +379,7 @@ export function Combobox({
             )
           })}
         </ul>
-        {!filtered.length ? <p className={styles.empty}>Sin coincidencias.</p> : null}
+        {!filtered.length ? <p className={styles.empty}>No matches.</p> : null}
       </Popover>
     </Field>
   )

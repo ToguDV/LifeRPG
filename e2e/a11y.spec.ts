@@ -29,7 +29,7 @@ import {
   and panel textures leave many nodes without a measurable background).
 */
 
-test.describe('galería · 8 temas × 2 superficies', () => {
+test.describe('gallery · 8 themes × 2 surfaces', () => {
   for (const theme of THEMES) {
     for (const surface of SURFACES) {
       test(`${theme.key} · ${surface.label}`, async ({ page }, testInfo) => {
@@ -124,9 +124,9 @@ function newViolationsOnly(
   return { violations, inherited }
 }
 
-test.describe('estados abiertos', () => {
+test.describe('open states', () => {
   for (const surface of SURFACES) {
-    test(`panel de Questline · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`Questline panel · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -139,7 +139,7 @@ test.describe('estados abiertos', () => {
       )
     })
 
-    test(`editor del hito · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`milestone editor · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -153,7 +153,7 @@ test.describe('estados abiertos', () => {
       )
     })
 
-    test(`confirmación de borrado · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`delete confirmation · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -161,14 +161,14 @@ test.describe('estados abiertos', () => {
         'Questline delete confirmation',
         async () => (await openMilestone(page)).panel,
         async (panel) => {
-          /* The task rows also have «Eliminar …» buttons; the milestone one is last. */
-          await panel.getByRole('button', { name: /Eliminar/i }).last().click()
+          /* The task rows also have “Delete …” buttons; the milestone one is last. */
+          await panel.getByRole('button', { name: /Delete/i }).last().click()
           await expect(panel.locator('[role="group"]')).toBeVisible()
         },
       )
     })
 
-    test(`Select abierto · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`open Select · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -177,7 +177,7 @@ test.describe('estados abiertos', () => {
         null,
         async () => {
           const select = page.getByRole('combobox', {
-            name: 'Clase del caminante',
+            name: 'Wanderer class',
           })
           await select.scrollIntoViewIfNeeded()
           await select.click()
@@ -186,7 +186,7 @@ test.describe('estados abiertos', () => {
       )
     })
 
-    test(`Combobox abierto · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`open Combobox · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -194,7 +194,7 @@ test.describe('estados abiertos', () => {
         'Combobox open',
         null,
         async () => {
-          const combobox = page.getByRole('combobox', { name: 'Tarea del día' })
+          const combobox = page.getByRole('combobox', { name: 'Task of the day' })
           await combobox.scrollIntoViewIfNeeded()
           await combobox.click()
           await expect(page.getByRole('listbox')).toBeVisible()
@@ -202,7 +202,7 @@ test.describe('estados abiertos', () => {
       )
     })
 
-    test(`DatePicker abierto · ${surface.label}`, async ({ page }, testInfo) => {
+    test(`open DatePicker · ${surface.label}`, async ({ page }, testInfo) => {
       await auditOpenState(
         page,
         testInfo,
@@ -210,11 +210,11 @@ test.describe('estados abiertos', () => {
         'DatePicker open',
         null,
         async () => {
-          const trigger = page.getByRole('button', { name: /^Fecha de partida/ })
+          const trigger = page.getByRole('button', { name: /^Departure date/ })
           await trigger.scrollIntoViewIfNeeded()
           await trigger.click()
           await expect(
-            page.getByRole('dialog', { name: 'Elegir fecha' }),
+            page.getByRole('dialog', { name: 'Pick a date' }),
           ).toBeVisible()
         },
       )

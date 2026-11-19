@@ -9,10 +9,10 @@ import { TaskRow, type Task } from '../src/components/TaskList/TaskRow'
   and the label has to say what the toggle will do.
 */
 const TASK: Task = {
-  id: 'vigilar',
-  title: 'Vigilar el paso',
+  id: 'watch',
+  title: 'Watch the pass',
   done: false,
-  due: '12 ene',
+  due: '12 Jan',
   overdue: true,
   priority: 'high',
 }
@@ -28,42 +28,42 @@ function renderRow(task: Task = TASK) {
 }
 
 describe('TaskRow', () => {
-  it('expone prioridad y vencimiento en la descripción del checkbox', () => {
+  it('exposes priority and overdue state in the checkbox description', () => {
     renderRow()
 
-    const checkbox = screen.getByRole('checkbox', { name: 'Marcar «Vigilar el paso»' })
-    expect(checkbox).toHaveAccessibleDescription(/prioridad alta/i)
-    expect(checkbox).toHaveAccessibleDescription(/vencida/i)
+    const checkbox = screen.getByRole('checkbox', { name: 'Check “Watch the pass”' })
+    expect(checkbox).toHaveAccessibleDescription(/high priority/i)
+    expect(checkbox).toHaveAccessibleDescription(/overdue/i)
   })
 
-  it('cambia Marcar por Desmarcar según el estado', async () => {
+  it('swaps Check for Uncheck depending on the state', async () => {
     const onToggle = renderRow()
     const user = userEvent.setup()
 
-    await user.click(screen.getByRole('checkbox', { name: 'Marcar «Vigilar el paso»' }))
-    expect(onToggle).toHaveBeenCalledWith('vigilar', true)
+    await user.click(screen.getByRole('checkbox', { name: 'Check “Watch the pass”' }))
+    expect(onToggle).toHaveBeenCalledWith('watch', true)
 
     render(
       <ul>
         <TaskRow task={{ ...TASK, done: true }} onToggle={onToggle} />
       </ul>,
     )
-    expect(screen.getByRole('checkbox', { name: 'Desmarcar «Vigilar el paso»' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Uncheck “Watch the pass”' })).toBeChecked()
   })
 
-  it('anuncia prioridad media cuando la tarea no declara prioridad', () => {
+  it('announces normal priority when the task declares none', () => {
     renderRow({ ...TASK, priority: undefined, overdue: false })
 
-    expect(screen.getByRole('checkbox')).toHaveAccessibleDescription(/prioridad media/i)
-    expect(screen.getByRole('checkbox')).not.toHaveAccessibleDescription(/vencida/i)
+    expect(screen.getByRole('checkbox')).toHaveAccessibleDescription(/normal priority/i)
+    expect(screen.getByRole('checkbox')).not.toHaveAccessibleDescription(/overdue/i)
   })
 
-  it('marca al pulsar el título: la fila entera sigue siendo clicable', async () => {
+  it('toggles when the title is clicked: the whole row stays clickable', async () => {
     const onToggle = renderRow()
     const user = userEvent.setup()
 
-    await user.click(screen.getByText('Vigilar el paso'))
+    await user.click(screen.getByText('Watch the pass'))
 
-    expect(onToggle).toHaveBeenCalledWith('vigilar', true)
+    expect(onToggle).toHaveBeenCalledWith('watch', true)
   })
 })

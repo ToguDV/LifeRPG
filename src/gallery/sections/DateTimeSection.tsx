@@ -30,52 +30,52 @@ export function DateTimeSection({ canvas }: SectionProps) {
           DatePicker · TimePicker
         </Badge>
       }
-      title="El tiempo, tallado"
-      description="Un calendario de seis semanas que empieza en lunes y una rueda de campanas con pasos de cinco minutos. Ambos se abren en un diálogo flotante, se recorren con el teclado y se cierran con Escape."
+      title="Time, carved"
+      description="A six-week calendar that starts on Monday and a bell wheel with five-minute steps. Both open in a floating dialog, can be walked with the keyboard, and close with Escape."
       folio="06"
       tilt="left"
     >
       <DemoGrid>
-        <DemoGroup label="Fecha">
+        <DemoGroup label="Date">
           <DatePicker
-            label="Fecha de partida"
+            label="Departure date"
             value={departure}
             onChange={setDeparture}
             min={today}
             max={maxDate}
-            hint="El pasado queda tachado; hay dos meses de margen."
+            hint="The past is struck through; there is a two-month window."
           />
           <DatePicker
-            label="Fecha de llegada"
+            label="Arrival date"
             value={arrival}
             onChange={setArrival}
             min={today}
             isDateDisabled={(date) => date.getDay() === 0}
-            hint="Los domingos no se camina."
+            hint="No walking on Sundays."
           />
           <DemoNote live>
-            {departure ? `Sales el ${formatDate(departure)}.` : 'Aún no hay fecha de salida.'}
-            {arrival ? ` Llegas el ${formatDate(arrival)}.` : ''}
+            {departure ? `You leave on ${formatDate(departure)}.` : 'No departure date yet.'}
+            {arrival ? ` You arrive on ${formatDate(arrival)}.` : ''}
           </DemoNote>
         </DemoGroup>
 
-        <DemoGroup label="Hora">
+        <DemoGroup label="Time">
           <TimePicker
-            label="Campanada de salida"
+            label="Departure bell"
             value={council}
             onChange={setCouncil}
             minuteStep={5}
             clearable
-            hint="Horas de veinticuatro; minutos de cinco en cinco."
+            hint="Twenty-four hours; five-minute steps."
           />
           <TimePicker
-            label="Hora del consejo"
+            label="Council time"
             defaultValue="07:15"
             minuteStep={15}
-            error="La hora del consejo ya pasó."
+            error="The council hour has already passed."
           />
           <DemoNote live>
-            {council ? `La campana suena a las ${council}.` : 'No hay campanada fijada.'}
+            {council ? `The bell rings at ${council}.` : 'No bell time set.'}
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

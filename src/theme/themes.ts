@@ -25,7 +25,7 @@ export interface ThemeDefinition {
   previews themes that are not applied, so it cannot read the live custom
   properties; the hexes are the contract. Slots, in order:
 
-    desk   — the board behind the page (--stone-0, --panel-1 in Pergamino)
+    desk   — the board behind the page (--stone-0, --panel-1 in Parchment)
     paper  — --parch
     ink    — --ink
     accent — the theme's headline accent (--crimson, --chalk-rouge, --bronze)
@@ -36,16 +36,16 @@ export interface ThemeDefinition {
 export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'pergamino',
-    label: 'Pergamino',
-    meta: 'Tinta & cera',
+    label: 'Parchment',
+    meta: 'Ink & wax',
     paper: 'light',
     // --panel-1 · --parch · --ink · --crimson
     swatches: ['#2c2e28', '#e6e0d0', '#34312a', '#7f3c31'],
   },
   {
     key: 'chalk',
-    label: 'Tiza',
-    meta: 'Cartulina negra',
+    label: 'Chalk',
+    meta: 'Black card stock',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --chalk-rouge
     swatches: ['#050605', '#191a13', '#e9e6da', '#d19a86'],
@@ -61,7 +61,7 @@ export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'dracula',
     label: 'Dracula',
-    meta: 'Noche púrpura',
+    meta: 'Purple night',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --bronze
     swatches: ['#191a21', '#282a36', '#f8f8f2', '#bd93f9'],
@@ -69,7 +69,7 @@ export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'nord',
     label: 'Nord',
-    meta: 'Frío polar',
+    meta: 'Polar cold',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --bronze
     swatches: ['#242933', '#2e3440', '#eceff4', '#88c0d0'],
@@ -77,7 +77,7 @@ export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'gruvbox',
     label: 'Gruvbox',
-    meta: 'Cuero & ámbar',
+    meta: 'Leather & amber',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --bronze-soft
     swatches: ['#1d2021', '#282828', '#ebdbb2', '#fabd2f'],
@@ -85,7 +85,7 @@ export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'rosepine',
     label: 'Rosé Pine',
-    meta: 'Rosa marchita',
+    meta: 'Faded rose',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --crimson
     swatches: ['#191724', '#232136', '#e0def4', '#eb6f92'],
@@ -93,7 +93,7 @@ export const THEMES: readonly ThemeDefinition[] = [
   {
     key: 'tokyonight',
     label: 'Tokyo Night',
-    meta: 'Neón velado',
+    meta: 'Veiled neon',
     paper: 'dark',
     // --stone-0 · --parch · --ink · --bronze
     swatches: ['#16161e', '#1a1b26', '#c0caf5', '#7aa2f7'],

@@ -57,9 +57,9 @@ export interface QuestlineProps {
 }
 
 function quotedList(titles: string[]): string {
-  const quoted = titles.map((title) => `«${title}»`)
+  const quoted = titles.map((title) => `“${title}”`)
   if (quoted.length <= 1) return quoted[0] ?? ''
-  return `${quoted.slice(0, -1).join(', ')} y ${quoted[quoted.length - 1]}`
+  return `${quoted.slice(0, -1).join(', ')} and ${quoted[quoted.length - 1]}`
 }
 
 /*
@@ -88,18 +88,18 @@ function stateAnnouncement(
   })
 
   const parts: string[] = []
-  if (completed.length === 1) parts.push(`Hito «${completed[0]}» cumplido.`)
-  else if (completed.length > 1) parts.push(`Hitos ${quotedList(completed)} cumplidos.`)
+  if (completed.length === 1) parts.push(`Milestone “${completed[0]}” completed.`)
+  else if (completed.length > 1) parts.push(`Milestones ${quotedList(completed)} completed.`)
 
-  if (unlocked.length === 1) parts.push(`Se ha desbloqueado «${unlocked[0]}».`)
-  else if (unlocked.length > 1) parts.push(`Se han desbloqueado ${quotedList(unlocked)}.`)
+  if (unlocked.length === 1) parts.push(`“${unlocked[0]}” unlocked.`)
+  else if (unlocked.length > 1) parts.push(`Unlocked ${quotedList(unlocked)}.`)
 
   const allComplete =
     states.length > 0 && states.every((state) => state === 'complete')
-  if (completed.length && allComplete) parts.push('La travesía está completa.')
+  if (completed.length && allComplete) parts.push('The journey is complete.')
 
-  if (locked.length === 1) parts.push(`Se ha bloqueado «${locked[0]}».`)
-  else if (locked.length > 1) parts.push(`Se han bloqueado ${quotedList(locked)}.`)
+  if (locked.length === 1) parts.push(`“${locked[0]}” locked.`)
+  else if (locked.length > 1) parts.push(`Locked ${quotedList(locked)}.`)
 
   return parts.join(' ')
 }
@@ -129,9 +129,9 @@ export function Questline({
   nodes: nodesProp,
   defaultNodes = [],
   onChange,
-  label = 'Ruta de hitos',
-  addNodeLabel = 'Añadir hito',
-  newNodeTitle = 'Nuevo hito',
+  label = 'Milestone route',
+  addNodeLabel = 'Add milestone',
+  newNodeTitle = 'New milestone',
   emptyState,
   className,
 }: QuestlineProps) {
@@ -162,9 +162,9 @@ export function Questline({
   const tallies = nodes.map(countQuestTasks)
   const doneTasks = tallies.reduce((sum, tally) => sum + tally.done, 0)
   const totalTasks = tallies.reduce((sum, tally) => sum + tally.total, 0)
-  const nodeTally = `${completeCount} de ${nodes.length} ${nodes.length === 1 ? 'hito' : 'hitos'}`
+  const nodeTally = `${completeCount} of ${nodes.length} ${nodes.length === 1 ? 'milestone' : 'milestones'}`
   const taskTally = totalTasks
-    ? ` · ${doneTasks} de ${totalTasks} ${totalTasks === 1 ? 'tarea' : 'tareas'}`
+    ? ` · ${doneTasks} of ${totalTasks} ${totalTasks === 1 ? 'task' : 'tasks'}`
     : ''
 
   const routeLabel = label.trim()
@@ -227,7 +227,7 @@ export function Questline({
     setNodes((previous) => previous.filter((node) => node.id !== nodeId))
     setOpenId(null)
     setEditingId(null)
-    if (removed) pendingNotice.current = `Hito «${removed.title}» eliminado del camino.`
+    if (removed) pendingNotice.current = `Milestone “${removed.title}” removed from the path.`
 
     const trigger = focusIndex >= 0 ? triggerRefs.current[focusIndex] : null
     if (trigger) trigger.focus()
@@ -340,7 +340,7 @@ export function Questline({
     if (fallback && fallback !== focused) fallback.focus()
   }, [nodes, states, openIndex, baseId])
 
-  /* «Vence hoy» must expire at midnight and after returning to the tab. */
+  /* “Due today” must expire at midnight and after returning to the tab. */
   useEffect(() => {
     let timer = 0
 
@@ -388,7 +388,7 @@ export function Questline({
       <div className={styles.head}>
         {routeLabel ? <p className={styles.headLabel}>{routeLabel}</p> : <span />}
         <p className={styles.headTally}>
-          {nodes.length ? `${nodeTally}${taskTally}` : 'Sin hitos todavía'}
+          {nodes.length ? `${nodeTally}${taskTally}` : 'No milestones yet'}
         </p>
       </div>
 
@@ -438,7 +438,7 @@ export function Questline({
         >
           {addNodeLabel}
         </Button>
-        <p className={styles.addHint}>La ruta crece por el final.</p>
+        <p className={styles.addHint}>The route grows at the end.</p>
       </div>
 
       <p className="visually-hidden" role="status">

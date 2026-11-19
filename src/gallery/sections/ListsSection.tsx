@@ -10,66 +10,66 @@ import styles from './sections.module.css'
 
 const ROLES = [
   {
-    value: 'viajera',
-    label: 'Viajera',
-    description: 'Lee el hielo y camina ligera.',
+    value: 'wanderer',
+    label: 'Wanderer',
+    description: 'Reads the ice and walks light.',
     icon: <Icon name="compass" size="sm" />,
   },
   {
-    value: 'guardabosques',
-    label: 'Guardabosques',
-    description: 'Conoce cada senda y cada trampa.',
+    value: 'ranger',
+    label: 'Ranger',
+    description: 'Knows every trail and every trap.',
     icon: <Icon name="leaf" size="sm" />,
   },
   {
-    value: 'sanadora',
-    label: 'Sanadora',
-    description: 'Cambia vendas por historias.',
+    value: 'healer',
+    label: 'Healer',
+    description: 'Trades bandages for stories.',
     icon: <Icon name="heart" size="sm" />,
   },
   {
-    value: 'herrera',
-    label: 'Herrera',
-    description: 'El yunque antes que la palabra.',
+    value: 'smith',
+    label: 'Smith',
+    description: 'The anvil before the word.',
     icon: <Icon name="flame" size="sm" />,
   },
   {
-    value: 'escriba',
-    label: 'Escriba',
-    description: 'Anota lo que el invierno borra.',
+    value: 'scribe',
+    label: 'Scribe',
+    description: 'Writes down what winter erases.',
     icon: <Icon name="feather" size="sm" />,
   },
 ]
 
 const TASKS = [
   {
-    value: 'odre',
-    label: 'Llenar el odre en el arroyo',
-    description: 'Supervivencia · al alba',
+    value: 'waterskin',
+    label: 'Fill the waterskin at the stream',
+    description: 'Survival · at dawn',
     icon: <Icon name="bowl" size="sm" />,
   },
   {
-    value: 'tablones',
-    label: 'Entregar tres tablones a Alderic',
-    description: 'Ofrenda · antes del anochecer',
+    value: 'planks',
+    label: 'Deliver three planks to Alderic',
+    description: 'Offering · before nightfall',
     icon: <Icon name="axe" size="sm" />,
   },
   {
-    value: 'farol',
-    label: 'Devolver el farol de latón',
-    description: 'Deuda · prestado al herrero',
+    value: 'lantern',
+    label: 'Return the brass lantern',
+    description: 'Debt · borrowed from the smith',
     icon: <Icon name="lantern" size="sm" />,
   },
   {
-    value: 'atalaya',
-    label: 'Visitar la atalaya del norte',
-    description: 'Exploración · arde cada séptima noche',
+    value: 'watchtower',
+    label: 'Visit the north watchtower',
+    description: 'Exploration · burns every seventh night',
     icon: <Icon name="mountain" size="sm" />,
   },
 ]
 
 export function ListsSection({ canvas }: SectionProps) {
-  const [role, setRole] = useState('viajera')
+  const [role, setRole] = useState('wanderer')
   const [task, setTask] = useState('')
   const roleLabel = ROLES.find((item) => item.value === role)?.label
   const taskLabel = TASKS.find((item) => item.value === task)?.label
@@ -83,52 +83,52 @@ export function ListsSection({ canvas }: SectionProps) {
           Select · Combobox
         </Badge>
       }
-      title="Escoger entre lo escrito"
-      description="Un desplegable de opciones cerradas y una lista que se filtra mientras escribes. Ambos se anclan al campo, respetan el teclado y vuelven a su sitio si la pantalla cambia."
+      title="Choosing among what is written"
+      description="A dropdown of closed options and a list that filters as you type. Both anchor to the field, respect the keyboard, and return to their place if the screen changes."
       folio="04"
       tilt="left"
     >
       <DemoGrid>
         <DemoGroup label="Select">
           <Select
-            label="Clase del caminante"
+            label="Wanderer class"
             options={ROLES}
             value={role}
             onChange={setRole}
-            hint="Determina tus pertrechos iniciales."
+            hint="Determines your starting kit."
             leadingIcon={<Icon name="compass" size="sm" />}
           />
           <DemoNote live>
-            {roleLabel ? `El diario te registra como ${roleLabel}.` : 'Sin clase asignada.'}
+            {roleLabel ? `The journal files you as ${roleLabel}.` : 'No class assigned.'}
           </DemoNote>
           <Select
-            label="Tamaño compacto"
+            label="Compact size"
             size="sm"
             options={ROLES}
-            defaultValue="escriba"
-            labelAside={<span>opcional</span>}
+            defaultValue="scribe"
+            labelAside={<span>optional</span>}
           />
         </DemoGroup>
 
         <DemoGroup label="Combobox">
           <Combobox
-            label="Tarea del día"
+            label="Task of the day"
             options={TASKS}
             value={task}
             onChange={setTask}
             leadingIcon={<Icon name="search" size="sm" />}
-            placeholder="Busca entre las tareas…"
-            hint="Escribe para filtrar; usa las flechas para recorrer."
+            placeholder="Search the tasks…"
+            hint="Type to filter; use the arrow keys to walk the list."
           />
           <DemoNote live>
             {taskLabel
-              ? `En el diario: «${taskLabel}».`
-              : 'Aún no has elegido una tarea.'}
+              ? `In the journal: “${taskLabel}”.`
+              : 'You have not chosen a task yet.'}
           </DemoNote>
           <Combobox
-            label="Combobox deshabilitado"
+            label="Disabled combobox"
             options={TASKS}
-            defaultValue="atalaya"
+            defaultValue="watchtower"
             disabled
           />
         </DemoGroup>

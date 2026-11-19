@@ -6,11 +6,11 @@ export type SurfaceValue = 'paper' | 'panel'
 
 export interface SurfaceOption {
   value: SurfaceValue
-  label: 'Papel' | 'Panel'
+  label: 'Paper' | 'Panel'
 }
 
 export const SURFACES: readonly SurfaceOption[] = [
-  { value: 'paper', label: 'Papel' },
+  { value: 'paper', label: 'Paper' },
   { value: 'panel', label: 'Panel' },
 ]
 
@@ -55,7 +55,7 @@ function escapeForRegExp(value: string): string {
 /** Loads the gallery from a clean context and waits for fonts and layout. */
 export async function gotoGallery(page: Page): Promise<void> {
   await page.goto('/')
-  await expect(page.locator('main#contenido')).toBeVisible()
+  await expect(page.locator('main#content')).toBeVisible()
   await page.evaluate(() => document.fonts.ready.then(() => true))
 }
 
@@ -68,10 +68,10 @@ export async function setTheme(
   page: Page,
   theme: ThemeDefinition,
 ): Promise<void> {
-  const trigger = page.getByRole('button', { name: /^Elegir tema/ })
+  const trigger = page.getByRole('button', { name: /^Choose theme/ })
   await trigger.click()
 
-  const options = page.getByRole('radiogroup', { name: 'Temas disponibles' })
+  const options = page.getByRole('radiogroup', { name: 'Available themes' })
   await expect(options).toBeVisible()
   await options
     .getByRole('radio', {
@@ -95,7 +95,7 @@ export async function setSurface(
   await button.click()
   await expect(button).toHaveAttribute('aria-pressed', 'true')
   await expect(
-    page.locator(`main#contenido [data-surface="${surface.value}"]`).first(),
+    page.locator(`main#content [data-surface="${surface.value}"]`).first(),
   ).toBeVisible()
 }
 

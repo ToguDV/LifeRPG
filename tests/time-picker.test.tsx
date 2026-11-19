@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { TimePicker } from '../src/components/TimePicker/TimePicker'
 
 /*
-  BUG-02 / BUG-04: «Ahora» used to clamp 09:58 down to 09:00 and a
+  BUG-02 / BUG-04: “Now” used to clamp 09:58 down to 09:00 and a
   `minuteStep` of 0 made the minute loop never finish. Only `Date` is faked:
   the popover, the focus frame and the scroll timers keep running on real
   timers, so the tests stay deterministic without stalling user-event.
@@ -21,65 +21,65 @@ afterEach(() => {
 })
 
 function getTrigger(): HTMLElement {
-  return screen.getByRole('button', { name: /hora/i })
+  return screen.getByRole('button', { name: /time/i })
 }
 
 async function openPicker(user: ReturnType<typeof userEvent.setup>) {
   await user.click(getTrigger())
-  return screen.findByRole('dialog', { name: 'Elegir hora' })
+  return screen.findByRole('dialog', { name: 'Pick a time' })
 }
 
-describe('TimePicker «Ahora»', () => {
-  it('redondea hacia abajo al paso de 5 minutos', async () => {
+describe('TimePicker “Now”', () => {
+  it('rounds down to the 5-minute step', async () => {
     freezeClock()
     const onChange = vi.fn()
     const user = userEvent.setup()
-    render(<TimePicker label="Hora" minuteStep={5} onChange={onChange} />)
+    render(<TimePicker label="Time" minuteStep={5} onChange={onChange} />)
 
     await openPicker(user)
-    await user.click(screen.getByRole('button', { name: 'Ahora' }))
+    await user.click(screen.getByRole('button', { name: 'Now' }))
 
     expect(onChange).toHaveBeenLastCalledWith('09:55')
     expect(getTrigger()).toHaveTextContent('09:55')
   })
 
-  it('redondea hacia abajo al paso de 15 minutos sin acarreo de hora', async () => {
+  it('rounds down to the 15-minute step without carrying into the hour', async () => {
     freezeClock()
     const onChange = vi.fn()
     const user = userEvent.setup()
-    render(<TimePicker label="Hora" minuteStep={15} onChange={onChange} />)
+    render(<TimePicker label="Time" minuteStep={15} onChange={onChange} />)
 
     await openPicker(user)
-    await user.click(screen.getByRole('button', { name: 'Ahora' }))
+    await user.click(screen.getByRole('button', { name: 'Now' }))
 
     expect(onChange).toHaveBeenLastCalledWith('09:45')
     expect(getTrigger()).toHaveTextContent('09:45')
   })
 
-  it('con minuteStep 0 abre la rueda y usa el paso por defecto', async () => {
+  it('opens the wheel with minuteStep 0 and uses the default step', async () => {
     freezeClock()
     const onChange = vi.fn()
     const user = userEvent.setup()
-    render(<TimePicker label="Hora" minuteStep={0} onChange={onChange} />)
+    render(<TimePicker label="Time" minuteStep={0} onChange={onChange} />)
 
     await openPicker(user)
 
-    const minutes = within(screen.getByRole('listbox', { name: 'Minuto' })).getAllByRole('option')
+    const minutes = within(screen.getByRole('listbox', { name: 'Minute' })).getAllByRole('option')
     expect(minutes).toHaveLength(12)
     expect(minutes[0]).toHaveTextContent('00')
 
-    await user.click(screen.getByRole('button', { name: 'Ahora' }))
+    await user.click(screen.getByRole('button', { name: 'Now' }))
     expect(onChange).toHaveBeenLastCalledWith('09:55')
   })
 
-  it('cierra con Escape y devuelve el foco al disparador', async () => {
+  it('closes with Escape and returns focus to the trigger', async () => {
     const user = userEvent.setup()
-    render(<TimePicker label="Hora" />)
+    render(<TimePicker label="Time" />)
 
     await openPicker(user)
     await user.keyboard('{Escape}')
 
-    expect(screen.queryByRole('dialog', { name: 'Elegir hora' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Pick a time' })).not.toBeInTheDocument()
     expect(getTrigger()).toHaveFocus()
   })
 })

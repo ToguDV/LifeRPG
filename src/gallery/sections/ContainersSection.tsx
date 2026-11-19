@@ -6,9 +6,9 @@ import styles from './sections.module.css'
 
 /** Cards are sized by the width of the sheet they are meant to be. */
 const SHELF = [
-  { sectionId: 'acciones', size: 'sm' },
-  { sectionId: 'ajustes', size: 'md' },
-  { sectionId: 'contexto', size: 'lg' },
+  { sectionId: 'actions', size: 'sm' },
+  { sectionId: 'settings', size: 'md' },
+  { sectionId: 'context', size: 'lg' },
 ] as const
 
 export function ContainersSection({ canvas }: SectionProps) {
@@ -30,7 +30,7 @@ export function ContainersSection({ canvas }: SectionProps) {
             folio={meta.number}
             footer={
               size === 'lg'
-                ? 'Misma hoja, tres alturas: ficha, pliego y página.'
+                ? 'Same sheet, three heights: card, folio, and page.'
                 : undefined
             }
           >
@@ -49,10 +49,10 @@ export function ContainersSection({ canvas }: SectionProps) {
       })}
 
       <DemoNote muted className={styles.shelfNote}>
-        Tres contenedores: ficha de 21 rem, pliego de 30 rem y página completa. Sobre
-        papel, el título va en una cinta de cera que cruza el borde superior y sus colas
-        son capas decorativas marcadas como <b>aria-hidden</b>. Las hojas apiladas, el
-        margen de cuaderno y las manchas de borde también viven bajo el contenido.
+        Three containers: a 21 rem card, a 30 rem folio, and a full page. On paper, the
+        title sits in a wax ribbon that crosses the top edge and its tails are decorative
+        layers marked <b>aria-hidden</b>. The stacked sheets, the notebook margin, and the
+        edge stains also live under the content.
       </DemoNote>
     </div>
   )

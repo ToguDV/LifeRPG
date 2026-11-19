@@ -49,7 +49,7 @@ export function QuestNodeEditor({
     event.preventDefault()
     const title = draftTitle.trim()
     if (!title) {
-      setTitleError('El hito necesita un nombre.')
+      setTitleError('The milestone needs a name.')
       return
     }
     onUpdateNode({
@@ -62,7 +62,7 @@ export function QuestNodeEditor({
   return (
     <form id={editorId} className={styles.editor} onSubmit={submitNode} noValidate>
       <TextInput
-        label="Nombre del hito"
+        label="Milestone name"
         autoFocus
         value={draftTitle}
         onChange={(event) => {
@@ -74,25 +74,25 @@ export function QuestNodeEditor({
       />
       <div className={styles.deadlineRow}>
         <DatePicker
-          label="Fecha límite"
+          label="Deadline"
           optional
           value={draftDeadline}
           onChange={setDraftDeadline}
           fieldClassName={styles.deadlineField}
-          placeholder="Sin fecha"
+          placeholder="No date"
         />
         {draftDeadline ? (
           <Button variant="ghost" size="sm" onClick={() => setDraftDeadline(null)}>
-            Quitar fecha
+            Clear date
           </Button>
         ) : null}
       </div>
       <div className={styles.editorActions}>
         <Button type="submit" variant="primary" size="sm">
-          Guardar hito
+          Save milestone
         </Button>
         <Button variant="ghost" size="sm" onClick={cancelEditing}>
-          Cancelar
+          Cancel
         </Button>
       </div>
     </form>

@@ -88,7 +88,7 @@ function ToastItem({
       <button
         type="button"
         className={styles.close}
-        aria-label="Cerrar notificación"
+        aria-label="Dismiss notification"
         onClick={() => onDismiss(toast.id)}
       >
         <Icon name="close" size="xs" />

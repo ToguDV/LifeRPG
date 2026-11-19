@@ -21,82 +21,82 @@ export function ActionsSection({ canvas }: SectionProps) {
             Button
           </Badge>
         }
-        title="La cera y el hierro"
-        description="Cuatro variantes, tres tamaños y los estados que aparecen cuando el invierno aprieta. El botón principal se comporta como un sello de cera; el resto son herramientas de mesa."
+        title="The wax and the iron"
+        description="Four variants, three sizes, and the states that show up when winter tightens its grip. The primary button behaves like a wax seal; the rest are table tools."
         folio="01"
         tilt="left"
       >
         <DemoGrid>
-          <DemoGroup label="Variantes" span>
+          <DemoGroup label="Variants" span>
             <DemoRow>
               <Button variant="primary" iconLeft={<Icon name="plus" />}>
-                Añadir tarea
+                Add task
               </Button>
               <Button variant="secondary" iconLeft={<Icon name="bookmark" />}>
-                Guardar borrador
+                Save draft
               </Button>
               <Button variant="ghost" iconRight={<Icon name="chevron-right" />}>
-                Ver detalles
+                View details
               </Button>
               <Button variant="danger" iconLeft={<Icon name="trash" />}>
-                Sellar y archivar
+                Seal and archive
               </Button>
             </DemoRow>
           </DemoGroup>
 
-          <DemoGroup label="Tamaños">
+          <DemoGroup label="Sizes">
             <DemoRow>
               <Button size="sm" variant="secondary">
-                Pequeño
+                Small
               </Button>
               <Button size="md" variant="secondary">
-                Mediano
+                Medium
               </Button>
               <Button size="lg" variant="secondary">
-                Grande
+                Large
               </Button>
             </DemoRow>
           </DemoGroup>
 
-          <DemoGroup label="Estados">
+          <DemoGroup label="States">
             <DemoRow>
-              <Button loading>Invocando…</Button>
-              <Button disabled>Deshabilitado</Button>
-              <Tooltip content="Buscar en el códice">
-                <Button iconOnly aria-label="Buscar en el códice" iconLeft={<Icon name="search" />} />
+              <Button loading>Summoning…</Button>
+              <Button disabled>Disabled</Button>
+              <Tooltip content="Search the codex">
+                <Button iconOnly aria-label="Search the codex" iconLeft={<Icon name="search" />} />
               </Tooltip>
-              <Tooltip content="Añadir al diario">
+              <Tooltip content="Add to journal">
                 <Button
                   iconOnly
                   variant="primary"
-                  aria-label="Añadir al diario"
+                  aria-label="Add to journal"
                   iconLeft={<Icon name="plus" />}
                 />
               </Tooltip>
-              <Tooltip content="Eliminar del diario">
+              <Tooltip content="Remove from journal">
                 <Button
                   iconOnly
                   variant="danger"
-                  aria-label="Eliminar del diario"
+                  aria-label="Remove from journal"
                   iconLeft={<Icon name="trash" />}
                 />
               </Tooltip>
             </DemoRow>
           </DemoGroup>
 
-          <DemoGroup label="Ancho completo" span>
+          <DemoGroup label="Full width" span>
             <Button
               variant="primary"
               fullWidth
               iconLeft={<Icon name="feather" />}
               onClick={() => setSeals((value) => value + 1)}
             >
-              Sellar el diario
+              Seal the journal
             </Button>
             <DemoNote live>
               {seals === 0
-                ? 'Aún no has sellado nada.'
-                : `Has sellado el diario ${seals} ${seals === 1 ? 'vez' : 'veces'}.`}
+                ? 'You have not sealed anything yet.'
+                : `You have sealed the journal ${seals} ${seals === 1 ? 'time' : 'times'}.`}
             </DemoNote>
           </DemoGroup>
         </DemoGrid>
@@ -110,34 +110,34 @@ export function ActionsSection({ canvas }: SectionProps) {
             Tooltip
           </Badge>
         }
-        title="Una voz al oído"
-        description="La pista aparece tras una pausa breve, también al enfocar con el teclado. Nunca tapa el control que la invoca."
+        title="A voice at your ear"
+        description="The hint appears after a short pause, and also when the control takes keyboard focus. It never covers the control that summoned it."
         folio="01 b"
         tilt="right"
       >
         <DemoGrid>
-          <DemoGroup label="Posición">
+          <DemoGroup label="Placement">
             <DemoRow>
-              <Tooltip content="El norte no perdona a quien duda.">
+              <Tooltip content="The north does not forgive the hesitant.">
                 <Button variant="secondary" iconLeft={<Icon name="compass" />}>
-                  Brújula
+                  Compass
                 </Button>
               </Tooltip>
-              <Tooltip content="La atalaya arde cada séptima noche." side="bottom">
+              <Tooltip content="The watchtower burns every seventh night." side="bottom">
                 <Button variant="ghost" iconLeft={<Icon name="lantern" />}>
-                  Atalaya
+                  Watchtower
                 </Button>
               </Tooltip>
-              <Tooltip content="Un farol prestado al herrero." side="bottom">
-                <Button variant="ghost" iconOnly aria-label="Farol" iconLeft={<Icon name="sun" />} />
+              <Tooltip content="A lantern borrowed from the smith." side="bottom">
+                <Button variant="ghost" iconOnly aria-label="Lantern" iconLeft={<Icon name="sun" />} />
               </Tooltip>
             </DemoRow>
-            <DemoNote muted>Pasa el cursor o llega con Tab.</DemoNote>
+            <DemoNote muted>Hover, or reach it with Tab.</DemoNote>
           </DemoGroup>
-          <DemoGroup label="Nota al margen">
+          <DemoGroup label="Margin note">
             <p className={styles.aside}>
-              Los avisos usan la tinta de panel, incluso sobre papel: son una voz fuera de la
-              página, no un objeto de ella.
+              Hints use panel ink, even on paper: they are a voice off the page, not an object
+              on it.
             </p>
           </DemoGroup>
         </DemoGrid>

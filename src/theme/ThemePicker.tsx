@@ -58,8 +58,8 @@ export function ThemePicker() {
         className={styles.trigger}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label={`Elegir tema: ${definition.label}`}
-        title={`Elegir tema · actual: ${definition.label}`}
+        aria-label={`Choose theme: ${definition.label}`}
+        title={`Choose theme · current: ${definition.label}`}
         onClick={() => (open ? close(true) : setOpen(true))}
       >
         <span className={styles.triggerSwatches} aria-hidden="true">
@@ -69,7 +69,7 @@ export function ThemePicker() {
         </span>
         <span className={styles.triggerLabel}>{definition.label}</span>
         {/* A short visible affordance: the swatches read as decoration, not as a theme control. */}
-        <span className={styles.triggerShort}>Tema</span>
+        <span className={styles.triggerShort}>Theme</span>
         <Icon
           name="chevron-down"
           size="xs"
@@ -89,21 +89,21 @@ export function ThemePicker() {
         <div className={styles.header}>
           <div>
             <p className={styles.title} id={titleId}>
-              Temas del diario
+              Journal themes
             </p>
-            <p className={styles.subtitle}>Otra tinta, el mismo invierno.</p>
+            <p className={styles.subtitle}>Another ink, the same winter.</p>
           </div>
           <button
             type="button"
             className={styles.close}
-            aria-label="Cerrar selector de temas"
+            aria-label="Close theme picker"
             onClick={() => close(true)}
           >
             <Icon name="close" size="sm" />
           </button>
         </div>
 
-        <div className={styles.grid} role="radiogroup" aria-label="Temas disponibles">
+        <div className={styles.grid} role="radiogroup" aria-label="Available themes">
           {themes.map((item, index) => {
             const selected = item.key === theme
             return (

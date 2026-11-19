@@ -31,7 +31,7 @@ function stopMeta(
   tally: { done: number; total: number },
   deadline: QuestDeadline,
 ): string {
-  const parts = [tally.total ? `${tally.done} de ${tally.total}` : 'Sin tareas']
+  const parts = [tally.total ? `${tally.done} of ${tally.total}` : 'No tasks']
   if (deadline.tone !== 'none') parts.push(deadline.shortLabel)
   return parts.join(' · ')
 }
@@ -52,7 +52,7 @@ export function QuestStop({
   triggerRef,
 }: QuestStopProps) {
   const isGoal = index === total - 1
-  const meta = `${isGoal ? 'Meta · ' : ''}${stopMeta(tally, deadline)}`
+  const meta = `${isGoal ? 'Goal · ' : ''}${stopMeta(tally, deadline)}`
   const stateIcon = isGoal ? 'flag' : STATE_META[state].icon
   const overdue = deadline.tone === 'overdue'
 
@@ -72,7 +72,7 @@ export function QuestStop({
         aria-controls={open ? panelId : undefined}
         onClick={onToggle}
       >
-        <span className="visually-hidden">Hito {index + 1}.</span>
+        <span className="visually-hidden">Milestone {index + 1}.</span>
         <span ref={markerRef} className={styles.marker} aria-hidden="true">
           {formatQuestNumber(index + 1)}
         </span>

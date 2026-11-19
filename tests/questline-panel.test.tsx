@@ -7,26 +7,26 @@ import type { QuestNode } from '../src/components/Questline/questline-model'
 const SOLO: QuestNode[] = [
   {
     id: 'provisiones',
-    title: 'Provisiones',
-    tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+    title: 'Supplies',
+    tasks: [{ id: 'odre', title: 'Fill the waterskin', done: false }],
   },
 ]
 
 const CHAIN: QuestNode[] = [
   {
     id: 'provisiones',
-    title: 'Provisiones',
-    tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+    title: 'Supplies',
+    tasks: [{ id: 'odre', title: 'Fill the waterskin', done: false }],
   },
   {
     id: 'pozo',
-    title: 'El pozo',
-    tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+    title: 'The well',
+    tasks: [{ id: 'farol', title: 'Lower the lantern', done: false }],
   },
 ]
 
 function renderChain(nodes: QuestNode[] = CHAIN) {
-  render(<Questline defaultNodes={nodes} label="Ruta de prueba" />)
+  render(<Questline defaultNodes={nodes} label="Test route" />)
   return userEvent.setup()
 }
 
@@ -35,88 +35,88 @@ afterEach(() => {
 })
 
 describe('QuestNodePanel', () => {
-  it('muestra su propio error con el título vacío y conserva required', async () => {
+  it('shows its own error with an empty title and keeps required', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar el hito' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
 
-    const input = screen.getByRole('textbox', { name: 'Nombre del hito' })
+    const input = screen.getByRole('textbox', { name: 'Milestone name' })
     expect(input).toBeRequired()
 
     await user.clear(input)
-    await user.click(screen.getByRole('button', { name: 'Guardar hito' }))
+    await user.click(screen.getByRole('button', { name: 'Save milestone' }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'El hito necesita un nombre.',
+      'The milestone needs a name.',
     )
     expect(input).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByRole('button', { name: 'Guardar hito' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save milestone' })).toBeVisible()
   })
 
-  it('con varios pendientes, no promete que el primero baste para desbloquear', async () => {
+  it('with several pending milestones, does not promise that the first is enough to unlock', async () => {
     const user = renderChain([
       {
         id: 'provisiones',
-        title: 'Provisiones',
-        tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+        title: 'Supplies',
+        tasks: [{ id: 'odre', title: 'Fill the waterskin', done: false }],
       },
       {
         id: 'pozo',
-        title: 'El pozo',
-        tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+        title: 'The well',
+        tasks: [{ id: 'farol', title: 'Lower the lantern', done: false }],
       },
       {
         id: 'cima',
-        title: 'La cima',
-        tasks: [{ id: 'bandera', title: 'Clavar la bandera', done: false }],
+        title: 'The summit',
+        tasks: [{ id: 'bandera', title: 'Plant the flag', done: false }],
       },
     ])
 
-    await user.click(screen.getByRole('button', { name: /La cima/ }))
+    await user.click(screen.getByRole('button', { name: /The summit/ }))
 
     expect(
       screen.getByText(
-        /Se desbloquea al completar los hitos anteriores, empezando por «Provisiones»\./,
+        /It unlocks when the previous milestones are completed, starting with “Supplies”\./,
       ),
     ).toBeVisible()
   })
 
-  it('nombra el único bloqueo cuando los anteriores ya están cumplidos', async () => {
+  it('names the only lock when the earlier ones are already complete', async () => {
     const user = renderChain([
       {
         id: 'provisiones',
-        title: 'Provisiones',
-        tasks: [{ id: 'odre', title: 'Llenar el odre', done: true }],
+        title: 'Supplies',
+        tasks: [{ id: 'odre', title: 'Fill the waterskin', done: true }],
       },
       {
         id: 'pozo',
-        title: 'El pozo',
-        tasks: [{ id: 'farol', title: 'Bajar el farol', done: false }],
+        title: 'The well',
+        tasks: [{ id: 'farol', title: 'Lower the lantern', done: false }],
       },
       {
         id: 'cima',
-        title: 'La cima',
-        tasks: [{ id: 'bandera', title: 'Clavar la bandera', done: false }],
+        title: 'The summit',
+        tasks: [{ id: 'bandera', title: 'Plant the flag', done: false }],
       },
     ])
 
-    await user.click(screen.getByRole('button', { name: /La cima/ }))
+    await user.click(screen.getByRole('button', { name: /The summit/ }))
 
     expect(
-      screen.getByText(/Se desbloquea al completar «El pozo»\./),
+      screen.getByText(/It unlocks when “The well” is completed\./),
     ).toBeVisible()
-    expect(screen.queryByText(/hitos anteriores/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/previous milestones/)).not.toBeInTheDocument()
   })
 
-  it('recibe el foco al abrirse por teclado y lo devuelve al disparador con Escape', async () => {
+  it('takes focus when opened from the keyboard and returns it to the trigger on Escape', async () => {
     const user = renderChain()
     await user.tab()
 
-    const trigger = screen.getByRole('button', { name: /Provisiones/ })
+    const trigger = screen.getByRole('button', { name: /Supplies/ })
     expect(trigger).toHaveFocus()
 
     await user.keyboard('{Enter}')
-    const panel = screen.getByRole('region', { name: 'Provisiones' })
+    const panel = screen.getByRole('region', { name: 'Supplies' })
     await waitFor(() => expect(panel).toHaveFocus())
 
     await user.keyboard('{Escape}')
@@ -124,218 +124,218 @@ describe('QuestNodePanel', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('usa el copy de cierre cuando es el último hito', async () => {
+  it('uses the closing copy on the last milestone', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
 
     expect(
-      screen.getByText('Completa este hito para terminar la travesía.'),
+      screen.getByText('Complete this milestone to finish the journey.'),
     ).toBeVisible()
 
-    await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Fill the waterskin' }))
 
-    expect(screen.getByText('La travesía está completa.')).toBeVisible()
-    expect(screen.queryByText('El camino sigue.')).not.toBeInTheDocument()
+    expect(screen.getByText('The journey is complete.')).toBeVisible()
+    expect(screen.queryByText('The path goes on.')).not.toBeInTheDocument()
   })
 
-  it('reserva «cerrar» para el panel y «completar / cumplido» para el hito', async () => {
+  it('keeps “close” for the panel and “complete / completed” for the milestone', async () => {
     const user = renderChain()
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
 
-    expect(screen.getByRole('button', { name: 'Cerrar el panel' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Close panel' })).toBeInTheDocument()
     expect(
-      screen.queryByRole('button', { name: 'Cerrar el hito' }),
+      screen.queryByRole('button', { name: 'Close milestone' }),
     ).not.toBeInTheDocument()
     expect(
-      screen.getByText('Completa este hito para abrir el siguiente.'),
+      screen.getByText('Complete this milestone to open the next one.'),
     ).toBeVisible()
 
-    await user.click(screen.getByRole('button', { name: 'Editar el hito' }))
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
     expect(
-      screen.getByRole('button', { name: 'Descartar los cambios del hito' }),
+      screen.getByRole('button', { name: 'Discard milestone changes' }),
     ).toBeInTheDocument()
     await user.keyboard('{Escape}')
 
-    await user.click(screen.getByRole('checkbox', { name: 'Llenar el odre' }))
-    expect(screen.getByText(/1 de 1 tarea/)).toHaveTextContent('· cumplido')
-    expect(screen.getByText('Cumplido')).toBeVisible()
-    expect(screen.queryByText(/· cerrado/)).not.toBeInTheDocument()
-    expect(screen.getByText('El camino sigue.')).toBeVisible()
+    await user.click(screen.getByRole('checkbox', { name: 'Fill the waterskin' }))
+    expect(screen.getByText(/1 of 1 task/)).toHaveTextContent('· completed')
+    expect(screen.getByText('Completed')).toBeVisible()
+    expect(screen.queryByText(/· closed/)).not.toBeInTheDocument()
+    expect(screen.getByText('The path goes on.')).toBeVisible()
   })
 
-  it('lleva el foco a la tarea añadida', async () => {
+  it('moves focus to the added task', async () => {
     const user = renderChain([
-      { id: 'provisiones', title: 'Provisiones', tasks: [] },
+      { id: 'provisiones', title: 'Supplies', tasks: [] },
     ])
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
 
     const input = screen.getByRole('textbox', {
-      name: /Nueva tarea en «Provisiones»/,
+      name: /New task in “Supplies”/,
     })
-    await user.type(input, 'Sellar el mapa{Enter}')
+    await user.type(input, 'Seal the map{Enter}')
 
-    const added = screen.getByRole('checkbox', { name: 'Sellar el mapa' })
+    const added = screen.getByRole('checkbox', { name: 'Seal the map' })
     await waitFor(() => expect(added).toHaveFocus())
     expect(added).toBeVisible()
     expect(input).toHaveValue('')
   })
 
-  it('muestra el plazo una sola vez', async () => {
+  it('shows the deadline only once', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date(2025, 0, 12, 12))
 
     const user = renderChain([
       {
         id: 'provisiones',
-        title: 'Provisiones',
+        title: 'Supplies',
         deadline: '2025-01-15',
-        tasks: [{ id: 'odre', title: 'Llenar el odre', done: false }],
+        tasks: [{ id: 'odre', title: 'Fill the waterskin', done: false }],
       },
     ])
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
 
-    expect(screen.getByText(/Hito 01 de 01 · Vence el/)).toBeVisible()
-    expect(screen.getByText('0 de 1 tarea')).not.toHaveTextContent(/Vence|Faltan/)
+    expect(screen.getByText(/Milestone 01 of 01 · Due on/)).toBeVisible()
+    expect(screen.getByText('0 of 1 task')).not.toHaveTextContent(/Due|days left/)
   })
 
-  it('cierra el editor del hito con Escape y devuelve el foco', async () => {
+  it('closes the milestone editor with Escape and returns focus', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar el hito' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
 
-    const input = screen.getByRole('textbox', { name: 'Nombre del hito' })
-    await user.type(input, ' del alba')
+    const input = screen.getByRole('textbox', { name: 'Milestone name' })
+    await user.type(input, ' of dawn')
     await user.keyboard('{Escape}')
 
     expect(
-      screen.queryByRole('textbox', { name: 'Nombre del hito' }),
+      screen.queryByRole('textbox', { name: 'Milestone name' }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Editar el hito' })).toHaveFocus()
-    expect(screen.getByRole('heading', { name: 'Provisiones' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Edit milestone' })).toHaveFocus()
+    expect(screen.getByRole('heading', { name: 'Supplies' })).toBeVisible()
   })
 
-  it('cierra la confirmación de borrado con Escape y devuelve el foco', async () => {
+  it('closes the delete confirmation with Escape and returns focus', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Eliminar hito' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Delete milestone' }))
 
-    expect(screen.getByRole('button', { name: 'Cancelar' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toHaveFocus()
 
     await user.keyboard('{Escape}')
 
     expect(
       screen.queryByRole('group', {
-        name: 'Confirmar la eliminación del hito',
+        name: 'Confirm milestone deletion',
       }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Eliminar hito' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Delete milestone' })).toHaveFocus()
   })
 
-  it('cierra el editor de tarea con Escape y devuelve el foco a la fila', async () => {
+  it('closes the task editor with Escape and returns focus to the row', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar «Llenar el odre»' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
     const input = screen.getByRole('textbox', {
-      name: 'Título de «Llenar el odre»',
+      name: 'Title of “Fill the waterskin”',
     })
-    await user.type(input, ' del pozo')
+    await user.type(input, ' of the well')
     await user.keyboard('{Escape}')
 
-    expect(screen.queryByRole('textbox', { name: /Título de/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: /Title of/ })).not.toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'Editar «Llenar el odre»' }),
+      screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }),
     ).toHaveFocus()
   })
 
-  it('deshace una sola capa por cada Escape', async () => {
+  it('backs out one layer per Escape', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar el hito' }))
-    await user.click(screen.getByRole('button', { name: 'Editar «Llenar el odre»' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
+    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
     await user.keyboard('{Escape}')
-    expect(screen.queryByRole('textbox', { name: /Título de/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: /Title of/ })).not.toBeInTheDocument()
     expect(
-      screen.getByRole('textbox', { name: 'Nombre del hito' }),
+      screen.getByRole('textbox', { name: 'Milestone name' }),
     ).toBeVisible()
 
     await user.keyboard('{Escape}')
     expect(
-      screen.queryByRole('textbox', { name: 'Nombre del hito' }),
+      screen.queryByRole('textbox', { name: 'Milestone name' }),
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Editar el hito' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Edit milestone' })).toHaveFocus()
   })
 
-  it('valida una tarea nueva sin nombre', async () => {
+  it('validates a new task with no name', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
 
     const input = screen.getByRole('textbox', {
-      name: /Nueva tarea en «Provisiones»/,
+      name: /New task in “Supplies”/,
     })
     await user.type(input, '   {Enter}')
 
-    expect(screen.getByRole('alert')).toHaveTextContent('La tarea necesita un nombre.')
+    expect(screen.getByRole('alert')).toHaveTextContent('The task needs a name.')
     expect(input).toHaveAttribute('aria-invalid', 'true')
     expect(screen.getAllByRole('checkbox')).toHaveLength(1)
   })
 
-  it('valida un renombrado de tarea sin nombre', async () => {
+  it('validates a task rename with no name', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar «Llenar el odre»' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
     const input = screen.getByRole('textbox', {
-      name: 'Título de «Llenar el odre»',
+      name: 'Title of “Fill the waterskin”',
     })
     await user.clear(input)
-    await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('La tarea necesita un nombre.')
+    expect(screen.getByRole('alert')).toHaveTextContent('The task needs a name.')
     expect(input).toHaveAttribute('aria-invalid', 'true')
     expect(
-      screen.getByRole('textbox', { name: 'Título de «Llenar el odre»' }),
+      screen.getByRole('textbox', { name: 'Title of “Fill the waterskin”' }),
     ).toBeVisible()
   })
 
-  it('devuelve el foco a la fila vecina al eliminar una tarea', async () => {
+  it('returns focus to the neighbouring row when a task is deleted', async () => {
     const scrollIntoView = vi.spyOn(Element.prototype, 'scrollIntoView')
     const user = renderChain([
       {
         id: 'provisiones',
-        title: 'Provisiones',
+        title: 'Supplies',
         tasks: [
-          { id: 'odre', title: 'Llenar el odre', done: false },
-          { id: 'mapa', title: 'Sellar el mapa', done: false },
+          { id: 'odre', title: 'Fill the waterskin', done: false },
+          { id: 'mapa', title: 'Seal the map', done: false },
         ],
       },
     ])
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Eliminar «Llenar el odre»' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Delete “Fill the waterskin”' }))
 
-    const next = screen.getByRole('button', { name: 'Editar «Sellar el mapa»' })
+    const next = screen.getByRole('button', { name: 'Edit “Seal the map”' })
     await waitFor(() => expect(next).toHaveFocus())
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' })
     expect(
-      screen.queryByRole('checkbox', { name: 'Llenar el odre' }),
+      screen.queryByRole('checkbox', { name: 'Fill the waterskin' }),
     ).not.toBeInTheDocument()
   })
 
-  it('devuelve el foco a la fila al renombrar una tarea', async () => {
+  it('returns focus to the row when a task is renamed', async () => {
     const user = renderChain(SOLO)
-    await user.click(screen.getByRole('button', { name: /Provisiones/ }))
-    await user.click(screen.getByRole('button', { name: 'Editar «Llenar el odre»' }))
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
     const input = screen.getByRole('textbox', {
-      name: 'Título de «Llenar el odre»',
+      name: 'Title of “Fill the waterskin”',
     })
     await user.clear(input)
-    await user.type(input, 'Llenar el odre grande')
-    await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+    await user.type(input, 'Fill the big waterskin')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     const renamed = screen.getByRole('button', {
-      name: 'Editar «Llenar el odre grande»',
+      name: 'Edit “Fill the big waterskin”',
     })
     await waitFor(() => expect(renamed).toHaveFocus())
   })
