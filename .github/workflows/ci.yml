@@ -1,0 +1,135 @@
+name: CI
+
+# Path filter: a change to a component, a token, a test, the tooling config or
+# `AGENTS.md` (its budget is enforced by `pnpm lint`) runs the whole pipeline.
+# A prose edit to `README.md` or `DESIGN.md` spends no runner minutes.
+#
+# Caveat: a workflow skipped by `paths` never reports its checks, so if these
+# jobs are marked "required" in branch protection, a docs-only PR stays
+# pending forever. Either leave them out of the required list, or drop `paths`
+# and gate each job with a `paths-filter` step that always reports success.
+
+on:
+  push:
+    branches: [main]
+    paths: &paths
+      - 'src/**'
+      - 'public/**'
+      - 'tests/**'
+      - 'e2e/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'vitest.config.ts'
+      - 'playwright.config.ts'
+      - 'eslint.config.js'
+      # `pnpm lint` runs scripts/check-docs.mjs against this file.
+      - 'AGENTS.md'
+      - '.github/**'
+  pull_request:
+    branches: [main]
+    paths: *paths
+  workflow_dispatch:
+
+# A second push to the same branch cancels the run already in flight; `main`
+# runs are left alone so the history stays complete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: lint · unit · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # The pnpm version comes from `packageManager` in package.json; this
+      # action must run before setup-node so `cache: pnpm` can locate the store.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (eslint, AGENTS.md budget, 14 px floor)
+        run: pnpm lint
+
+      - name: Unit tests (jsdom)
+        run: pnpm test:run
+
+      # `pnpm build` is `tsc --noEmit && vite build`: it covers typecheck and
+      # proves the bundle is producible, so `pnpm typecheck` is not repeated.
+      - name: Typecheck and build
+        run: pnpm build
+
+  e2e:
+    name: e2e · axe · overflow · keyboard
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Keyed on the pinned Playwright version, not the lockfile: any other
+      # dev-dependency bump would otherwise re-download Chromium for nothing.
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Chromium
+        id: browser
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium
+        if: steps.browser.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      # A restored cache brings the browser back but not the apt packages.
+      - name: Install system libraries
+        if: steps.browser.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - name: Playwright (Chromium, 8 themes x 2 surfaces)
+        run: pnpm test:e2e
+
+      # The harness writes reports and traces under `node_modules/.cache`, so
+      # this is the only place they exist.
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            node_modules/.cache/liferpg-playwright-report
+            node_modules/.cache/liferpg-playwright-results
+          retention-days: 7
+          if-no-files-found: warn

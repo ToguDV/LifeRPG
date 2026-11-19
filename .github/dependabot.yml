@@ -1,0 +1,36 @@
+version: 2
+
+# The repository has no runtime dependencies beyond React; everything else is
+# tooling. Patch and minor updates arrive as one grouped PR per ecosystem,
+# majors arrive alone so each breaking change gets its own review.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Madrid
+    commit-message:
+      prefix: chore(ci)
+    groups:
+      actions:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Madrid
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+    # React, Vite and the test stack are locked to what `pnpm-lock.yaml` pins;
+    # a grouped minor bump is one CI run instead of a dozen.
+    groups:
+      dev-dependencies:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
