@@ -1,7 +1,9 @@
 /* ============================================================
    QUEST NODE PANEL — the drawer under the route
    One milestone at a time: header, inline editor, quests, add row
-   and the two-step delete. Every measure comes from tokens.
+   and the two-step delete. Measures come from tokens except a few
+   single-use flex bases (12rem, 8rem, 14rem) and the 560px
+   breakpoint, which belong to this component's layout.
    ============================================================ */
 
 .panel {
@@ -79,11 +81,13 @@
 }
 
 .note {
+  min-width: 0;
   margin: 0;
   font-family: var(--font-hand);
   font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--ui-text-muted);
+  overflow-wrap: anywhere;
 }
 
 .tally {
@@ -147,6 +151,12 @@
   font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--ui-text-soft);
+  overflow-wrap: anywhere;
+}
+
+.lockText {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .lockIcon {
@@ -269,10 +279,12 @@
 
 .confirmText {
   flex: 1 1 14rem;
+  min-width: 0;
   margin: 0;
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
   color: var(--ui-text-soft);
+  overflow-wrap: anywhere;
 }
 
 /* ---------- narrow ---------- */

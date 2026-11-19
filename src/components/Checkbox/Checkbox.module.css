@@ -106,9 +106,11 @@
 }
 
 .label {
+  min-width: 0;
   font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--ui-text);
+  overflow-wrap: anywhere;
   transition:
     color var(--duration-fast) var(--ease-out),
     opacity var(--duration-fast) var(--ease-out);
