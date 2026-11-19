@@ -9,39 +9,15 @@ import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
 const PROVISIONS = [
-  {
-    id: 'bread',
-    label: 'Rye bread',
-    description: 'It lasts longer than it looks.',
-  },
-  {
-    id: 'rope',
-    label: 'Hemp rope',
-    description: 'Twelve fathoms, a little worn.',
-  },
-  {
-    id: 'lantern',
-    label: 'Brass lantern',
-    description: 'Borrowed; best returned.',
-  },
+  { id: 'bread', label: 'Rye bread' },
+  { id: 'rope', label: 'Hemp rope' },
+  { id: 'lantern', label: 'Brass lantern' },
 ]
 
 const PACES = [
-  {
-    value: 'steady',
-    label: 'Steady pace',
-    description: 'You arrive dry and early.',
-  },
-  {
-    value: 'fox',
-    label: 'Fox step',
-    description: 'Slower, quieter.',
-  },
-  {
-    value: 'run',
-    label: 'At a run',
-    description: 'Your breath decides for you.',
-  },
+  { value: 'steady', label: 'Steady pace' },
+  { value: 'fox', label: 'Fox step' },
+  { value: 'run', label: 'At a run' },
 ]
 
 export function SelectionSection({ canvas }: SectionProps) {
@@ -69,16 +45,12 @@ export function SelectionSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Small decisions"
-      description="Three ways to choose: several, just one, or none. The wax of the control adapts to paper and panel without changing shape."
       folio="02"
       tilt="left"
     >
       <DemoGrid columns={3}>
         <DemoGroup label="Checkboxes">
-          <CheckboxGroup
-            label="Provisions for the journey"
-            hint="Tick what the satchel will carry."
-          >
+          <CheckboxGroup label="Provisions for the journey">
             <Checkbox
               checked={allSelected}
               indeterminate={someSelected}
@@ -89,7 +61,7 @@ export function SelectionSection({ canvas }: SectionProps) {
                 )
               }}
               label="The whole kit"
-              description="One decision for all three provisions."
+              description="Selects all three."
             />
             <span className={styles.groupBreak} aria-hidden="true" />
             {PROVISIONS.map((item) => (
@@ -103,37 +75,22 @@ export function SelectionSection({ canvas }: SectionProps) {
                   }))
                 }
                 label={item.label}
-                description={item.description}
               />
             ))}
-            <Checkbox
-              disabled
-              label="Forgotten relic"
-              description="It cannot be touched."
-            />
+            <Checkbox disabled label="Forgotten relic" />
           </CheckboxGroup>
           <DemoNote live>
-            {selectedCount} of {PROVISIONS.length} provisions in the satchel.
+            {selectedCount} of {PROVISIONS.length} selected.
           </DemoNote>
         </DemoGroup>
 
         <DemoGroup label="Radio buttons">
-          <RadioGroup
-            label="Marching pace"
-            value={pace}
-            onChange={setPace}
-            hint="Only one trail at a time."
-          >
+          <RadioGroup label="Marching pace" value={pace} onChange={setPace}>
             {PACES.map((item) => (
-              <Radio
-                key={item.value}
-                value={item.value}
-                label={item.label}
-                description={item.description}
-              />
+              <Radio key={item.value} value={item.value} label={item.label} />
             ))}
           </RadioGroup>
-          <DemoNote live>Chosen: {paceLabel}.</DemoNote>
+          <DemoNote live>Pace: {paceLabel}.</DemoNote>
         </DemoGroup>
 
         <DemoGroup label="Switches">
@@ -148,20 +105,12 @@ export function SelectionSection({ canvas }: SectionProps) {
               checked={silent}
               onChange={(event) => setSilent(event.target.checked)}
               label="Silent mode"
-              description="Not a feather stirs."
               size="sm"
             />
-            <Switch
-              checked
-              disabled
-              label="Guild seal"
-              description="Always on, by oath."
-              size="sm"
-            />
+            <Switch checked disabled label="Guild seal" size="sm" />
           </div>
           <DemoNote live>
-            {notices ? 'Notices are awake' : 'Notices are asleep'} ·{' '}
-            {silent ? 'silence' : 'voice'}.
+            {notices ? 'Notices on' : 'Notices off'} · {silent ? 'silent' : 'sound'}.
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

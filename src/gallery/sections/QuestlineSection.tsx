@@ -104,7 +104,6 @@ export function QuestlineSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="The winter route"
-      description="A line of milestones, each with its own task list and date. Once every task on a milestone is complete, the next one opens its door and the trail takes ink. Tasks, deadlines, and names are edited right here."
       folio="10"
       tilt="right"
     >
@@ -118,8 +117,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
 
         <div className={styles.questFoot}>
           <DemoNote>
-            {completed} of {nodes.length} milestones completed · {done} of {total} tasks
-            done. A milestone with no tasks does not count as complete.
+            {completed} of {nodes.length} milestones · {done} of {total} tasks.
           </DemoNote>
           <Button
             variant="secondary"
@@ -127,7 +125,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
             iconLeft={<Icon name="scroll" size="sm" />}
             onClick={() => setNodes(makeSeed())}
           >
-            Back to the first report
+            Reset
           </Button>
         </div>
       </div>

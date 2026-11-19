@@ -21,13 +21,11 @@ export function DemoGrid({
 
 export function DemoGroup({
   label,
-  hint,
   span = false,
   children,
   className,
 }: {
   label: ReactNode
-  hint?: ReactNode
   span?: boolean
   children: ReactNode
   className?: string
@@ -35,7 +33,6 @@ export function DemoGroup({
   return (
     <section className={cx(styles.group, span && styles.span, className)}>
       <p className={styles.groupLabel}>{label}</p>
-      {hint ? <p className={styles.groupHint}>{hint}</p> : null}
       <div className={styles.groupBody}>{children}</div>
     </section>
   )
@@ -49,16 +46,6 @@ export function DemoRow({
   className?: string
 }) {
   return <div className={cx(styles.row, className)}>{children}</div>
-}
-
-export function DemoStack({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
-  return <div className={cx(styles.stack, className)}>{children}</div>
 }
 
 export function DemoNote({

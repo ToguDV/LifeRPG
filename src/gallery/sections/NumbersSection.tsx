@@ -37,7 +37,6 @@ export function NumbersSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Taking the pulse"
-      description="Sliders with marks and value bubbles, a two-thumb range, and counters with limits. All of them answer to the keyboard and respect the bounds."
       folio="05"
       tilt="right"
     >
@@ -53,15 +52,7 @@ export function NumbersSection({ canvas }: SectionProps) {
             showValue
             formatValue={(value) => `${value}%`}
             marks={RESISTANCE_MARKS}
-            hint="It drops when you cross the ford or sleep in the open."
           />
-          <DemoNote live>
-            {resistance >= 80
-              ? 'You can still handle the winter.'
-              : resistance >= 40
-                ? 'The pace is steady, but you should eat.'
-                : 'Every league weighs. Find shelter.'}
-          </DemoNote>
         </DemoGroup>
 
         <DemoGroup label="Two-thumb range">
@@ -74,11 +65,9 @@ export function NumbersSection({ canvas }: SectionProps) {
             onChange={setVigil}
             formatValue={(value) => `${value} h`}
             marks={VIGIL_MARKS}
-            hint="From dusk until dawn."
           />
           <DemoNote live>
-            {vigil[1] - vigil[0]} hours awake; {24 - (vigil[1] - vigil[0])} for
-            sleep.
+            {vigil[1] - vigil[0]} h awake · {24 - (vigil[1] - vigil[0])} h asleep.
           </DemoNote>
         </DemoGroup>
 
@@ -91,7 +80,6 @@ export function NumbersSection({ canvas }: SectionProps) {
             value={rations}
             onChange={setRations}
             suffix="days"
-            hint="Each ration lasts one day on the road."
           />
           <Stepper
             label="Torches"
@@ -103,17 +91,9 @@ export function NumbersSection({ canvas }: SectionProps) {
             onChange={setTorches}
             suffix="units"
           />
-          <Stepper
-            label="Locked seal"
-            min={0}
-            max={9}
-            defaultValue={3}
-            suffix="units"
-            disabled
-            hint="Issued by the guild; it cannot be changed."
-          />
+          <Stepper label="Locked seal" min={0} max={9} defaultValue={3} suffix="units" disabled />
           <DemoNote>
-            {rations} rations and {torches} torches in the satchel.
+            {rations} rations · {torches} torches.
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

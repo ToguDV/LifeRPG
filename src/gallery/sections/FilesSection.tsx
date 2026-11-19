@@ -33,7 +33,6 @@ export function FilesSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Maps, seals, and provisions"
-      description="Drag, drop, or open the shelf. The list shows name and weight; files that fail the filter are explained in red instead of vanishing quietly."
       folio="07"
       tilt="right"
     >
@@ -47,14 +46,10 @@ export function FilesSection({ canvas }: SectionProps) {
             maxSize={5 * 1024 * 1024}
             value={files}
             onChange={setFiles}
-            hint="Up to three files; images or PDFs, 5 MB max."
+            hint="Three files max; images or PDFs, 5 MB."
           />
           <DemoNote live>
-            {files.length} of 3 files in the satchel.
-          </DemoNote>
-          <DemoNote>
-            Try dropping a file in another format, or one that is too heavy: the list will
-            explain why.
+            {files.length} of 3 files.
           </DemoNote>
         </DemoGroup>
 
@@ -63,7 +58,7 @@ export function FilesSection({ canvas }: SectionProps) {
             label="Guild seal"
             accept="image/png,image/jpeg"
             maxSize={2 * 1024 * 1024}
-            hint="PNG or JPG, up to 2 MB. Replaces the previous seal."
+            hint="PNG or JPG, 2 MB max."
           />
         </DemoGroup>
 
@@ -72,7 +67,6 @@ export function FilesSection({ canvas }: SectionProps) {
             label="Sealed file"
             accept=".pdf"
             disabled
-            hint="The guild has already closed the register."
           />
         </DemoGroup>
       </DemoGrid>

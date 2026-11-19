@@ -22,7 +22,6 @@ export function ActionsSection({ canvas }: SectionProps) {
           </Badge>
         }
         title="The wax and the iron"
-        description="Four variants, three sizes, and the states that show up when winter tightens its grip. The primary button behaves like a wax seal; the rest are table tools."
         folio="01"
         tilt="left"
       >
@@ -95,8 +94,8 @@ export function ActionsSection({ canvas }: SectionProps) {
             </Button>
             <DemoNote live>
               {seals === 0
-                ? 'You have not sealed anything yet.'
-                : `You have sealed the journal ${seals} ${seals === 1 ? 'time' : 'times'}.`}
+                ? 'Not sealed yet.'
+                : `Sealed ${seals} ${seals === 1 ? 'time' : 'times'}.`}
             </DemoNote>
           </DemoGroup>
         </DemoGrid>
@@ -111,36 +110,26 @@ export function ActionsSection({ canvas }: SectionProps) {
           </Badge>
         }
         title="A voice at your ear"
-        description="The hint appears after a short pause, and also when the control takes keyboard focus. It never covers the control that summoned it."
         folio="01 b"
         tilt="right"
       >
-        <DemoGrid>
-          <DemoGroup label="Placement">
-            <DemoRow>
-              <Tooltip content="The north does not forgive the hesitant.">
-                <Button variant="secondary" iconLeft={<Icon name="compass" />}>
-                  Compass
-                </Button>
-              </Tooltip>
-              <Tooltip content="The watchtower burns every seventh night." side="bottom">
-                <Button variant="ghost" iconLeft={<Icon name="lantern" />}>
-                  Watchtower
-                </Button>
-              </Tooltip>
-              <Tooltip content="A lantern borrowed from the smith." side="bottom">
-                <Button variant="ghost" iconOnly aria-label="Lantern" iconLeft={<Icon name="sun" />} />
-              </Tooltip>
-            </DemoRow>
-            <DemoNote>Hover, or reach it with Tab.</DemoNote>
-          </DemoGroup>
-          <DemoGroup label="Margin note">
-            <p className={styles.aside}>
-              Hints use panel ink, even on paper: they are a voice off the page, not an object
-              on it.
-            </p>
-          </DemoGroup>
-        </DemoGrid>
+        <DemoGroup label="Placement">
+          <DemoRow>
+            <Tooltip content="The north does not forgive the hesitant.">
+              <Button variant="secondary" iconLeft={<Icon name="compass" />}>
+                Compass
+              </Button>
+            </Tooltip>
+            <Tooltip content="The watchtower burns every seventh night." side="bottom">
+              <Button variant="ghost" iconLeft={<Icon name="lantern" />}>
+                Watchtower
+              </Button>
+            </Tooltip>
+            <Tooltip content="A lantern borrowed from the smith." side="bottom">
+              <Button variant="ghost" iconOnly aria-label="Lantern" iconLeft={<Icon name="sun" />} />
+            </Tooltip>
+          </DemoRow>
+        </DemoGroup>
       </Card>
     </>
   )

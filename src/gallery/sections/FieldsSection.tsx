@@ -25,7 +25,6 @@ export function FieldsSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Ink on the line"
-      description="Carved labels, handwritten hints, and errors that do not shout. The fields share the same control geometry on paper and panel."
       folio="03"
       tilt="right"
     >
@@ -34,7 +33,6 @@ export function FieldsSection({ canvas }: SectionProps) {
           <TextInput
             label="Wanderer’s name"
             defaultValue="Maho of the Hollow Mark"
-            hint="As it will appear in the guild register."
           />
           <TextInput
             label="Search the journal"
@@ -44,10 +42,9 @@ export function FieldsSection({ canvas }: SectionProps) {
             onChange={(event) => setSearch(event.target.value)}
             onClear={() => setSearch('')}
             clearable
-            hint="Search is case-insensitive."
           />
           <DemoNote live>
-            {search ? `Searching the margins for “${search}”.` : 'The field is silent.'}
+            {search ? `Searching “${search}”.` : 'No search.'}
           </DemoNote>
           <TextInput
             label="Reward"
@@ -55,7 +52,6 @@ export function FieldsSection({ canvas }: SectionProps) {
             inputMode="numeric"
             prefix={<Icon name="spark" size="xs" />}
             suffix="coins"
-            hint="The guild pays in old coins."
           />
         </DemoGroup>
 
@@ -66,18 +62,12 @@ export function FieldsSection({ canvas }: SectionProps) {
             error="That seal does not look valid."
             hint="Use a full address."
           />
-          <TextInput
-            label="Guild seal"
-            defaultValue="MC-812"
-            disabled
-            hint="Issued at the third bell."
-          />
+          <TextInput label="Guild seal" defaultValue="MC-812" disabled />
           <div className={styles.sizeFields}>
             <TextInput size="sm" label="Small" placeholder="Short" />
             <TextInput size="md" label="Medium" placeholder="Medium" />
             <TextInput size="lg" label="Large" placeholder="Long" />
           </div>
-          <DemoNote>Height and size change; the tokens do not.</DemoNote>
         </DemoGroup>
 
         <DemoGroup label="Multi-line inputs" span>
@@ -87,7 +77,6 @@ export function FieldsSection({ canvas }: SectionProps) {
             onChange={(event) => setNotes(event.target.value)}
             maxLength={220}
             showCount
-            hint="Saved when the journal closes."
           />
           <Textarea
             label="Auto-growing"
@@ -95,7 +84,6 @@ export function FieldsSection({ canvas }: SectionProps) {
             autoGrow
             maxLength={140}
             showCount
-            hint="No scrollbar until the text asks for more."
           />
           <Textarea
             label="Last will"

@@ -31,7 +31,6 @@ export function DateTimeSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Time, carved"
-      description="A six-week calendar that starts on Monday and a bell wheel with five-minute steps. Both open in a floating dialog, can be walked with the keyboard, and close with Escape."
       folio="06"
       tilt="left"
     >
@@ -43,7 +42,6 @@ export function DateTimeSection({ canvas }: SectionProps) {
             onChange={setDeparture}
             min={today}
             max={maxDate}
-            hint="The past is struck through; there is a two-month window."
           />
           <DatePicker
             label="Arrival date"
@@ -54,8 +52,8 @@ export function DateTimeSection({ canvas }: SectionProps) {
             hint="No walking on Sundays."
           />
           <DemoNote live>
-            {departure ? `You leave on ${formatDate(departure)}.` : 'No departure date yet.'}
-            {arrival ? ` You arrive on ${formatDate(arrival)}.` : ''}
+            {departure ? `Leaves ${formatDate(departure)}.` : 'No departure.'}
+            {arrival ? ` Arrives ${formatDate(arrival)}.` : ''}
           </DemoNote>
         </DemoGroup>
 
@@ -66,7 +64,6 @@ export function DateTimeSection({ canvas }: SectionProps) {
             onChange={setCouncil}
             minuteStep={5}
             clearable
-            hint="Twenty-four hours; five-minute steps."
           />
           <TimePicker
             label="Council time"
@@ -75,7 +72,7 @@ export function DateTimeSection({ canvas }: SectionProps) {
             error="The council hour has already passed."
           />
           <DemoNote live>
-            {council ? `The bell rings at ${council}.` : 'No bell time set.'}
+            {council ? `Bell at ${council}.` : 'No bell set.'}
           </DemoNote>
         </DemoGroup>
       </DemoGrid>

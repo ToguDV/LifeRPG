@@ -135,7 +135,6 @@ export function ContextSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="The journal at work"
-      description="Every earlier piece, now with a real task in hand: add, tick, filter, and delete. The state lives in the page; the tokens still rule."
       folio="09"
       tilt="right"
     >
@@ -144,9 +143,6 @@ export function ContextSection({ canvas }: SectionProps) {
           <div>
             <p className={styles.taskKicker}>Day report · folio 12</p>
             <h4 className={styles.taskTitle}>Before the door closes</h4>
-            <p className={styles.taskSub}>
-              Whatever is left undone will sleep with the frost.
-            </p>
           </div>
           <Badge variant={openCount === 0 ? 'success' : 'accent'} dot>
             {openCount === 0
@@ -207,8 +203,8 @@ export function ContextSection({ canvas }: SectionProps) {
                 title={filter === 'done' ? 'Nothing sealed yet' : 'All in order'}
                 description={
                   filter === 'done'
-                    ? 'Mark a task as done and it will show up here, with the ink dry.'
-                    : 'No tasks match that filter. Snow covers the trail.'
+                    ? 'Mark a task as done.'
+                    : 'No tasks match that filter.'
                 }
                 action={
                   <Button variant="ghost" onClick={() => setFilter('all')}>
@@ -219,10 +215,6 @@ export function ContextSection({ canvas }: SectionProps) {
             }
           />
         </div>
-
-        <p className={styles.taskFoot}>
-          {doneCount} of {tasks.length} sealed · {filter === 'all' ? 'the whole journal' : filter === 'open' ? 'open only' : 'done only'}
-        </p>
       </div>
     </Card>
   )

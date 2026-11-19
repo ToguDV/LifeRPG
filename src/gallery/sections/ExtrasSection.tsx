@@ -5,7 +5,7 @@ import { Divider } from '../../components/Divider/Divider'
 import { Icon } from '../../components/Icon/Icon'
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar'
 import { useToast } from '../../components/Toast/Toast'
-import { DemoGrid, DemoGroup, DemoNote, DemoRow } from '../Demo'
+import { DemoGrid, DemoGroup, DemoRow } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
@@ -22,7 +22,6 @@ export function ExtrasSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Signals at the edge"
-      description="The pieces that ask for nothing until they earn it: tags, meters, dividers, and notices that come in from the lower corner."
       folio="08"
       tilt="left"
     >
@@ -56,7 +55,6 @@ export function ExtrasSection({ canvas }: SectionProps) {
             variant="xp"
             value={68}
             max={100}
-            hint="32 points to level 08."
           />
           <ProgressBar
             label="Tasks today"
@@ -70,7 +68,6 @@ export function ExtrasSection({ canvas }: SectionProps) {
             variant="danger"
             value={86}
             max={100}
-            hint="Too close to the crack."
           />
         </DemoGroup>
 
@@ -135,13 +132,6 @@ export function ExtrasSection({ canvas }: SectionProps) {
               Information
             </Button>
           </DemoRow>
-          <DemoNote>
-            Notices stack, can be dismissed, and pause on hover.
-          </DemoNote>
-          <p className={styles.aside}>
-            The experience meter uses theme ink (not paper ink) so the bar keeps its glow
-            on any material.
-          </p>
         </DemoGroup>
       </DemoGrid>
     </Card>

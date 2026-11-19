@@ -1,6 +1,5 @@
 import { Card } from '../../components/Card/Card'
 import { SECTIONS } from '../sections'
-import { DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
 
@@ -26,13 +25,7 @@ export function ContainersSection({ canvas }: SectionProps) {
             surface={canvas}
             kicker={meta.kicker}
             title={meta.title}
-            description={meta.note}
             folio={meta.number}
-            footer={
-              size === 'lg'
-                ? 'Same sheet, three heights: card, folio, and page.'
-                : undefined
-            }
           >
             <ul className={styles.cardList}>
               {meta.components.map((name, index) => (
@@ -47,13 +40,6 @@ export function ContainersSection({ canvas }: SectionProps) {
           </Card>
         )
       })}
-
-      <DemoNote className={styles.shelfNote}>
-        Three containers: a 21 rem card, a 30 rem folio, and a full page. On paper, the
-        title sits in a wax ribbon that crosses the top edge and its tails are decorative
-        layers marked <b>aria-hidden</b>. The stacked sheets, the notebook margin, and the
-        edge stains also live under the content.
-      </DemoNote>
     </div>
   )
 }

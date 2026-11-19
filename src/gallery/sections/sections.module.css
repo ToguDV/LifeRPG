@@ -1,10 +1,3 @@
-.aside {
-  max-width: 52ch;
-  font-size: var(--text-prose);
-  line-height: var(--leading-relaxed);
-  color: var(--ui-text-muted);
-}
-
 /* The gallery badge lists every component in the demo; let it wrap. */
 .componentBadge {
   max-width: 100%;
@@ -75,14 +68,6 @@
   color: var(--ui-text);
 }
 
-.taskSub {
-  margin-top: var(--space-1);
-  font-family: var(--font-hand);
-  font-size: var(--text-note);
-  line-height: var(--leading-note);
-  color: var(--ui-text-muted);
-}
-
 .addForm {
   display: flex;
   flex-wrap: wrap;
@@ -114,16 +99,6 @@
 
 .taskListWrap {
   min-width: 0;
-}
-
-.taskFoot {
-  margin-top: var(--space-1);
-  padding-top: var(--space-2);
-  border-top: var(--border-width) solid var(--ui-divider-soft);
-  font-family: var(--font-hand);
-  font-size: var(--text-note-sm);
-  line-height: var(--leading-note);
-  color: var(--ui-text-muted);
 }
 
 /* ---------- questline demo ---------- */
@@ -184,12 +159,6 @@
   font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--ui-text);
-}
-
-.shelfNote {
-  max-width: var(--content-measure);
-  font-size: var(--text-note-sm);
-  line-height: var(--leading-note);
 }
 
 @media (max-width: 720px) {

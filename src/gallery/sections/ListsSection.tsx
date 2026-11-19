@@ -84,7 +84,6 @@ export function ListsSection({ canvas }: SectionProps) {
         </Badge>
       }
       title="Choosing among what is written"
-      description="A dropdown of closed options and a list that filters as you type. Both anchor to the field, respect the keyboard, and return to their place if the screen changes."
       folio="04"
       tilt="left"
     >
@@ -95,11 +94,10 @@ export function ListsSection({ canvas }: SectionProps) {
             options={ROLES}
             value={role}
             onChange={setRole}
-            hint="Determines your starting kit."
             leadingIcon={<Icon name="compass" size="sm" />}
           />
           <DemoNote live>
-            {roleLabel ? `The journal files you as ${roleLabel}.` : 'No class assigned.'}
+            {roleLabel ? `Filed as ${roleLabel}.` : 'No class chosen.'}
           </DemoNote>
           <Select
             label="Compact size"
@@ -118,12 +116,9 @@ export function ListsSection({ canvas }: SectionProps) {
             onChange={setTask}
             leadingIcon={<Icon name="search" size="sm" />}
             placeholder="Search the tasks…"
-            hint="Type to filter; use the arrow keys to walk the list."
           />
           <DemoNote live>
-            {taskLabel
-              ? `In the journal: “${taskLabel}”.`
-              : 'You have not chosen a task yet.'}
+            {taskLabel ? `Task: “${taskLabel}”.` : 'No task chosen.'}
           </DemoNote>
           <Combobox
             label="Disabled combobox"
