@@ -320,8 +320,8 @@
 
 .quote {
   font-family: var(--font-hand);
-  font-size: var(--text-lg);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-accent-strong);
   transform: rotate(-1.2deg);
   white-space: nowrap;
@@ -390,7 +390,7 @@
 
 .introText p {
   max-width: 78ch;
-  font-size: var(--text-sm);
+  font-size: var(--text-prose);
   line-height: var(--leading-relaxed);
   color: var(--ui-text-soft);
 }
@@ -400,10 +400,11 @@
   color: var(--ui-text);
 }
 
-.introHand {
+.introText .introHand {
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  color: var(--ui-accent-strong) !important;
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
+  color: var(--ui-text-muted);
   transform: rotate(-0.3deg);
   transform-origin: left center;
 }
@@ -530,8 +531,8 @@
   padding-top: var(--space-3);
   border-top: var(--border-width) solid var(--ui-divider);
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 

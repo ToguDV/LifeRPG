@@ -132,7 +132,7 @@ export function ActionsSection({ canvas }: SectionProps) {
                 <Button variant="ghost" iconOnly aria-label="Lantern" iconLeft={<Icon name="sun" />} />
               </Tooltip>
             </DemoRow>
-            <DemoNote muted>Hover, or reach it with Tab.</DemoNote>
+            <DemoNote>Hover, or reach it with Tab.</DemoNote>
           </DemoGroup>
           <DemoGroup label="Margin note">
             <p className={styles.aside}>

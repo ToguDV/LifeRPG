@@ -38,8 +38,8 @@
 .headTally {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -182,8 +182,8 @@
   gap: var(--space-1);
   max-width: 100%;
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
@@ -248,7 +248,7 @@
 .addHint {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }

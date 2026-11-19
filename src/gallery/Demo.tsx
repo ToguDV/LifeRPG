@@ -64,19 +64,14 @@ export function DemoStack({
 export function DemoNote({
   children,
   live = false,
-  muted = false,
   className,
 }: {
   children: ReactNode
   live?: boolean
-  muted?: boolean
   className?: string
 }) {
   return (
-    <p
-      className={cx(styles.note, muted && styles.noteMuted, className)}
-      aria-live={live ? 'polite' : undefined}
-    >
+    <p className={cx(styles.note, className)} aria-live={live ? 'polite' : undefined}>
       {children}
     </p>
   )

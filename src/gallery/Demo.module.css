@@ -48,8 +48,8 @@
 
 .groupHint {
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -77,12 +77,8 @@
 .note {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
-  color: var(--ui-accent-strong);
-}
-
-.noteMuted {
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -133,8 +129,8 @@
 
 .sectionNote {
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 

@@ -77,7 +77,7 @@ export function FieldsSection({ canvas }: SectionProps) {
             <TextInput size="md" label="Medium" placeholder="Medium" />
             <TextInput size="lg" label="Large" placeholder="Long" />
           </div>
-          <DemoNote muted>Height and size change; the tokens do not.</DemoNote>
+          <DemoNote>Height and size change; the tokens do not.</DemoNote>
         </DemoGroup>
 
         <DemoGroup label="Multi-line inputs" span>

@@ -48,7 +48,7 @@ export function ContainersSection({ canvas }: SectionProps) {
         )
       })}
 
-      <DemoNote muted className={styles.shelfNote}>
+      <DemoNote className={styles.shelfNote}>
         Three containers: a 21 rem card, a 30 rem folio, and a full page. On paper, the
         title sits in a wax ribbon that crosses the top edge and its tails are decorative
         layers marked <b>aria-hidden</b>. The stacked sheets, the notebook margin, and the

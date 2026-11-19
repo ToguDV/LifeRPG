@@ -52,7 +52,7 @@ export function FilesSection({ canvas }: SectionProps) {
           <DemoNote live>
             {files.length} of 3 files in the satchel.
           </DemoNote>
-          <DemoNote muted>
+          <DemoNote>
             Try dropping a file in another format, or one that is too heavy: the list will
             explain why.
           </DemoNote>

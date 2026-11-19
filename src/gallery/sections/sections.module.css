@@ -1,6 +1,6 @@
 .aside {
   max-width: 52ch;
-  font-size: var(--text-sm);
+  font-size: var(--text-prose);
   font-style: italic;
   line-height: var(--leading-relaxed);
   color: var(--ui-text-muted);
@@ -79,8 +79,8 @@
 .taskSub {
   margin-top: var(--space-1);
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -122,8 +122,8 @@
   padding-top: var(--space-2);
   border-top: var(--border-width) solid var(--ui-divider-soft);
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -189,8 +189,8 @@
 
 .shelfNote {
   max-width: var(--content-measure);
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
 }
 
 @media (max-width: 720px) {

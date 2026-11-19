@@ -30,7 +30,7 @@
 
 .description {
   max-width: var(--content-measure);
-  font-size: var(--text-sm);
+  font-size: var(--text-prose);
   line-height: var(--leading-relaxed);
   color: var(--ui-text-muted);
 }

@@ -117,7 +117,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
         />
 
         <div className={styles.questFoot}>
-          <DemoNote muted>
+          <DemoNote>
             {completed} of {nodes.length} milestones completed · {done} of {total} tasks
             done. A milestone with no tasks does not count as complete.
           </DemoNote>

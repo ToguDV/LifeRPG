@@ -84,8 +84,8 @@
   min-width: 0;
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-snug);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
   overflow-wrap: anywhere;
 }
@@ -93,8 +93,8 @@
 .tally {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -148,8 +148,8 @@
   border-radius: var(--radius-xs);
   background-color: var(--ui-warning-soft);
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-snug);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-soft);
   overflow-wrap: anywhere;
 }
@@ -222,8 +222,8 @@
 .emptyTasks {
   margin: var(--space-3) 0 0;
   font-family: var(--font-hand);
-  font-size: var(--text-base);
-  line-height: var(--leading-snug);
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -264,8 +264,8 @@
 .footNote {
   margin: 0;
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-tight);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 
@@ -281,8 +281,8 @@
   flex: 1 1 14rem;
   min-width: 0;
   margin: 0;
-  font-size: var(--text-sm);
-  line-height: var(--leading-snug);
+  font-size: var(--text-prose);
+  line-height: var(--leading-normal);
   color: var(--ui-text-soft);
   overflow-wrap: anywhere;
 }

@@ -61,14 +61,10 @@
 
 .description {
   max-width: var(--content-measure);
-  font-size: var(--text-sm);
+  font-size: var(--text-prose);
   font-style: italic;
   line-height: var(--leading-relaxed);
   color: var(--ui-text-muted);
-}
-
-.size-sm .description {
-  font-size: var(--text-xs);
 }
 
 .rule {
@@ -91,8 +87,8 @@
   padding-top: var(--space-3);
   border-top: var(--border-width) solid var(--ui-divider-soft);
   font-family: var(--font-hand);
-  font-size: var(--text-sm);
-  line-height: var(--leading-snug);
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
   color: var(--ui-text-muted);
 }
 

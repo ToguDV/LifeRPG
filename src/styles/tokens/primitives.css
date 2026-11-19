@@ -28,6 +28,19 @@
   --text-5xl: 3.5rem;
   --text-6xl: 4.5rem;
 
+  /* ---------- reading roles ---------- */
+  /*
+    Caveat's x-height is 0.36em against 0.46em of IM Fell English: at the same
+    font-size the handwritten note reads 22% smaller, and its strokes are thin
+    enough for the paper grain to eat them. These are the floors for anything
+    meant to be read, as opposed to ornament: prose never goes below
+    --text-prose and a handwritten note never goes below --text-note-sm.
+  */
+  --text-prose: 0.9375rem; /* 15px · descriptions, hints, messages, tooltips */
+  --text-note-sm: 1rem; /* 16px · a note under a label: optional, aside, footer */
+  --text-note: 1.125rem; /* 18px · a note that speaks: live state, section notes */
+  --leading-note: 1.3;
+
   /* ---------- leading / tracking / weight ---------- */
   --leading-none: 1;
   --leading-display: 0.92;

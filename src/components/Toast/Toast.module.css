@@ -87,8 +87,8 @@
 }
 
 .description {
-  font-size: var(--text-sm);
-  line-height: var(--leading-snug);
+  font-size: var(--text-prose);
+  line-height: var(--leading-normal);
   color: var(--ui-text-muted);
 }
 

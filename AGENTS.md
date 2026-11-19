@@ -9,7 +9,7 @@
 ```bash
 pnpm dev          # http://localhost:5173
 pnpm typecheck    # TypeScript, no emit
-pnpm lint         # ESLint + check:docs (watches this file)
+pnpm lint         # ESLint + check:docs (this file) + check:type (reading floors)
 pnpm test:run     # Vitest on jsdom
 pnpm test:e2e     # Playwright: axe, overflow and keyboard in real Chromium
 pnpm build        # typecheck + production build

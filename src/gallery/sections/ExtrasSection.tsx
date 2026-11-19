@@ -135,7 +135,7 @@ export function ExtrasSection({ canvas }: SectionProps) {
               Information
             </Button>
           </DemoRow>
-          <DemoNote muted>
+          <DemoNote>
             Notices stack, can be dismissed, and pause on hover.
           </DemoNote>
           <p className={styles.aside}>

@@ -44,7 +44,7 @@ Textures and torn edges are used to build the feel of paper, not to fill space. 
 
 The `Caveat` typeface is reserved for notes, hints, subheadings and secondary values. It serves to narrate state (“2 de 3 provisiones”, “Has sellado el diario 2 veces”) without competing with the main text.
 
-Critical information does not rest on handwritten text alone: there is always a label, a value or an ARIA state backing it.
+Critical information does not rest on handwritten text alone: there is always a label, a value or an ARIA state backing it. A note is written in muted ink, never in the accent: the accent belongs to the state itself — a value, a danger, a completion — not to the sentence that narrates it.
 
 ### 2.5 Accessibility inside the material
 
@@ -280,15 +280,18 @@ All families are served locally from `public/fonts` (latin subsets of Google Fon
 ### 6.2 Scale and hierarchy
 
 - Scale from `--text-2xs` (11 px) to `--text-6xl` (72 px).
+- Two reading roles sit on top of the scale and are the floor for anything meant to be read: `--text-prose` (15 px) for descriptions, hints, messages and tooltips, and `--text-note` (18 px) / `--text-note-sm` (16 px) for handwritten notes. The 11 px steps are kept for engraved uppercase metadata only.
 - Control labels: 11 px, `Cinzel`, uppercase, wide tracking.
 - Body text: 15 px, `IM Fell English`, 1.5 line height.
 - Card titles: `IM Fell English SC` at 28 px.
 - Page title: `Grenze` with `clamp()` between 44 and 72 px.
-- Notes: `Caveat` 13–16 px. It is never used for information that is not also in normal text or in an accessible attribute.
+- Notes: `Caveat` 16–18 px, `--leading-note`. Its x-height is 0.36 em against the 0.46 em of `IM Fell English`, so at the same size a note reads 22 % smaller and its thin strokes lose to the paper grain: 16 px is the floor and 18 px the size when the note speaks. It is never used for information that is not also in normal text or in an accessible attribute.
+- Colour on a note is not emphasis: a note that reports state is written in muted ink and the accent colours the value or the state word, so the eye has a reason to go there.
 
 ### 6.3 Reading decisions
 
 - No sustained uppercase in paragraphs.
+- Nothing readable goes below `--text-prose` (15 px); a handwritten note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step.
 - Uppercase labels always carry `letter-spacing` and a small size; contrast was adjusted so they remain legible.
 - Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
 - Month names come already capitalised from `Intl`, so no extra casing rule is applied to the heading.

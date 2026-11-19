@@ -14,8 +14,8 @@
   background-blend-mode: soft-light;
   box-shadow: var(--shadow-lg);
   color: var(--ui-tooltip-text);
-  font-size: var(--text-sm);
-  line-height: var(--leading-snug);
+  font-size: var(--text-prose);
+  line-height: var(--leading-normal);
   text-align: left;
   /*
     WCAG 1.4.13: the tooltip must be hoverable, and a click on it must not
