@@ -181,7 +181,7 @@ Concrete decisions to keep legibility without losing the aesthetic:
 - The dark paper's “muted” text is mixed 88/12 between `--ink-3` and `--ink-2`: Rose Pine fell to 4.29:1 over its sunken sheet.
 - The panel's “muted” text is mixed 70/30 between `--bone-faint` and `--bone-dim`; it keeps the hierarchy and gains contrast.
 - State accents have two roles per surface. `--ui-danger`, `--ui-success` and `--ui-warning` remain the badge's border, fill and dot; `--ui-danger-text`, `--ui-success-text` and `--ui-warning-text` are the only ones used as text. The variant is declared per theme and surface (`--danger-panel-text`, `--danger-paper-text`, …) and is mixed toward the surface ink only when the base accent does not reach 4.5:1: Nord's overdue marker goes from 2.74:1 to 4.86:1 over `--panel-1`; Parchment's danger button, from 4.02:1 to 5.59:1 over its tint; Parchment's completed kicker, from 4.18:1 to 5.51:1. On light paper, the final success and warning mix drops to 65/35 and 55/45 to cover the badge tint and the sunken sheet as well.
-- Nord's strong panel accent is mixed 92/8 with `--bone`: the active index number was at 4.42:1 over `--ui-accent-soft` and goes to 4.66:1. The 11 px size was not lowered.
+- Nord's strong panel accent is mixed 92/8 with `--bone`: the active index number was at 4.42:1 over `--ui-accent-soft` and goes to 4.66:1. The size was not lowered to fix it.
 - The primary button does not simply use the ribbon colour: `--ui-primary-bg` mixes 72 % of `--ribbon-2` with 28 % of `--stone-0`.
 - The primary gradient concentrates the brightness in the top 24 %; the centre and the text rest on the dark colour. This allows white on wax in all themes, including Catppuccin, Rosé Pine and Tokyo Night.
 - Error states use `--danger-paper` / `--danger-panel` for border and fill, and their `-text` variant for the message; the health red is not reused without context.
@@ -279,9 +279,10 @@ All families are served locally from `public/fonts` (latin subsets of Google Fon
 
 ### 6.2 Scale and hierarchy
 
-- Scale from `--text-2xs` (11 px) to `--text-6xl` (72 px).
-- Two reading roles sit on top of the scale and are the floor for anything meant to be read: `--text-prose` (15 px) for descriptions, hints, messages and tooltips, and `--text-note` (18 px) / `--text-note-sm` (16 px) for handwritten notes. The 11 px steps are kept for engraved uppercase metadata only.
-- Control labels: 11 px, `Cinzel`, uppercase, wide tracking.
+- Scale from `--text-xs` (14 px) to `--text-6xl` (72 px). Nothing in the kit is set below 14 px.
+- `--text-xs` is the floor and the only step under the body size: engraved uppercase metadata, badges, counters and the labels of the smallest controls. They read as metadata through `Cinzel`, uppercase, tracking and weight, not through being tiny. When a label needs to recede, it loses contrast, not size.
+- Two reading roles sit on top of the scale and are the floor for anything meant to be read: `--text-prose` (15 px) for descriptions, hints, messages and tooltips, and `--text-note` (18 px) / `--text-note-sm` (16 px) for handwritten notes.
+- Control labels: 14 px, `Cinzel`, uppercase, wide tracking.
 - Body text: 15 px, `IM Fell English`, 1.5 line height.
 - Card titles: `IM Fell English SC` at 28 px.
 - Page title: `Grenze` with `clamp()` between 44 and 72 px.
@@ -291,9 +292,10 @@ All families are served locally from `public/fonts` (latin subsets of Google Fon
 ### 6.3 Reading decisions
 
 - No sustained uppercase in paragraphs.
-- Nothing readable goes below `--text-prose` (15 px); a handwritten note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step.
+- The 14 px floor is absolute: nothing is set at 11, 12 or 13 px. Anything meant to be read stays at `--text-prose` (15 px) and a handwritten note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step. `pnpm lint` fails on a step under the floor.
+- Density is bought with padding, not with type: compact controls keep their 30/38/44 px heights and the floor size, and lose padding or tracking instead.
 - The italic is not used for running prose. IM Fell's italic is 16 % narrower per glyph and its stems are thinner, so at 15 px it is the hardest body text in the kit, over the paper grain: descriptions, hints and asides are set in roman. The slant stays for placeholders and short quotes, where it marks an empty field or a borrowed voice and there is no paragraph to read.
-- Uppercase labels always carry `letter-spacing` and a small size; contrast was adjusted so they remain legible.
+- Uppercase labels always carry `letter-spacing` and sit at the floor size; contrast was adjusted so they remain legible.
 - Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
 - Month names come already capitalised from `Intl`, so no extra casing rule is applied to the heading.
 

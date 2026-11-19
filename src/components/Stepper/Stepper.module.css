@@ -100,7 +100,7 @@
   align-self: center;
   padding-inline-end: var(--space-2);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--ui-text-muted);

@@ -77,7 +77,7 @@
 
 .count {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
   font-variant-numeric: tabular-nums;

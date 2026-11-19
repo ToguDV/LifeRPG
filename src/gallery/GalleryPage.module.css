@@ -22,7 +22,7 @@
   box-shadow: var(--shadow-md);
   color: var(--ui-text);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-none);
@@ -101,7 +101,7 @@
 .brandFull,
 .brandShort {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wider);
   line-height: var(--leading-none);
@@ -124,7 +124,7 @@
   position: relative;
   padding-block: var(--space-1);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-none);
@@ -180,7 +180,7 @@
   padding-inline: var(--space-2);
   color: var(--ui-text-muted);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-none);
@@ -262,7 +262,7 @@
   align-items: center;
   gap: var(--space-2);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -310,7 +310,7 @@
 
 .volume {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -380,7 +380,7 @@
 
 .introKicker {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -436,7 +436,7 @@
 
 .stats span {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-tight);
   text-transform: uppercase;
@@ -466,7 +466,7 @@
   padding-bottom: var(--space-2);
   border-bottom: var(--border-width) solid var(--ui-divider);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -489,7 +489,7 @@
   border-inline-start: var(--border-width-strong) solid transparent;
   border-radius: var(--radius-xs);
   color: var(--ui-text-muted);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-snug);
   text-decoration: none;
   transition:
@@ -508,7 +508,7 @@
   flex: none;
   min-width: var(--space-6);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
 }
@@ -574,7 +574,7 @@
   padding: var(--space-6) var(--page-gutter) var(--space-10);
   border-top: var(--border-width) solid var(--ui-divider);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-tight);
   text-transform: uppercase;

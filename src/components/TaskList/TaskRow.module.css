@@ -138,7 +138,7 @@
 .due {
   margin-inline-start: auto;
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-tight);

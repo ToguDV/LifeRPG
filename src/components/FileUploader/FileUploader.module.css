@@ -73,7 +73,7 @@
 }
 
 .zoneText {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-snug);
   color: var(--ui-text-muted);
 }
@@ -92,7 +92,7 @@
 
 .counter {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
@@ -151,14 +151,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-snug);
   color: var(--ui-text);
 }
 
 .fileMeta {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
   font-variant-numeric: tabular-nums;

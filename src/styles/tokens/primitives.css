@@ -15,9 +15,14 @@
   --font-gothic: "Grenze Gotisch", "Grenze", Georgia, serif;
 
   /* ---------- type scale ---------- */
-  --text-2xs: 0.6875rem;  /* 11px */
-  --text-xs: 0.75rem;     /* 12px */
-  --text-sm: 0.8125rem;   /* 13px */
+  /*
+    14px is the floor of the kit (DESIGN.md §6.2): nothing readable is set
+    below it. The 11/12/13px steps this scale used to carry were collapsed
+    into --text-xs, which is now the smallest step and the only one under
+    the body size. Engraved uppercase metadata still reads as metadata
+    through family, weight and tracking, not through being tiny.
+  */
+  --text-xs: 0.875rem;    /* 14px · floor: engraved labels, badges, counters */
   --text-base: 0.9375rem; /* 15px */
   --text-md: 1rem;
   --text-lg: 1.125rem;
@@ -153,6 +158,10 @@
     (var(--picker-wheel-height) - var(--picker-wheel-item-height)) / 2
   );
   --picker-width: 15.5rem;
+  /* fits the longest theme name at --text-xs ("Tokyo Night" is ~118px) */
+  --theme-trigger-label-max: 7.5rem;
+  /* both columns fit the longest theme note at --text-xs */
+  --theme-menu-width: 24.5rem;
 
   --dropzone-min-height: 9.5rem;
   --textarea-min-height: 6rem;

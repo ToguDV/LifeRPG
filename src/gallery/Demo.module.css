@@ -28,7 +28,7 @@
   align-items: center;
   gap: var(--space-2);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -136,7 +136,7 @@
 
 .sectionComponents {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
   white-space: nowrap;

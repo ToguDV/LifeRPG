@@ -80,7 +80,7 @@
 .suffix {
   flex: none;
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--ui-text-muted);
@@ -118,12 +118,12 @@
 }
 
 .sm .input {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
 }
 
 .sm .prefix,
 .sm .suffix {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
 }
 
 .md {

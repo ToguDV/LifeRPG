@@ -42,7 +42,7 @@
 }
 
 .sm .engraving {
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-normal);
 }
 

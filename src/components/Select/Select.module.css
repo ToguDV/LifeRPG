@@ -87,7 +87,7 @@
 }
 
 .sm .value {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
 }
 
 .md {
@@ -125,7 +125,7 @@
   border-radius: var(--radius-xs);
   color: var(--ui-text-soft);
   font-family: var(--font-body);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-snug);
   cursor: pointer;
   user-select: none;

@@ -27,7 +27,7 @@
 .headLabel {
   margin: 0;
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -168,7 +168,7 @@
   overflow: hidden;
   max-width: 100%;
   font-family: var(--font-caps);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   line-height: var(--leading-tight);
   color: var(--ui-text);
   overflow-wrap: anywhere;

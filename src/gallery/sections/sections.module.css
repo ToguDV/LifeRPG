@@ -58,7 +58,7 @@
 
 .taskKicker {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
   line-height: var(--leading-tight);
@@ -175,7 +175,7 @@
 
 .cardRowNum {
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
 }

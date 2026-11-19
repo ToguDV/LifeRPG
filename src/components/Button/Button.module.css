@@ -9,7 +9,7 @@
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-sm);
   font-family: var(--font-engraved);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wider);
   line-height: var(--leading-none);
@@ -70,7 +70,7 @@
 .sm {
   height: var(--control-height-sm);
   padding-inline: var(--control-padding-x-sm);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
 }
 
