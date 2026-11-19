@@ -73,6 +73,19 @@
   --success-paper: #4f6a4a;
   --warning-panel: var(--vital-2);
   --warning-paper: #8a6a35;
+  /*
+    Text variants of the state accents. The plain accent stays the border,
+    fill and badge colour; only `-*-text` is used as a foreground. They mix
+    toward the surface ink when the accent misses 4.5:1 at 11–15 px.
+    Panel danger: 3.38:1 on the soft tint → 4.69:1; 5.12:1 on the raised disc.
+    Panel success: 4.08:1 on the soft tint → 4.65:1.
+  */
+  --danger-panel-text: color-mix(in srgb, var(--danger-panel) 72%, var(--bone) 28%);
+  --danger-paper-text: var(--danger-paper);
+  --success-panel-text: color-mix(in srgb, var(--success-panel) 86%, var(--bone) 14%);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -141,6 +154,12 @@
   --success-paper: #b2c0a0;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  --danger-panel-text: var(--danger-panel);
+  --danger-paper-text: var(--danger-paper);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -209,6 +228,12 @@
   --success-paper: #a6e3a1;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  --danger-panel-text: var(--danger-panel);
+  --danger-paper-text: var(--danger-paper);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -277,6 +302,13 @@
   --success-paper: #50fa7b;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  /* The base red is 4.10:1 on the panel's soft tint and 4.04:1 on paper. */
+  --danger-panel-text: color-mix(in srgb, var(--danger-panel) 86%, var(--bone) 14%);
+  --danger-paper-text: color-mix(in srgb, var(--danger-paper) 70%, var(--ink) 30%);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -335,8 +367,9 @@
   --pin-mid: #d8dee9;
   --pin-lo: #4c566a;
 
+  /* Active index: 4.42:1 on `--ui-accent-soft`; 8 % bone lifts it to 4.66:1. */
   --accent-panel: var(--bronze);
-  --accent-panel-strong: var(--bronze-soft);
+  --accent-panel-strong: color-mix(in srgb, var(--bronze-soft) 92%, var(--bone) 8%);
   --accent-paper: var(--chalk-rouge);
   --accent-paper-strong: var(--crimson);
   --danger-panel: var(--vital-1);
@@ -345,6 +378,14 @@
   --success-paper: #a3be8c;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  /* Panel red is 2.75:1; paper red is 2.46:1 on the raised sheet. */
+  --danger-panel-text: color-mix(in srgb, var(--danger-panel) 58%, var(--bone) 42%);
+  --danger-paper-text: color-mix(in srgb, var(--danger-paper) 45%, var(--ink) 55%);
+  /* Success is 3.98:1 on paper and 4.46:1 on the panel's soft tint. */
+  --success-panel-text: color-mix(in srgb, var(--success-panel) 94%, var(--bone) 6%);
+  --success-paper-text: color-mix(in srgb, var(--success-paper) 75%, var(--ink) 25%);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -413,6 +454,13 @@
   --success-paper: #b8bb26;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  /* Panel red 3.82:1; paper red 3.37:1 and paper success 4.49:1. */
+  --danger-panel-text: color-mix(in srgb, var(--danger-panel) 65%, var(--bone) 35%);
+  --danger-paper-text: color-mix(in srgb, var(--danger-paper) 50%, var(--ink) 50%);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: color-mix(in srgb, var(--success-paper) 90%, var(--ink) 10%);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -481,6 +529,13 @@
   --success-paper: #9ccfd8;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  --danger-panel-text: color-mix(in srgb, var(--danger-panel) 88%, var(--bone) 12%);
+  /* 4.15:1 on the soft danger tint over the raised sheet. */
+  --danger-paper-text: color-mix(in srgb, var(--danger-paper) 80%, var(--ink) 20%);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -549,6 +604,12 @@
   --success-paper: #9ece6a;
   --warning-panel: var(--vital-2);
   --warning-paper: var(--vital-2);
+  --danger-panel-text: var(--danger-panel);
+  --danger-paper-text: var(--danger-paper);
+  --success-panel-text: var(--success-panel);
+  --success-paper-text: var(--success-paper);
+  --warning-panel-text: var(--warning-panel);
+  --warning-paper-text: var(--warning-paper);
 }
 
 /* ------------------------------------------------------------
@@ -644,10 +705,13 @@
   --ui-panel-accent-contrast: var(--stone-0);
   --ui-panel-danger: var(--danger-panel);
   --ui-panel-danger-soft: color-mix(in srgb, var(--danger-panel) 16%, transparent);
+  --ui-panel-danger-text: var(--danger-panel-text);
   --ui-panel-success: var(--success-panel);
   --ui-panel-success-soft: color-mix(in srgb, var(--success-panel) 16%, transparent);
+  --ui-panel-success-text: var(--success-panel-text);
   --ui-panel-warning: var(--warning-panel);
   --ui-panel-warning-soft: color-mix(in srgb, var(--warning-panel) 16%, transparent);
+  --ui-panel-warning-text: var(--warning-panel-text);
   --ui-panel-selection-bg: color-mix(in srgb, var(--bone) 84%, transparent);
   --ui-panel-selection-text: var(--stone-0);
   --ui-panel-focus: var(--accent-panel-strong);
@@ -672,10 +736,13 @@
   --ui-paper-accent-contrast: var(--parch);
   --ui-paper-danger: var(--danger-paper);
   --ui-paper-danger-soft: color-mix(in srgb, var(--danger-paper) 12%, transparent);
+  --ui-paper-danger-text: var(--danger-paper-text);
   --ui-paper-success: var(--success-paper);
   --ui-paper-success-soft: color-mix(in srgb, var(--success-paper) 12%, transparent);
+  --ui-paper-success-text: var(--success-paper-text);
   --ui-paper-warning: var(--warning-paper);
   --ui-paper-warning-soft: color-mix(in srgb, var(--warning-paper) 14%, transparent);
+  --ui-paper-warning-text: var(--warning-paper-text);
   --ui-paper-selection-bg: color-mix(in srgb, var(--ink) 82%, transparent);
   --ui-paper-selection-text: var(--parch);
   --ui-paper-focus: var(--accent-paper);
@@ -719,10 +786,13 @@
   --ui-accent-contrast: var(--ui-panel-accent-contrast);
   --ui-danger: var(--ui-panel-danger);
   --ui-danger-soft: var(--ui-panel-danger-soft);
+  --ui-danger-text: var(--ui-panel-danger-text);
   --ui-success: var(--ui-panel-success);
   --ui-success-soft: var(--ui-panel-success-soft);
+  --ui-success-text: var(--ui-panel-success-text);
   --ui-warning: var(--ui-panel-warning);
   --ui-warning-soft: var(--ui-panel-warning-soft);
+  --ui-warning-text: var(--ui-panel-warning-text);
   --ui-selection-bg: var(--ui-panel-selection-bg);
   --ui-selection-text: var(--ui-panel-selection-text);
   --ui-focus: var(--ui-panel-focus);
@@ -748,10 +818,13 @@
   --ui-accent-contrast: var(--ui-paper-accent-contrast);
   --ui-danger: var(--ui-paper-danger);
   --ui-danger-soft: var(--ui-paper-danger-soft);
+  --ui-danger-text: var(--ui-paper-danger-text);
   --ui-success: var(--ui-paper-success);
   --ui-success-soft: var(--ui-paper-success-soft);
+  --ui-success-text: var(--ui-paper-success-text);
   --ui-warning: var(--ui-paper-warning);
   --ui-warning-soft: var(--ui-paper-warning-soft);
+  --ui-warning-text: var(--ui-paper-warning-text);
   --ui-selection-bg: var(--ui-paper-selection-bg);
   --ui-selection-text: var(--ui-paper-selection-text);
   --ui-focus: var(--ui-paper-focus);
@@ -760,7 +833,14 @@
 
 /* Light paper needs a touch more ink for small hints and meta labels. */
 [data-paper="light"] {
-  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 50%, var(--ink-2));
+  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 30%, var(--ink-2) 70%);
+  /*
+    The state accents are warm inks on light paper. At 11–15 px they need
+    more body than the badge border: 5.17:1 for success and 4.99:1 for
+    warning against their own soft tint over the sunken sheet.
+  */
+  --ui-paper-success-text: color-mix(in srgb, var(--success-paper) 65%, var(--ink) 35%);
+  --ui-paper-warning-text: color-mix(in srgb, var(--warning-paper) 55%, var(--ink) 45%);
 }
 
 /*
@@ -774,4 +854,10 @@
 
 [data-paper="dark"] {
   --ui-paper-shadow-color: var(--stone-0);
+  /*
+    Rose Pine's muted ink is 4.29:1 on its sunken sheet. A 12 % lift toward
+    the softer ink clears 4.5:1 there and only brightens the other dark
+    papers by a hair.
+  */
+  --ui-paper-text-muted: color-mix(in srgb, var(--ink-3) 88%, var(--ink-2) 12%);
 }

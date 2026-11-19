@@ -54,19 +54,19 @@
 }
 
 .success {
-  color: var(--ui-success);
+  color: var(--ui-success-text);
   border-color: color-mix(in srgb, var(--ui-success) 32%, transparent);
   background-color: var(--ui-success-soft);
 }
 
 .warning {
-  color: var(--ui-warning);
+  color: var(--ui-warning-text);
   border-color: color-mix(in srgb, var(--ui-warning) 32%, transparent);
   background-color: var(--ui-warning-soft);
 }
 
 .danger {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
   border-color: color-mix(in srgb, var(--ui-danger) 32%, transparent);
   background-color: var(--ui-danger-soft);
 }

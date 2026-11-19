@@ -156,7 +156,7 @@
 }
 
 .required {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
   font-size: var(--text-xs);
 }
 
@@ -192,5 +192,5 @@
 }
 
 .groupError {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }

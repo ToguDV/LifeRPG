@@ -152,7 +152,7 @@
 
 /* The overdue milestone keeps its danger number on the raised disc. */
 .stop[data-state="overdue"] .marker {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }
 
 .stop[data-open="true"] .marker {
@@ -194,11 +194,11 @@
 }
 
 .stop[data-state="complete"] .stopMeta {
-  color: var(--ui-success);
+  color: var(--ui-success-text);
 }
 
 .stop[data-overdue="true"] .stopMeta {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }
 
 /* ---------- measured route ---------- */

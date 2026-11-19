@@ -28,7 +28,7 @@
 }
 
 .required {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
   font-size: var(--text-xs);
   line-height: var(--leading-none);
 }
@@ -63,9 +63,9 @@
 
 .error {
   font-style: normal;
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }
 
 .field[data-invalid="true"] .label {
-  color: var(--ui-danger);
+  color: var(--ui-danger-text);
 }
