@@ -16,10 +16,13 @@ pnpm preview      # sirve dist/
 pnpm lint         # ESLint: correctitud y accesibilidad
 pnpm test         # Vitest en modo watch
 pnpm test:run     # Vitest una vez, sin watch
+pnpm test:e2e     # Chromium real: axe, overflow y teclado
+pnpm test:e2e:report  # informe HTML de la última pasada
 ```
 
 - Stack: **Vite + React 19 + TypeScript + CSS Modules**.
-- Herramientas de desarrollo: **ESLint** (flat config, `jsx-a11y`, `typescript-eslint`) y **Vitest + Testing Library** sobre jsdom. No imponen estilo de código.
+- Herramientas de desarrollo: **ESLint** (flat config, `jsx-a11y`, `typescript-eslint`), **Vitest + Testing Library** sobre jsdom y **Playwright + axe-core** sobre Chromium. No imponen estilo de código.
+- El arnés E2E usa la revisión `chromium-1248` que fija `@playwright/test`; si falta en `~/.cache/ms-playwright`, `pnpm exec playwright install chromium` una vez.
 - Sin framework de UI, sin Tailwind, sin librería de fechas.
 - Las fuentes son locales (no hay CDN).
 - `pnpm-workspace.yaml` aprueba el build de `esbuild`; no lo elimines sin motivo.
@@ -43,9 +46,10 @@ pnpm test:run     # Vitest una vez, sin watch
 | `package.json` | Dependencias y scripts. No añadir librerías de UI sin justificarlo. |
 | `pnpm-lock.yaml` | Lockfile. |
 | `pnpm-workspace.yaml` | Aprobación de build de `esbuild` y `minimumReleaseAgeExclude` de las versiones recién publicadas que usa la suite. |
-| `tsconfig.json` | TypeScript estricto, `noUnusedLocals`, `noUnusedParameters`. Incluye `src`, `tests` y las configuraciones de Vite y Vitest. |
+| `tsconfig.json` | TypeScript estricto, `noUnusedLocals`, `noUnusedParameters`. Incluye `src`, `tests`, `e2e` y las configuraciones de Vite, Vitest y Playwright. |
 | `vite.config.ts` | Vite + plugin React. |
 | `vitest.config.ts` | Vitest con entorno jsdom, `tests/setup.ts` y `tests/**/*.test.tsx`. Sin globals: se importa de `vitest`. |
+| `playwright.config.ts` | Chromium único, Vite en `127.0.0.1:4317` con `reuseExistingServer`, trazas solo en fallo, informes en `node_modules/.cache`. |
 | `eslint.config.js` | Flat config: `@eslint/js`, `typescript-eslint`, `jsx-a11y` y las reglas de hooks. Sin reglas de estilo. |
 | `index.html` | Entrada de Vite, favicon y script que aplica el tema guardado antes del primer paint. |
 | `src/main.tsx` | Imports de estilos globales y montaje de `<App />`. |
@@ -65,7 +69,20 @@ pnpm test:run     # Vitest una vez, sin watch
 | `tests/use-controllable-state.test.tsx` | Dos actualizaciones funcionales en el mismo tick y `onChange` con el valor resuelto. |
 | `tests/task-row.test.tsx` | Prioridad y vencimiento en la descripción del checkbox; Marcar / Desmarcar. |
 | `tests/card-title.test.tsx` | El título de `Card` sigue siendo el encabezado con la cinta; el panel conserva el encabezado plano. |
-| `tests/questline.test.tsx` | Bloqueo y desbloqueo encadenados, CRUD de hitos y tareas, anuncio de cierre, `aria-expanded`/`aria-controls`, foco devuelto y el plazo vencido. |
+| `tests/questline.test.tsx` | Bloqueo y desbloqueo encadenados, anuncios por id (borrado, cumplimiento, rebloqueo), borradores descartables, `aria-expanded`/`aria-controls`, foco devuelto, plazo vencido y vencido+bloqueado. |
+| `tests/questline-model.test.ts` | Modelo puro: `parseDeadlineKey` (incluido 29 de febrero), `daysUntilDeadline`, `getQuestNodeStates`, `getQuestDeadline` (todos los tonos), `getBlockingNodes`, `countQuestTasks`, `isQuestNodeComplete`, `formatQuestNumber`. |
+| `tests/questline-panel.test.tsx` | Panel del hito: `noValidate`, foco al abrir, copy del último hito, vocabulario cerrar/completar, foco al añadir/renombrar/eliminar tarea, Escape por capas y bloqueos múltiples. |
+| `tests/date-picker.test.tsx` | Nombre accesible del día sin relleno de cero (WCAG 2.5.3) y teclado del calendario. |
+
+### E2E (Chromium real)
+
+| Archivo | Rol |
+| --- | --- |
+| `e2e/a11y.spec.ts` | axe WCAG 2 A/AA + best practices en 8 temas × 2 superficies y en los estados abiertos (panel, editor, confirmación, Select, Combobox, DatePicker). Sin línea base: una violación pone el test rojo. |
+| `e2e/overflow.spec.ts` | `scrollWidth` y rects de todos los visibles a 320, 375, 480, 768, 1024 y 1440 px, con la galería completa, el panel abierto y un título sin espacios. |
+| `e2e/keyboard.spec.ts` | Tab/Enter/Escape del panel de Questline, ThemePicker, Select, Combobox y humo del sendero. |
+| `e2e/support/*.ts` | Cambio de tema/superficie con la UI real, `auditPage` y utilidades del panel. |
+| `e2e/FINDINGS.md` | Registro de la primera pasada, reglas del arnés (sin línea base, sin exclusiones, `incomplete` no es verde) y límites. |
 
 ### Referencia estática
 
@@ -118,7 +135,7 @@ Cada componente vive en `src/components/<Nombre>/` con su `.tsx` y `.module.css`
 | Field | `src/components/Field/Field.tsx`, `Field.module.css` |
 | Popover | `src/components/Popover/Popover.tsx`, `Popover.module.css` |
 | Card | `src/components/Card/Card.tsx`, `Card.module.css`, `RibbonTitle.tsx`, `RibbonTitle.module.css` |
-| Questline | `src/components/Questline/Questline.tsx`, `QuestNodePanel.tsx`, `questline-model.ts`, `useQuestTrail.ts` + módulos CSS |
+| Questline | `src/components/Questline/`: `Questline.tsx` (estado, anuncios y CRUD), `QuestRail.tsx`, `QuestStop.tsx`, `QuestNodePanel.tsx`, `QuestNodeEditor.tsx`, `QuestTaskRow.tsx`, `QuestDeleteConfirm.tsx`, `questline-model.ts`, `questline-state.ts` (`STATE_META`), `questline-dom.ts`, `useQuestTrail.ts` + módulos CSS |
 | WaxSeal | `src/components/Ornaments/WaxSeal.tsx`, `WaxSeal.module.css` |
 | TornSilhouette | `src/components/Ornaments/TornSilhouette.tsx` (silueta rasgada compartida) |
 
@@ -205,7 +222,7 @@ Antes de dar un cambio por terminado:
 - ¿El foco es visible y vuelve a un lugar lógico?
 - ¿Los nuevos estados tienen texto/aria además de color?
 - ¿Respeta `prefers-reduced-motion`?
-- ¿Sigue pasando una auditoría axe WCAG 2 A/AA + best practices? La última verificación del estado inicial dio **0 violaciones**. En el repositorio, `pnpm lint` (jsx-a11y) es el control automático; los tests de `tests/` cubren nombre de listbox, `aria-controls`, `required` y las descripciones de `TaskRow`.
+- ¿Sigue pasando `pnpm test:e2e`? axe corre WCAG 2 A/AA + best practices sobre los 8 temas × 2 superficies y los overlays abiertos, **sin línea base**: una violación nueva pone el test rojo. `incomplete` se imprime y se adjunta, pero **no cuenta como aprobado**. `pnpm lint` (jsx-a11y) sigue siendo el control rápido; los tests de `tests/` cubren nombre de listbox, `aria-controls`, `required`, nombres accesibles (Label in Name) y las descripciones de `TaskRow`.
 
 ### 3.6 Responsive
 
@@ -234,7 +251,7 @@ Antes de dar un cambio por terminado:
 1. `src/theme/themes.ts`: nueva entrada con `key`, `label`, `meta`, `paper`, `swatches`.
 2. `src/styles/tokens/themes.css`: bloque con la paleta completa y los acentos semánticos.
 3. `index.html`: añadir la clave al array permitido del script de arranque.
-4. Revisar contraste (texto, muted, primary, estados) en papel y panel.
+4. Revisar contraste (texto, muted, primary, estados) en papel y panel con `pnpm test:e2e`: axe recorre los 8 temas × 2 superficies y el contraste de texto debe quedar en 4.5:1 real, no estimado.
 5. Probar el selector de tema, la persistencia y los popovers.
 
 ### Añadir un test
@@ -271,6 +288,8 @@ Antes de dar un cambio por terminado:
 - **Preload de fuentes**: `index.html` precarga `im-fell-english-400.woff2` y `cinzel-400-700.woff2` con `crossorigin`. Si cambias la fuente del cuerpo o renombras el archivo, actualiza el `href` o el navegador descargará la fuente dos veces.
 - **Colores primary**: el texto del botón primario debe quedar sobre la banda oscura del gradiente; no aclares `--ui-primary-bg` sin comprobar contraste.
 - **Contraste muted**: el papel claro usa una mezcla más oscura que `--ink-3`; no vuelvas a `--ink-3` directo sin medir contraste.
+- **Puerto del arnés**: `playwright.config.ts` sirve Vite en `127.0.0.1:4317` con `reuseExistingServer: true`. Dos worktrees que ejecuten `pnpm test:e2e` a la vez comparten servidor y uno audita el código del otro: cambia `PORT` (o para el otro servidor) antes de fiarte de un resultado.
+- **axe `incomplete` no es verde**: las texturas dejan 300+ nodos de `color-contrast` sin resolver en cada pasada. El arnés los imprime y los adjunta; no los cuentes como aprobados.
 - **Festival de 1 px**: los patrones `visually-hidden` y los bordes de arte usan 1 px; no los conviertas en “tokens de spacing” sin necesidad.
 - **Filtros SVG por hoja**: el borde rasgado es un `clip-path` compartido (`#ui-torn-clip`), no `feTurbulence`. Un filtro de turbulencia por tarjeta multiplica el raster y vuelve a pintarse al hacer scroll. La sombra del papel es `box-shadow`, no `drop-shadow` sobre el subárbol.
 - **Mezclas a pantalla completa**: `mix-blend-mode` en capas `fixed` y `backdrop-filter` en la topbar fuerzan a recomponer el documento en cada scroll. Evítalos.
@@ -287,17 +306,16 @@ pnpm typecheck
 pnpm build
 pnpm lint
 pnpm test:run
+pnpm test:e2e
 ```
 
-Además, revisar manualmente en la galería:
+El arnés cubre temas, superficies, teclado, overflow y axe. Queda a mano y a ojo:
 
-- Los 8 temas y el toggle Papel / Panel.
-- Select, Combobox, DatePicker, TimePicker, tooltip y Toast.
-- Teclado: flechas, Enter, Escape y retorno de foco.
-- 320, 768 y 1440 px sin overflow horizontal.
+- Jerarquía visual de los 8 temas y el toggle Papel / Panel (en especial los rojos de Nord/Gruvbox y la tinta muted del papel claro).
+- Los 300+ nodos que axe deja en `incomplete` por las texturas: contraste pintado sobre gradientes e imágenes de fondo.
+- Lector de pantalla real, Safari y Firefox: el arnés es solo Chromium.
 - Consola sin errores.
-- Contraste y `prefers-reduced-motion` si se tocaron tokens.
 
-Los tests cubren las interacciones que originaron los bugs de la revisión (redondeo de minutos, `accept`, `side`, nombre del listbox, `aria-controls`, `required`, estado controlado y `TaskRow`). **El overflow horizontal no se puede medir en jsdom**: 320/375/480 px sigue siendo una comprobación manual en navegador. La auditoría axe se realizó de forma externa sobre el estado inicial (0 violaciones); `eslint-plugin-jsx-a11y` es el control automático que queda en el repositorio.
+Los tests cubren las interacciones que originaron los bugs de la revisión (redondeo de minutos, `accept`, `side`, nombre del listbox, `aria-controls`, `required`, estado controlado, `TaskRow` y el modelo de `Questline`). **El overflow horizontal y el contraste pintado no se pueden medir en jsdom**: para eso está `pnpm test:e2e` (Chromium real, 320–1440 px, 8 temas × 2 superficies). El arnés **no tiene línea base**: si un hallazgo sigue abierto, el test está rojo y se documenta en `e2e/FINDINGS.md`; no se silencia con `disableRules`.
 
 Los tests se escriben contra roles, nombres accesibles, descripciones y resultados visibles; evita los snapshots de árboles completos y las aserciones sobre clases o estructura interna.

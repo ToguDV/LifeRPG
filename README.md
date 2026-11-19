@@ -47,7 +47,7 @@ Una sola página con todas las piezas, navegación por secciones, selector de te
 - **Primitivas de apoyo**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider y Toast.
 - **Contenedores**: `Card` con tres alturas (ficha, pliego, página), ornamentos de papel (hojas apiladas y envejecidas, margen de cuaderno y lacre) y, sobre papel, el título en una cinta de cera que cruza el borde superior.
 - **Compuestos de tarea**: TaskRow, TaskList, EmptyState y una demo final “El diario en marcha” que usa todo junto.
-- **La travesía**: `Questline` encadena hitos con tareas y plazo; el sendero se entinta al cerrar un hito y la línea sigue conectada cuando el raíl envuelve. Hitos y tareas se crean, editan y eliminan en el sitio.
+- **La travesía**: `Questline` encadena hitos con tareas y plazo; el sendero se entinta al completar un hito y la línea sigue conectada cuando el raíl envuelve. Hitos y tareas se crean, editan y eliminan en el sitio.
 
 Todo es interactivo: escribe, filtra, abre calendarios y ruedas, arrastra archivos, marca tareas, elimina, cambia de tema y alterna papel/panel.
 
