@@ -3,6 +3,7 @@ import {
   countQuestTasks,
   daysUntilDeadline,
   formatQuestNumber,
+  getBlockingNodes,
   getQuestDeadline,
   getQuestNodeStates,
   isQuestNodeComplete,
@@ -124,6 +125,32 @@ describe('getQuestNodeStates', () => {
 
     expect(getQuestNodeStates(nodes, new Date(2025, 0, 12, 23, 59))).toEqual(['active'])
     expect(getQuestNodeStates(nodes, new Date(2025, 0, 13, 0, 1))).toEqual(['overdue'])
+  })
+})
+
+describe('getBlockingNodes', () => {
+  it('returns every unfinished milestone behind the index, oldest first', () => {
+    const nodes = [
+      milestone('provisiones', 'Provisiones', { tasks: [pendingTask('odre')] }),
+      milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] }),
+      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+    ]
+
+    expect(getBlockingNodes(nodes, 2).map((node) => node.id)).toEqual([
+      'provisiones',
+      'pozo',
+    ])
+  })
+
+  it('skips finished milestones and stays empty for the first one', () => {
+    const nodes = [
+      milestone('provisiones', 'Provisiones', { tasks: [doneTask('odre')] }),
+      milestone('pozo', 'El pozo', { tasks: [pendingTask('farol')] }),
+      milestone('cima', 'La cima', { tasks: [pendingTask('bandera')] }),
+    ]
+
+    expect(getBlockingNodes(nodes, 2).map((node) => node.id)).toEqual(['pozo'])
+    expect(getBlockingNodes(nodes, 0)).toEqual([])
   })
 })
 
