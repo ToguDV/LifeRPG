@@ -29,7 +29,7 @@ Detalle de la pasada original y de los ratios medidos: `git log -p e2e/FINDINGS.
 
 - **Sin línea base.** No hay fichero de violaciones aceptadas: un hallazgo abierto deja el test rojo. Si aparece uno nuevo, se arregla o se documenta aquí mientras siga rojo.
 - **Sin exclusiones.** `e2e/a11y.spec.ts` no usa `disableRules`. Cuando una exclusión fue necesaria (el `DatePicker` conocido) se acompañó de una sonda que la mantenía honesta; hoy ya no existe.
-- **`incomplete` no es verde.** Cada pasada imprime y adjunta los nodos que axe no puede decidir. Las texturas dejan **300+ nodos `color-contrast`** sin resolver por pasada (gradientes, imágenes de fondo, pseudo-elementos). Los cuatro textos corregidos se midieron además a mano contra los tokens resueltos.
+- **`incomplete` es diagnóstico, no un hallazgo.** Cada pasada imprime y adjunta los nodos que axe no puede decidir: las texturas dejan cientos de nodos `color-contrast` sin resolver (gradientes, imágenes de fondo, pseudo-elementos). El propietario del proyecto los revisó a mano en los 8 temas y **los dio por válidos**; no se documentan como pendientes ni se proponen herramientas para medirlos. Los cuatro textos que sí se corrigieron se midieron contra los tokens resueltos.
 - **Estados abiertos en diferencial.** Panel, editor, confirmación, `Select`, `Combobox` y `DatePicker` se comparan con el estado anterior para que un hallazgo preexistente no oculte lo que añade el overlay. La matriz de 8 temas × 2 superficies del estado cerrado es estricta.
 - **Puerto 4317 con `reuseExistingServer`.** Dos worktrees que ejecuten `pnpm test:e2e` a la vez comparten servidor y uno audita el código del otro: cambia `PORT` o para el otro servidor antes de fiarte del resultado.
 

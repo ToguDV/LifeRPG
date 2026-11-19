@@ -509,7 +509,8 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - Todos los controles tienen un nombre accesible; los iconos decorativos son `aria-hidden`.
 - Los toasts tienen botón de cierre con etiqueta.
 - `prefers-reduced-motion` respetado.
-- Auditoría axe-core WCAG 2 A/AA + buenas prácticas sobre el estado inicial: **0 violaciones**.
+- Auditoría axe-core WCAG 2 A/AA + buenas prácticas automatizada con `pnpm test:e2e` sobre los 8 temas × 2 superficies y los estados abiertos, sin línea base: hoy **0 violaciones**. El arnés encontró y se corrigieron cinco hallazgos de contraste y de nombres accesibles.
+- **Contraste sobre texturas: cerrado.** axe deja en `incomplete` los nodos cuyo fondo es un degradado, una imagen o lleva pseudo-elementos encima (las texturas de papel y panel). El propietario del proyecto revisó esos nodos a mano en los 8 temas y los dio por válidos; no se cuentan como hallazgo abierto ni se vuelven a proponer herramientas para medirlos. El arnés los imprime como diagnóstico.
 - El foco inicial de los popovers se retrasa un frame para que el portal esté montado antes de mover el foco y no se cierre por “focus fuera”.
 - Los listboxes portaleados se nombran con el `<label>` del `Field` (`getFieldLabelId`), no con el trigger: un `combobox` no se nombra por contenido.
 - `required` se expone con `aria-required` donde el rol lo admite (`Select`, `Combobox`); en los triggers de `DatePicker`/`TimePicker` y en los grupos se anuncia como descripción «Campo obligatorio», porque `aria-required` no es válido en `role="button"` ni en `role="group"`. Los pickers no participan en la validación nativa (input oculto): el consumidor valida en el submit.
@@ -517,7 +518,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - `ProgressBar` exige nombre por tipos: `label` visible o `aria-label`; el porcentaje es texto de valor y no puede ser el nombre.
 - `TaskRow` replica prioridad y vencimiento en texto `visually-hidden`, enlazado con `aria-describedby`; el color deja de ser la única señal (WCAG 1.4.1).
 - Los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1); el viewport sigue siendo una única región `aria-live="polite"` para no duplicar anuncios.
-- `Questline` expone `aria-expanded` / `aria-controls` en cada hito, nombra el panel con su encabezado y devuelve el foco al disparador al cerrar. Cada hito lleva su número y su estado en texto `visually-hidden`; el cierre de un hito se anuncia en una región `status` («Se ha desbloqueado…»).
+- `Questline` expone `aria-expanded` / `aria-controls` en cada hito, nombra el panel con su encabezado, lo enfoca al abrirse y devuelve el foco al disparador al cerrar. Cada hito lleva su número y su estado en texto `visually-hidden`; las transiciones se anuncian por id en una región `status` («Hito «X» cumplido», «Se ha desbloqueado/«bloqueado «Y»»).
 - Los hitos bloqueados deshabilitan el checkbox (no el CRUD de preparación) y explican el motivo en una nota visible; el estado no depende del color: el marcador cambia de forma y la nota lleva candado.
 
 ---
@@ -527,7 +528,7 @@ La galería es la superficie de revisión del sistema; no se usa Storybook.
 - **Sin backend**: FileUploader y Toast son locales; no hay red.
 - **Sin router**: la galería es una sola página con anclas.
 - **Sin Storybook**: la página de galería cumple ese rol y es el entregable de revisión.
-- **Tests de interacción, no de layout**: Vitest + Testing Library cubren el comportamiento; jsdom no mide, así que el sendero de `Questline` y los anchos siguen siendo comprobación manual.
+- **Tests de interacción, no de layout**: Vitest + Testing Library cubren el comportamiento y `pnpm test:e2e` mide en Chromium el sendero, los anchos (320–1440 px), el teclado y axe; jsdom no mide nada de eso.
 - **Questline sin reordenación**: el orden de hitos y tareas es narrativo; no hay arrastrar y soltar.
 - **Papel y rendimiento**: la silueta rasgada es geometría compartida y la sombra es una `box-shadow`. No se vuelve a un filtro de turbulencia por hoja ni a un `drop-shadow` sobre el subárbol: medido en la galería, eso multiplicaba por más de dos el coste de raster y hacía perder fotogramas al hacer scroll. El grano sí sigue siendo un SVG `feTurbulence`, pero se rasteriza una vez como imagen de fondo, no por elemento.
 - **Breakpoints y arte**: los valores de media queries y la geometría de los SVG no están tokenizados porque CSS no permite variables en media queries y el arte es geometría, no diseño de sistema.

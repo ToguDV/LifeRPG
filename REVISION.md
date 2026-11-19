@@ -57,12 +57,12 @@ Cada hallazgo se reprodujo antes de arreglarlo: los tests nuevos se ejecutaron c
 | — | `DatePicker` conocido (§3 anterior): «01 de noviembre» frente a «1» visible | Nombre del día sin relleno y **sin exclusión** en axe |
 | — | `form-field-multiple-labels` en `TaskRow` (`incomplete`) | Una sola `<label>` nativa; nombre exacto «Marcar/Desmarcar «título»» conservado |
 
-### Límites que siguen siendo manuales
+### Decisiones cerradas
 
-- axe deja **300+ nodos `color-contrast` en `incomplete`** por pasada: las texturas de papel y panel (gradientes, imágenes de fondo, pseudo-elementos) impiden medir el fondo. El arnés los imprime y los adjunta; **no cuentan como verde**. El contraste de esos nodos se midió a mano contra los tokens resueltos en los 4 textos corregidos.
-- Sin lector de pantalla real ni Safari/Firefox: el arnés es Chromium.
-- La revisión visual de los 8 temas (jerarquía de muted, rojo de Nord, acento de panel) sigue siendo a ojo; los ratios están medidos.
-- El arnés **no tiene línea base**: un hallazgo abierto deja el test rojo y se documenta en `e2e/FINDINGS.md`; no se silencia con `disableRules`.
+- **Contraste sobre texturas: verificado a mano.** axe deja cientos de nodos `color-contrast` en `incomplete` porque las texturas de papel y panel (gradientes, imágenes de fondo, pseudo-elementos) impiden componer el fondo. El propietario del proyecto revisó esos nodos en los 8 temas y **los dio por válidos** (2026-11-18): no se reabre, no se reporta como pendiente y no se proponen herramientas nuevas para medirlo. El arnés los imprime y los adjunta como diagnóstico.
+- **Sin lector de pantalla real ni Safari/Firefox**: el arnés es Chromium. Es un límite aceptado del arnés, no un hallazgo.
+- **La revisión visual de los 8 temas** (jerarquía de muted, rojo de Nord, acento de panel) es del propietario; los ratios de los textos corregidos están medidos.
+- **El arnés no tiene línea base**: un hallazgo nuevo deja el test rojo y se documenta en `e2e/FINDINGS.md`; no se silencia con `disableRules`.
 
 ---
 

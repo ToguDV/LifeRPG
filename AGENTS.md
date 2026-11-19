@@ -82,7 +82,7 @@ pnpm test:e2e:report  # informe HTML de la última pasada
 | `e2e/overflow.spec.ts` | `scrollWidth` y rects de todos los visibles a 320, 375, 480, 768, 1024 y 1440 px, con la galería completa, el panel abierto y un título sin espacios. |
 | `e2e/keyboard.spec.ts` | Tab/Enter/Escape del panel de Questline, ThemePicker, Select, Combobox y humo del sendero. |
 | `e2e/support/*.ts` | Cambio de tema/superficie con la UI real, `auditPage` y utilidades del panel. |
-| `e2e/FINDINGS.md` | Registro de la primera pasada, reglas del arnés (sin línea base, sin exclusiones, `incomplete` no es verde) y límites. |
+| `e2e/FINDINGS.md` | Registro de la primera pasada, reglas del arnés (sin línea base, sin exclusiones) y límites. |
 
 ### Referencia estática
 
@@ -222,7 +222,7 @@ Antes de dar un cambio por terminado:
 - ¿El foco es visible y vuelve a un lugar lógico?
 - ¿Los nuevos estados tienen texto/aria además de color?
 - ¿Respeta `prefers-reduced-motion`?
-- ¿Sigue pasando `pnpm test:e2e`? axe corre WCAG 2 A/AA + best practices sobre los 8 temas × 2 superficies y los overlays abiertos, **sin línea base**: una violación nueva pone el test rojo. `incomplete` se imprime y se adjunta, pero **no cuenta como aprobado**. `pnpm lint` (jsx-a11y) sigue siendo el control rápido; los tests de `tests/` cubren nombre de listbox, `aria-controls`, `required`, nombres accesibles (Label in Name) y las descripciones de `TaskRow`.
+- ¿Sigue pasando `pnpm test:e2e`? axe corre WCAG 2 A/AA + best practices sobre los 8 temas × 2 superficies y los overlays abiertos, **sin línea base**: una violación nueva pone el test rojo. `pnpm lint` (jsx-a11y) sigue siendo el control rápido; los tests de `tests/` cubren nombre de listbox, `aria-controls`, `required`, nombres accesibles (Label in Name) y las descripciones de `TaskRow`.
 
 ### 3.6 Responsive
 
@@ -289,7 +289,7 @@ Antes de dar un cambio por terminado:
 - **Colores primary**: el texto del botón primario debe quedar sobre la banda oscura del gradiente; no aclares `--ui-primary-bg` sin comprobar contraste.
 - **Contraste muted**: el papel claro usa una mezcla más oscura que `--ink-3`; no vuelvas a `--ink-3` directo sin medir contraste.
 - **Puerto del arnés**: `playwright.config.ts` sirve Vite en `127.0.0.1:4317` con `reuseExistingServer: true`. Dos worktrees que ejecuten `pnpm test:e2e` a la vez comparten servidor y uno audita el código del otro: cambia `PORT` (o para el otro servidor) antes de fiarte de un resultado.
-- **axe `incomplete` no es verde**: las texturas dejan 300+ nodos de `color-contrast` sin resolver en cada pasada. El arnés los imprime y los adjunta; no los cuentes como aprobados.
+- **`incomplete` de contraste: cerrado, no lo reabras.** axe no puede componer el fondo de los nodos que viven sobre texturas de papel/panel (gradientes, imágenes y pseudo-elementos), así que los deja en `incomplete`. El propietario del proyecto **revisó esos nodos a mano en los 8 temas y los dio por válidos el 2026-11-18**. No los cuentes como pendientes, no los reportes en entregas y no propongas muestreo de píxeles ni herramientas nuevas para medirlos: la decisión está tomada. El arnés puede seguir imprimiéndolos como diagnóstico; eso no es un hallazgo abierto.
 - **Festival de 1 px**: los patrones `visually-hidden` y los bordes de arte usan 1 px; no los conviertas en “tokens de spacing” sin necesidad.
 - **Filtros SVG por hoja**: el borde rasgado es un `clip-path` compartido (`#ui-torn-clip`), no `feTurbulence`. Un filtro de turbulencia por tarjeta multiplica el raster y vuelve a pintarse al hacer scroll. La sombra del papel es `box-shadow`, no `drop-shadow` sobre el subárbol.
 - **Mezclas a pantalla completa**: `mix-blend-mode` en capas `fixed` y `backdrop-filter` en la topbar fuerzan a recomponer el documento en cada scroll. Evítalos.
@@ -312,7 +312,6 @@ pnpm test:e2e
 El arnés cubre temas, superficies, teclado, overflow y axe. Queda a mano y a ojo:
 
 - Jerarquía visual de los 8 temas y el toggle Papel / Panel (en especial los rojos de Nord/Gruvbox y la tinta muted del papel claro).
-- Los 300+ nodos que axe deja en `incomplete` por las texturas: contraste pintado sobre gradientes e imágenes de fondo.
 - Lector de pantalla real, Safari y Firefox: el arnés es solo Chromium.
 - Consola sin errores.
 
