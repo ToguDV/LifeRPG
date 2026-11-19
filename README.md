@@ -153,7 +153,7 @@ LifeRPG/
 ## Documentación de diseño
 
 - `DESIGN.md` — decisiones de diseño, modelo de tokens, temas, superficies, tipografía, accesibilidad y límites.
-- `AGENTS.md` — mapa de archivos principales, convenciones y recetas para trabajar en el proyecto.
+- `AGENTS.md` — guía operativa para agentes: comandos, reglas no obvias y trampas. Tiene presupuesto cerrado (`pnpm check:docs`).
 - `design/mockup.html` — referencia estática original.
 
 ## Créditos
