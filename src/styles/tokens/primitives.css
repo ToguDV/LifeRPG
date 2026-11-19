@@ -239,8 +239,7 @@
   --paper-sheet-offset-2: 1.1875rem; /* 19px · second sheet */
   --paper-sheet-tilt-1: 0.18deg;
   --paper-sheet-tilt-2: -0.22deg;
-  --paper-margin-width: 2.375rem; /* notebook gutter */
-  --paper-margin-line-offset: 0.75rem; /* rule stays near the paper edge */
+  --paper-frame-inset: 0.75rem; /* 12px · ruled frame inside the torn edge */
   --seal-size-sm: 2rem;
   --seal-size-md: 2.375rem;
   /* wax ribbon that carries a paper card title */

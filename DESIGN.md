@@ -217,7 +217,7 @@ Neither a component nor `index.html` is touched: the boot script is regenerated 
 | Prop | Layer | Tokens |
 | --- | --- | --- |
 | `stack="single\|double"` | Sheets under the card, offset 9 and 19 px; they are told apart by tone, with no border or rim. | `--paper-sheet-*`, `--ui-paper-sheet-back*` |
-| `margin="rule"` | 38 px notebook margin with a vertical accent line. | `--paper-margin-*` |
+| `margin="rule"` | 12 px ruled frame drawn inside the torn edge, on all four sides. | `--paper-frame-inset` |
 | `stains` | Water stains and a tide mark, only in the footer; the gradient itself fades them outside the text, with no mask. | `--ui-paper-stain*` |
 
 The sheets underneath are tinted with `--bronze` (paper kept in a drawer: somewhat darker and yellower) and share the torn silhouette of the main paper. The paint order is the physical one: the deepest sheet first, the one touching the card on top. **In no theme do they draw a rim**: there is no lit edge and no shadowed seam, and the stack reads only by depth of tone, each sheet darker than the one before. Of the rim only the border is visible, so it does not repeat the grain: that full tile per sheet was another expensive layer with no visible difference.
@@ -238,7 +238,7 @@ The band is raised by the padding inherited from `Surface` (`--surface-pad`) plu
 
 The tails are `aria-hidden` layers; the real `<h3>` lives inside the band and still names the card. The container creates no landmarks. On panel the ribbon is not painted: the title goes back to being a normal heading.
 
-Below 720 px the three collapse to the column width and the notebook margin is disabled so it does not eat the content.
+Below 720 px the three collapse to the column width; the ruled frame stays, because it costs no content width.
 
 The `Card` header is a `<div>`, not a `<header>`: a card reused directly in the `body` would turn its title row into a second `banner` landmark. The container emits no landmarks; the inner `<h3>` (in the ribbon or in the panel header) still names it.
 
@@ -354,7 +354,7 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
   - Paper: grain multiplied or screened depending on `data-paper`.
   - Panel: grain with `overlay` blend.
   - Torn edges: normalised silhouette `#ui-torn-clip` defined once in `TornSilhouette`. It is a `clipPath` with `clipPathUnits="objectBoundingBox"`, deterministic and shared by all sheets; it replaces the old `feTurbulence` filters, which were reevaluated per card on every paint.
-  - Physical paper: stacked and aged sheets, notebook margin, and edge stains, with geometry in `primitives.css` and colour in `themes.css`.
+  - Physical paper: stacked and aged sheets, the ruled frame, and edge stains, with geometry in `primitives.css` and colour in `themes.css`.
 - Icons are custom 24×24 paths with `currentColor`, 1.5 stroke, and rounded caps.
 
 ---

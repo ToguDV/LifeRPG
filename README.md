@@ -45,7 +45,7 @@ A single page with every piece, section navigation, a theme picker and a **Paper
 - **8 themes**: Parchment (default), Chalk, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
 - **Support primitives**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider and Toast.
-- **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, notebook margin and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
+- **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, a ruled frame inside the edge and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
 - **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together.
 - **The journey**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
 

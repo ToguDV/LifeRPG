@@ -5,7 +5,7 @@ import styles from './Surface.module.css'
 
 /** Sheets of paper peeking out under the card. */
 export type PaperStack = 'none' | 'single' | 'double'
-/** Notebook gutter with a ruled margin line. */
+/** Ruled frame drawn inside the torn paper edge. */
 export type PaperMargin = 'none' | 'rule'
 
 /**
@@ -66,7 +66,7 @@ export function Surface({
           styles[variant],
           styles[`pad-${padding}`],
           paper && stack !== 'none' && styles[`stack-${stack}`],
-          paper && margin === 'rule' && styles.marginRule,
+          paper && margin === 'rule' && styles.ruleFrame,
           tilt !== 'none' && styles[`tilt-${tilt}`],
           className,
         )}
