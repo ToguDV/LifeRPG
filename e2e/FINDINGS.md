@@ -1,49 +1,49 @@
-# Registro del arnés E2E
+# E2E harness log
 
-**Comando:** `pnpm test:e2e` · informe: `pnpm test:e2e:report`
-**Herramientas:** Playwright 1.64.1 (Chromium `chromium-1248`, ya cacheado en `~/.cache/ms-playwright`) y axe-core 4.14 vía `@axe-core/playwright`.
+**Command:** `pnpm test:e2e` · report: `pnpm test:e2e:report`
+**Tools:** Playwright 1.64.1 (Chromium `chromium-1248`, already cached in `~/.cache/ms-playwright`) and axe-core 4.14 via `@axe-core/playwright`.
 
-Estado actual: **36 tests en verde**. Este archivo conserva la primera pasada y las reglas del arnés; no es una lista de excepciones.
+Current state: **36 tests green**. This file keeps the first pass and the harness rules; it is not a list of exceptions.
 
 ---
 
-## Primera pasada (2026-11-18): 19 de 37 en verde
+## First pass (2026-11-18): 19 of 37 green
 
-Los 18 fallos eran cinco hallazgos reales, no ruido de infraestructura:
+The 18 failures were five real findings, not infrastructure noise:
 
-| # | Hallazgo | Estado |
+| # | Finding | Status |
 | --- | --- | --- |
-| A11Y-01 | `FileUploader`: `label-content-name-mismatch` en los 16 pares tema × superficie | Resuelto: el nombre accesible incluye la instrucción visible de la zona |
-| A11Y-02 | `color-contrast` del marcador de hito vencido: 2.74:1 Nord+Panel, 3.68 Pergamino, 3.81 Gruvbox (y 2.46–4.04 en papel, que axe dejaba en `incomplete`) | Resuelto: `--ui-danger-text` por superficie |
-| A11Y-03 | `color-contrast` del número del índice activo en Nord: 4.42:1 | Resuelto: acento fuerte de panel de Nord a 4.66:1 |
-| A11Y-04 | `color-contrast` del panel de Questline sobre papel Pergamino: 4.18 kicker, 4.20 nota/tally/etiquetas | Resuelto: `--ui-success-text` y `--ui-text-muted` de papel claro |
-| A11Y-05 | `color-contrast` del botón «Sí, eliminar el hito» en Pergamino+Panel: 4.02:1 | Resuelto: `--ui-danger-text` |
-| — | Hallazgo conocido del `DatePicker` (`REVISION.md` §3): celda visible «1», nombre «01 de noviembre de 2026» | Resuelto: nombre del día sin relleno. La exclusión `disableRules` se retiró y la sonda se eliminó |
-| — | `incomplete` `form-field-multiple-labels` en `TaskRow` (5 nodos) | Resuelto: una sola `<label>` nativa |
+| A11Y-01 | `FileUploader`: `label-content-name-mismatch` in all 16 theme × surface pairs | Fixed: the accessible name includes the visible instruction of the area |
+| A11Y-02 | `color-contrast` of the overdue milestone marker: 2.74:1 Nord+Panel, 3.68 Pergamino, 3.81 Gruvbox (and 2.46–4.04 on paper, which axe left in `incomplete`) | Fixed: `--ui-danger-text` per surface |
+| A11Y-03 | `color-contrast` of the active index number in Nord: 4.42:1 | Fixed: Nord's strong panel accent at 4.66:1 |
+| A11Y-04 | `color-contrast` of the Questline panel on Pergamino paper: 4.18 kicker, 4.20 note/tally/labels | Fixed: `--ui-success-text` and light-paper `--ui-text-muted` |
+| A11Y-05 | `color-contrast` of the «Sí, eliminar el hito» button in Pergamino+Panel: 4.02:1 | Fixed: `--ui-danger-text` |
+| — | Known `DatePicker` finding (`REVISION.md` §3): visible cell «1», name «01 de noviembre de 2026» | Fixed: day name without padding. The `disableRules` exclusion was removed and the probe deleted |
+| — | `incomplete` `form-field-multiple-labels` in `TaskRow` (5 nodes) | Fixed: a single native `<label>` |
 
-Detalle de la pasada original y de los ratios medidos: `git log -p e2e/FINDINGS.md`.
+Details of the original pass and of the measured ratios: `git log -p e2e/FINDINGS.md`.
 
 ---
 
-## Reglas del arnés
+## Harness rules
 
-- **Sin línea base.** No hay fichero de violaciones aceptadas: un hallazgo abierto deja el test rojo. Si aparece uno nuevo, se arregla o se documenta aquí mientras siga rojo.
-- **Sin exclusiones.** `e2e/a11y.spec.ts` no usa `disableRules`. Cuando una exclusión fue necesaria (el `DatePicker` conocido) se acompañó de una sonda que la mantenía honesta; hoy ya no existe.
-- **`incomplete` es diagnóstico, no un hallazgo.** Cada pasada imprime y adjunta los nodos que axe no puede decidir: las texturas dejan cientos de nodos `color-contrast` sin resolver (gradientes, imágenes de fondo, pseudo-elementos). El propietario del proyecto los revisó a mano en los 8 temas y **los dio por válidos**; no se documentan como pendientes ni se proponen herramientas para medirlos. Los cuatro textos que sí se corrigieron se midieron contra los tokens resueltos.
-- **Estados abiertos en diferencial.** Panel, editor, confirmación, `Select`, `Combobox` y `DatePicker` se comparan con el estado anterior para que un hallazgo preexistente no oculte lo que añade el overlay. La matriz de 8 temas × 2 superficies del estado cerrado es estricta.
-- **Puerto 4317 con `reuseExistingServer`.** Dos worktrees que ejecuten `pnpm test:e2e` a la vez comparten servidor y uno audita el código del otro: cambia `PORT` o para el otro servidor antes de fiarte del resultado.
+- **No baseline.** There is no file of accepted violations: an open finding leaves the test red. If a new one appears, it is fixed or documented here while it stays red.
+- **No exclusions.** `e2e/a11y.spec.ts` does not use `disableRules`. When an exclusion was necessary (the known `DatePicker`), it came with a probe that kept it honest; that probe no longer exists.
+- **`incomplete` is diagnostic, not a finding.** Every pass prints and attaches the nodes axe cannot decide: the textures leave hundreds of `color-contrast` nodes unresolved (gradients, background images, pseudo-elements). The project owner reviewed them by hand in the 8 themes and **accepted them as valid**; they are not documented as pending and no tools are proposed to measure them. The four texts that were actually fixed were measured against the resolved tokens.
+- **Open states differentially.** Panel, editor, confirmation, `Select`, `Combobox` and `DatePicker` are compared with the previous state so that a pre-existing finding does not hide what the overlay adds. The 8 themes × 2 surfaces matrix of the closed state is strict.
+- **Port 4317 with `reuseExistingServer`.** Two worktrees running `pnpm test:e2e` at once share a server and one audits the other's code: change `PORT` or stop the other server before trusting the result.
 
-## Límites
+## Limits
 
-- Solo Chromium: sin lector de pantalla real, Safari ni Firefox.
-- El teclado es un humo de los patrones clave (panel de Questline, `ThemePicker`, `Select`, `Combobox`), no una pasada exhaustiva de los 13 controles.
-- El medidor de overflow ignora elementos recortados por un ancestro con `overflow-x`; el `scrollWidth` del documento sigue detectando el desbordamiento real de la página.
+- Chromium only: no real screen reader, Safari or Firefox.
+- The keyboard pass is a smoke test of the key patterns (Questline panel, `ThemePicker`, `Select`, `Combobox`), not an exhaustive sweep of the 13 controls.
+- The overflow meter ignores elements clipped by an ancestor with `overflow-x`; the document `scrollWidth` still catches real page overflow.
 
-## Reproducir
+## Reproducing
 
 ```bash
 pnpm install
-pnpm exec playwright install chromium   # solo si falta chromium-1248
+pnpm exec playwright install chromium   # only if chromium-1248 is missing
 pnpm test:e2e
 pnpm test:e2e:report
 ```

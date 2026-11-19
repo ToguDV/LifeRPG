@@ -1,60 +1,60 @@
-# DESIGN.md — Decisiones de diseño
+# DESIGN.md — Design decisions
 
-> Documento de referencia de **LifeRPG UI — Códice de Componentes**.
-> Explica qué se decidió, por qué, y dónde vive cada decisión en el código.
-> Si cambias una regla visual o de interacción, actualiza este archivo.
-
----
-
-## 1. Concepto
-
-La interfaz es el cuaderno de invierno de una viajera: un diario de tareas que también es un objeto. El punto de partida es el mockup estático **El Largo Invierno — Diario de la Marca Hueca** (`design/mockup.html`).
-
-La versión React no intenta ser un “tema oscuro genérico”. Intenta conservar tres cosas del mockup:
-
-1. **Materia**: papel gastado, grano, bordes rasgados, paneles de piedra, cera y tinta.
-2. **Jerarquía**: lo importante se lee primero; la decoración no compite con el contenido.
-3. **Flexibilidad**: ocho tintas y dos superficies sin duplicar componentes.
-
-La estética se apoya en la tipografía, la textura y el color. **No se usan imágenes de pergamino ni iconos externos**: las texturas son SVG generados y los iconos son un set propio de paths.
+> Reference document for **LifeRPG UI — Component Codex**.
+> It explains what was decided, why, and where each decision lives in the code.
+> If you change a visual or interaction rule, update this file.
 
 ---
 
-## 2. Principios
+## 1. Concept
 
-### 2.1 La estructura no cambia con el tema
+The interface is the winter notebook of a traveller: a task journal that is also an object. The starting point is the static mockup **El Largo Invierno — Diario de la Marca Hueca** (`design/mockup.html`).
 
-Un tema solo cambia la tinta: colores, contraste, textura del papel y acentos. La geometría, la jerarquía, los tamaños y el comportamiento de los controles son idénticos en las ocho paletas.
+The React version does not try to be a “generic dark theme”. It tries to preserve three things from the mockup:
 
-Esto permite:
+1. **Matter**: worn paper, grain, torn edges, stone panels, wax and ink.
+2. **Hierarchy**: what matters is read first; decoration does not compete with the content.
+3. **Flexibility**: eight inks and two surfaces without duplicating components.
 
-- Probar un componente una vez y confiar en que se verá en todos los temas.
-- Añadir una paleta sin tocar componentes.
-- Cambiar de tema sin que la página “salte”.
-
-### 2.2 Dos materiales, un mismo control
-
-Un control puede vivir sobre **papel** o sobre **panel**. No son dos componentes distintos: son dos contextos de tokens. El mismo `Button`, `Checkbox` o `TextInput` se re-colorea solo.
-
-### 2.3 Material antes que ornamento
-
-Las texturas y los bordes rasgados se usan para construir la sensación de papel, no para llenar espacio. Los filtros SVG pesados se limitan a la capa de fondo de las tarjetas; el contenido no se filtra.
-
-### 2.4 La anotación a mano es estado, no decoración
-
-La tipografía `Caveat` se reserva para notas, pistas, subtítulos y valores secundarios. Sirve para contar el estado (“2 de 3 provisiones”, “Has sellado el diario 2 veces”) sin competir con el texto principal.
-
-La información crítica no depende solo del texto manuscrito: siempre hay una etiqueta, un valor o un estado ARIA que la respalda.
-
-### 2.5 Accesibilidad dentro del material
-
-Los estados de foco, error, deshabilitado y selección forman parte del sistema visual, no son una capa añadida al final. El contraste se ajustó por tema y la navegación por teclado es parte de la definición de cada control.
+The aesthetic rests on typography, texture and colour. **No parchment images or external icons are used**: the textures are generated SVGs and the icons are a bespoke set of paths.
 
 ---
 
-## 3. Modelo de tokens
+## 2. Principles
 
-Los tokens se organizan en cuatro capas. La regla es simple: **un componente nunca lee una paleta cruda**.
+### 2.1 Structure does not change with the theme
+
+A theme only changes the ink: colours, contrast, paper texture and accents. Geometry, hierarchy, sizes and control behaviour are identical across the eight palettes.
+
+This allows:
+
+- Testing a component once and trusting that it will look right in every theme.
+- Adding a palette without touching components.
+- Switching themes without the page “jumping”.
+
+### 2.2 Two materials, one control
+
+A control can live on **paper** or on **panel**. They are not two different components: they are two token contexts. The same `Button`, `Checkbox` or `TextInput` recolors itself.
+
+### 2.3 Material before ornament
+
+Textures and torn edges are used to build the feel of paper, not to fill space. Heavy SVG filters are limited to the background layer of the cards; the content is not filtered.
+
+### 2.4 Handwritten annotation is state, not decoration
+
+The `Caveat` typeface is reserved for notes, hints, subheadings and secondary values. It serves to narrate state (“2 de 3 provisiones”, “Has sellado el diario 2 veces”) without competing with the main text.
+
+Critical information does not rest on handwritten text alone: there is always a label, a value or an ARIA state backing it.
+
+### 2.5 Accessibility inside the material
+
+Focus, error, disabled and selection states are part of the visual system, not a layer added at the end. Contrast was tuned per theme and keyboard navigation is part of each control's definition.
+
+---
+
+## 3. Token model
+
+Tokens are organised into four layers. The rule is simple: **a component never reads a raw palette**.
 
 ```
 Capa 1 · paleta del tema         --stone-0, --bone, --parch, --ink, --ribbon-2, --vital-1…
@@ -63,29 +63,29 @@ Capa 3 · bindings de contexto    --ui-text, --ui-surface, --ui-accent, --ui-fie
 Capa 4 · primitivas invariantes  --space-*, --text-*, --font-*, --control-*, --radius-*, --duration-*
 ```
 
-### 3.1 Paleta cruda
+### 3.1 Raw palette
 
-Vive en `src/styles/tokens/themes.css`. Cada tema define, como mínimo:
+It lives in `src/styles/tokens/themes.css`. Each theme defines, at minimum:
 
-- `--stone-0…3`: fondo de escritorio / paneles.
-- `--bone`, `--bone-dim`, `--bone-faint`: tinta sobre panel.
-- `--parch`, `--ink`, `--ink-2`, `--ink-3`: papel y tinta sobre papel.
-- `--panel-1…3`, `--well`, `--paper-raised`: superficies.
-- `--ribbon-1…3`: cera / botón primario.
-- `--vital-1…3`: salud, resistencia, saciedad y estados.
-- `--ribbon-*`, `--map-*`, `--xp-*`, `--pin-*`: acentos específicos del mundo.
-- `--accent-panel`, `--accent-paper`, `--danger-*`, `--success-*`, `--warning-*`: decisiones semánticas del tema, incluida la variante `-text` de cada estado.
+- `--stone-0…3`: desktop / panel background.
+- `--bone`, `--bone-dim`, `--bone-faint`: ink on panel.
+- `--parch`, `--ink`, `--ink-2`, `--ink-3`: paper and ink on paper.
+- `--panel-1…3`, `--well`, `--paper-raised`: surfaces.
+- `--ribbon-1…3`: wax / primary button.
+- `--vital-1…3`: health, stamina, satiety and states.
+- `--ribbon-*`, `--map-*`, `--xp-*`, `--pin-*`: world-specific accents.
+- `--accent-panel`, `--accent-paper`, `--danger-*`, `--success-*`, `--warning-*`: the theme's semantic decisions, including the `-text` variant of each state.
 
-La variante `-text` es la única que puede usarse como `color`; el token base queda para bordes y rellenos y `-soft` para fondos.
+The `-text` variant is the only one that may be used as `color`; the base token is left for borders and fills and `-soft` for backgrounds.
 
-### 3.2 Semántica de superficie
+### 3.2 Surface semantics
 
-En el mismo archivo se definen dos juegos:
+Two sets are defined in the same file:
 
-- `--ui-panel-*`: texto, bordes, campos, acentos, estados y selección para paneles.
-- `--ui-paper-*`: los mismos roles para papel.
+- `--ui-panel-*`: text, borders, fields, accents, states and selection for panels.
+- `--ui-paper-*`: the same roles for paper.
 
-Después se mapean a los tokens de contexto:
+They are then mapped to the context tokens:
 
 ```css
 [data-surface="paper"] {
@@ -96,462 +96,462 @@ Después se mapean a los tokens de contexto:
 }
 ```
 
-`data-surface="panel"` hace lo propio con los tokens de panel. El valor por defecto de la página es panel.
+`data-surface="panel"` does the same with the panel tokens. The page default is panel.
 
-### 3.3 Tokens que usan los componentes
+### 3.3 Tokens the components use
 
-Los componentes consumen, entre otros:
+Components consume, among others:
 
-| Grupo | Tokens |
+| Group | Tokens |
 | --- | --- |
-| Texto | `--ui-text`, `--ui-text-soft`, `--ui-text-muted`, `--ui-placeholder` |
-| Superficie | `--ui-surface`, `--ui-surface-raised`, `--ui-surface-sunken`, `--ui-surface-overlay` |
-| Bordes | `--ui-border`, `--ui-border-strong`, `--ui-divider`, `--ui-divider-soft` |
-| Campos | `--ui-field-bg`, `--ui-field-bg-hover`, `--ui-focus` |
-| Acción | `--ui-accent`, `--ui-accent-strong`, `--ui-accent-soft`, `--ui-accent-contrast` |
-| Botón principal | `--ui-primary-bg`, `--ui-primary-bg-hi`, `--ui-primary-bg-lo`, `--ui-primary-text`, `--ui-primary-edge` |
-| Estados | `--ui-danger`, `--ui-success`, `--ui-warning` (+ `-soft`, `-text`) |
-| Sombras | `--shadow-sm/md/lg/xl`, `--shadow-inset`, `--shadow-wax` |
-| Foco | `--ui-focus`, `--focus-ring-width`, `--focus-ring-offset`, `--focus-ring-style` |
+| Text | `--ui-text`, `--ui-text-soft`, `--ui-text-muted`, `--ui-placeholder` |
+| Surface | `--ui-surface`, `--ui-surface-raised`, `--ui-surface-sunken`, `--ui-surface-overlay` |
+| Borders | `--ui-border`, `--ui-border-strong`, `--ui-divider`, `--ui-divider-soft` |
+| Fields | `--ui-field-bg`, `--ui-field-bg-hover`, `--ui-focus` |
+| Action | `--ui-accent`, `--ui-accent-strong`, `--ui-accent-soft`, `--ui-accent-contrast` |
+| Primary button | `--ui-primary-bg`, `--ui-primary-bg-hi`, `--ui-primary-bg-lo`, `--ui-primary-text`, `--ui-primary-edge` |
+| States | `--ui-danger`, `--ui-success`, `--ui-warning` (+ `-soft`, `-text`) |
+| Shadows | `--shadow-sm/md/lg/xl`, `--shadow-inset`, `--shadow-wax` |
+| Focus | `--ui-focus`, `--focus-ring-width`, `--focus-ring-offset`, `--focus-ring-style` |
 
-### 3.4 Primitivas invariantes
+### 3.4 Invariant primitives
 
-Viven en `src/styles/tokens/primitives.css`:
+They live in `src/styles/tokens/primitives.css`:
 
-- Espaciado: ritmo de 4 px (`--space-1`…`--space-24`) con micro-tokens de 1 y 2 px.
-- Tipografía: familias, escala, interlineados, tracking, pesos.
-- Geometría de controles: alturas 30/38/44 px, paddings, iconos, checkbox, radio, switch, slider, rueda, calendario, dropzone.
-- Formas: radios de 1 a 4 px, círculos y píldoras.
-- Sombras: derivadas de `--ui-shadow-color`, por lo que cambian con la superficie.
-- Movimiento, capas (`--z-*`), texturas y geometría de la textura.
-- Layout global: ancho de página, gutter, sidebar, medida de lectura, gaps de sección.
+- Spacing: 4 px rhythm (`--space-1`…`--space-24`) with 1 and 2 px micro-tokens.
+- Typography: families, scale, line heights, tracking, weights.
+- Control geometry: 30/38/44 px heights, paddings, icons, checkbox, radio, switch, slider, wheel, calendar, dropzone.
+- Shapes: radii from 1 to 4 px, circles and pills.
+- Shadows: derived from `--ui-shadow-color`, so they change with the surface.
+- Motion, layers (`--z-*`), textures and texture geometry.
+- Global layout: page width, gutter, sidebar, reading measure, section gaps.
 
-### 3.5 Reglas y excepciones
+### 3.5 Rules and exceptions
 
-- **Regla**: en `src/components/**/*.module.css` no se escriben colores crudos, ni tamaños de tipografía, ni espaciados principales. Se usan tokens.
-- **Excepción intencional**: `ProgressBar variant="xp"` usa `--xp-1` y `--xp-2` directamente, porque la experiencia es un color del mundo, no un color de superficie.
-- **Excepción documentada**: `src/theme/themes.ts` repite cuatro hexadecimales por tema en `swatches` para el selector de temas. El selector muestra paletas que **no** están aplicadas, así que no puede leer las custom properties en runtime; la copia es el contrato. Las muestras son, en orden, `--stone-0` (escritorio; `--panel-1` en Pergamino), `--parch`, `--ink` y el acento titular del tema (`--crimson`, `--chalk-rouge`, `--bronze` o `--bronze-soft`), y cada entrada nombra sus tokens en el código. Retocar una paleta obliga a tocar los dos archivos en el mismo cambio.
-- **Excepción práctica**: los breakpoints de `@media`, la geometría de los SVG decorativos, el patrón `visually-hidden` de 1 px y algunos detalles de arte no pueden o no deben tokenizarse. Están documentados en los módulos correspondientes.
-- El texto de la interfaz está en español; los nombres de API y props están en inglés.
+- **Rule**: in `src/components/**/*.module.css` no raw colours, type sizes or main spacings are written. Tokens are used.
+- **Intentional exception**: `ProgressBar variant="xp"` uses `--xp-1` and `--xp-2` directly, because experience is a world colour, not a surface colour.
+- **Documented exception**: `src/theme/themes.ts` repeats four hex values per theme in `swatches` for the theme selector. The selector shows palettes that are **not** applied, so it cannot read the custom properties at runtime; the copy is the contract. The swatches are, in order, `--stone-0` (desktop; `--panel-1` in Pergamino), `--parch`, `--ink` and the theme's title accent (`--crimson`, `--chalk-rouge`, `--bronze` or `--bronze-soft`), and each entry names its tokens in the code. Retouching a palette means touching both files in the same change.
+- **Practical exception**: `@media` breakpoints, the geometry of the decorative SVGs, the 1 px `visually-hidden` pattern and some art details cannot be or should not be tokenised. They are documented in the corresponding modules.
+- UI copy is in Spanish; API and prop names are in English.
 
 ---
 
-## 4. Temas
+## 4. Themes
 
-### 4.1 Los ocho temas
+### 4.1 The eight themes
 
-| Clave | Nombre | Papel | Intención |
+| Key | Name | Paper | Intent |
 | --- | --- | --- | --- |
-| `pergamino` | Pergamino | Claro | El tema canónico: papel claro sobre escritorio oscuro. |
-| `chalk` | Tiza | Oscuro | Cartulina negra, tiza y arcilla. |
-| `catppuccin` | Catppuccin | Oscuro | Mocha, malva y rosa. |
-| `dracula` | Dracula | Oscuro | Noche púrpura. |
-| `nord` | Nord | Oscuro | Frío polar, azul y cian. |
-| `gruvbox` | Gruvbox | Oscuro | Cuero, ámbar y óxido. |
-| `rosepine` | Rosé Pine | Oscuro | Rosa marchita y malva. |
-| `tokyonight` | Tokyo Night | Oscuro | Neón velado. |
+| `pergamino` | Pergamino | Light | The canonical theme: light paper on a dark desktop. |
+| `chalk` | Tiza | Dark | Black card stock, chalk and clay. |
+| `catppuccin` | Catppuccin | Dark | Mocha, mauve and rose. |
+| `dracula` | Dracula | Dark | Purple night. |
+| `nord` | Nord | Dark | Polar cold, blue and cyan. |
+| `gruvbox` | Gruvbox | Dark | Leather, amber and rust. |
+| `rosepine` | Rosé Pine | Dark | Faded rose and mauve. |
+| `tokyonight` | Tokyo Night | Dark | Veiled neon. |
 
-La diferencia entre Pergamino y el resto no es “claro vs. oscuro” sin más: Pergamino tiene **papel claro real** sobre un escritorio oscuro; los demás tienen **cartulina oscura**, con la misma geometría y la misma sensación de material.
+The difference between Pergamino and the rest is not simply “light vs. dark”: Pergamino has **real light paper** over a dark desktop; the rest have **dark card stock**, with the same geometry and the same material feel.
 
-### 4.2 Selección y persistencia
+### 4.2 Selection and persistence
 
 - `<html data-theme="…" data-paper="light|dark">`.
-- `ThemeProvider` escribe ambos atributos y guarda la clave en `localStorage` (`liferpg-ui-theme`).
-- El script inline de `index.html` aplica el tema antes del primer pintado para evitar un flash de Pergamino. `src/theme/themes.ts` es la única lista de temas: el plugin `liferpg-theme-manifest` de `vite.config.ts` serializa las claves y su `paper` dentro del script en `serve` y en `build`. No hay una segunda lista escrita a mano.
-- `color-scheme` se deriva de `data-paper` en `base.css`, no de la paleta: `html[data-paper="light"]` da esquema claro y el resto, oscuro. Así el caret, el autofill y los controles nativos siguen el papel desde el primer pintado. En Pergamino el cambio se nota sobre todo en el caret y el fondo del autofill: la barra de scroll conserva su `scrollbar-color` temático, así que no se aclara sobre el escritorio oscuro (solo un navegador que ignore esa propiedad dibujaría un carril claro).
-- `data-paper` permite ajustar la textura del papel sin duplicar selectores por tema:
-  - `light`: gradientes claros, grano con `multiply`.
-  - `dark`: grano tenue con `screen`, sombras más profundas.
-- Al cambiar de tema se añade `html.theme-switching` durante dos frames para que la paleta cambie como tinta, no como una animación de todas las propiedades.
+- `ThemeProvider` writes both attributes and stores the key in `localStorage` (`liferpg-ui-theme`).
+- The inline script in `index.html` applies the theme before the first paint to avoid a flash of Pergamino. `src/theme/themes.ts` is the only list of themes: the `liferpg-theme-manifest` plugin in `vite.config.ts` serializes the keys and their `paper` inside the script in `serve` and in `build`. There is no second hand-written list.
+- `color-scheme` is derived from `data-paper` in `base.css`, not from the palette: `html[data-paper="light"]` gives a light scheme and the rest, dark. This way the caret, autofill and native controls follow the paper from the first paint. In Pergamino the change is most noticeable in the caret and the autofill background: the scrollbar keeps its themed `scrollbar-color`, so it does not lighten over the dark desktop (only a browser that ignores that property would draw a light track).
+- `data-paper` allows the paper texture to be tuned without duplicating selectors per theme:
+  - `light`: light gradients, grain with `multiply`.
+  - `dark`: faint grain with `screen`, deeper shadows.
+- When the theme changes, `html.theme-switching` is added for two frames so the palette changes like ink, not like an animation of every property.
 
-### 4.3 Acento de papel vs. acento de panel
+### 4.3 Paper accent vs. panel accent
 
-Es una decisión deliberada:
+It is a deliberate decision:
 
-- **Papel** usa un acento cálido de “tinta”: `--chalk-rouge` en los temas oscuros, `--crimson` en Pergamino. Así los controles parecen estampados en la hoja.
-- **Panel** usa el acento metálico del tema: malva, cian, oro, azul, etc. Así los controles parecen herrajes sobre piedra.
+- **Paper** uses a warm “ink” accent: `--chalk-rouge` in the dark themes, `--crimson` in Pergamino. This makes controls look stamped onto the sheet.
+- **Panel** uses the theme's metallic accent: mauve, cyan, gold, blue, etc. This makes controls look like hardware on stone.
 
-El resultado es que el mismo control cambia de temperatura al alternar Papel / Panel. Es parte de la narrativa de materiales, no una inconsistencia.
+The result is that the same control changes temperature when switching Paper / Panel. It is part of the material narrative, not an inconsistency.
 
-### 4.4 Contraste
+### 4.4 Contrast
 
-Decisiones concretas para mantener legibilidad sin perder la estética:
+Concrete decisions to keep legibility without losing the aesthetic:
 
-- El texto “muted” del papel claro se mezcla 30/70 entre `--ink-3` e `--ink-2`; con 50/50 se quedaba en 4.22:1 sobre el pozo del panel de Questline.
-- El texto “muted” del papel oscuro se mezcla 88/12 entre `--ink-3` e `--ink-2`: Rose Pine caía a 4.29:1 sobre su hoja hundida.
-- El texto “muted” del panel se mezcla 70/30 entre `--bone-faint` y `--bone-dim`; mantiene la jerarquía y gana contraste.
-- Los acentos de estado tienen dos roles por superficie. `--ui-danger`, `--ui-success` y `--ui-warning` siguen siendo borde, relleno y punto del badge; `--ui-danger-text`, `--ui-success-text` y `--ui-warning-text` son los únicos que se usan como texto. La variante se declara por tema y superficie (`--danger-panel-text`, `--danger-paper-text`, …) y se mezcla hacia la tinta de la superficie solo cuando el acento base no llega a 4.5:1: el marcador vencido de Nord pasa de 2.74:1 a 4.86:1 sobre `--panel-1`; el botón de peligro de Pergamino, de 4.02:1 a 5.59:1 sobre su tinte; el kicker cumplido de Pergamino, de 4.18:1 a 5.51:1. En papel claro, la mezcla final de éxito y aviso baja a 65/35 y 55/45 para cubrir también el tinte del badge y la hoja hundida.
-- El acento fuerte de panel de Nord se mezcla 92/8 con `--bone`: el número del índice activo estaba en 4.42:1 sobre `--ui-accent-soft` y pasa a 4.66:1. No se bajó el tamaño de 11 px.
-- El botón primario no usa el color de cinta sin más: `--ui-primary-bg` mezcla un 72 % de `--ribbon-2` con un 28 % de `--stone-0`.
-- El gradiente primario concentra el brillo en el 24 % superior; el centro y el texto descansan sobre el color oscuro. Esto permite blanco sobre cera en todos los temas, incluidos Catppuccin, Rosé Pine y Tokyo Night.
-- Los estados de error usan `--danger-paper` / `--danger-panel` para borde y relleno, y su variante `-text` para el mensaje; no se reutiliza el rojo de salud sin contexto.
-- El foco es un borde discontinuo de 1 px con offset de 3 px. En controles compactos se usa el offset ajustado de 1 px.
+- The light paper's “muted” text is mixed 30/70 between `--ink-3` and `--ink-2`; at 50/50 it stayed at 4.22:1 over the Questline panel well.
+- The dark paper's “muted” text is mixed 88/12 between `--ink-3` and `--ink-2`: Rose Pine fell to 4.29:1 over its sunken sheet.
+- The panel's “muted” text is mixed 70/30 between `--bone-faint` and `--bone-dim`; it keeps the hierarchy and gains contrast.
+- State accents have two roles per surface. `--ui-danger`, `--ui-success` and `--ui-warning` remain the badge's border, fill and dot; `--ui-danger-text`, `--ui-success-text` and `--ui-warning-text` are the only ones used as text. The variant is declared per theme and surface (`--danger-panel-text`, `--danger-paper-text`, …) and is mixed toward the surface ink only when the base accent does not reach 4.5:1: Nord's overdue marker goes from 2.74:1 to 4.86:1 over `--panel-1`; Pergamino's danger button, from 4.02:1 to 5.59:1 over its tint; Pergamino's completed kicker, from 4.18:1 to 5.51:1. On light paper, the final success and warning mix drops to 65/35 and 55/45 to cover the badge tint and the sunken sheet as well.
+- Nord's strong panel accent is mixed 92/8 with `--bone`: the active index number was at 4.42:1 over `--ui-accent-soft` and goes to 4.66:1. The 11 px size was not lowered.
+- The primary button does not simply use the ribbon colour: `--ui-primary-bg` mixes 72 % of `--ribbon-2` with 28 % of `--stone-0`.
+- The primary gradient concentrates the brightness in the top 24 %; the centre and the text rest on the dark colour. This allows white on wax in all themes, including Catppuccin, Rosé Pine and Tokyo Night.
+- Error states use `--danger-paper` / `--danger-panel` for border and fill, and their `-text` variant for the message; the health red is not reused without context.
+- Focus is a 1 px dashed border with a 3 px offset. In compact controls the adjusted 1 px offset is used.
 
-### 4.5 Añadir un tema
+### 4.5 Adding a theme
 
-1. Añadir la entrada en `src/theme/themes.ts` con clave, etiqueta, meta, `paper` y las cuatro muestras.
-2. Añadir la paleta y los acentos semánticos en `src/styles/tokens/themes.css`.
+1. Add the entry in `src/theme/themes.ts` with key, label, meta, `paper`, and the four swatches.
+2. Add the palette and the semantic accents in `src/styles/tokens/themes.css`.
 
-No se toca ningún componente ni `index.html`: el script de arranque se regenera desde `THEMES`. Si el tema necesita un papel claro, `paper: 'light'`; si no, `paper: 'dark'`.
+Neither a component nor `index.html` is touched: the boot script is regenerated from `THEMES`. If the theme needs light paper, `paper: 'light'`; if not, `paper: 'dark'`.
 
 ---
 
-## 5. Superficies
+## 5. Surfaces
 
-### 5.1 Papel
+### 5.1 Paper
 
-- Color base `--parch`, gradientes de luz y sombra, grano SVG.
-- Borde irregular mediante la silueta fija `#ui-torn-clip` (un `clipPath` en `objectBoundingBox`) sobre la capa de textura, nunca sobre el contenido.
-- Sombra exterior **siempre oscura**: `box-shadow` con `--ui-paper-drop` (tinta cálida sobre papel claro, negro sobre cartulina oscura), no un `drop-shadow` que rasterice la tarjeta entera.
-- Sombra interior de viñeta, sin brillos perimetrales.
-- La luz, la sombra y el grano se apilan en **una sola** capa de textura: los degradados de borde viven en el mismo `background-image`, no en un pseudo-elemento extra.
-- `tilt` opcional muy leve (`±0.22deg`) para que las hojas no parezcan tarjetas perfectas.
-- La capa de textura queda por debajo del contenido (`z-index`) y el `Surface` aísla el stacking context.
+- Base colour `--parch`, light and shadow gradients, SVG grain.
+- Irregular edge via the fixed silhouette `#ui-torn-clip` (a `clipPath` in `objectBoundingBox`) on the texture layer, never on the content.
+- Outer shadow **always dark**: `box-shadow` with `--ui-paper-drop` (warm ink on light paper, black on dark card stock), not a `drop-shadow` that rasterises the whole card.
+- Inset vignette shadow, with no perimeter glows.
+- Light, shadow, and grain stack in **a single** texture layer: the edge gradients live in the same `background-image`, not in an extra pseudo-element.
+- Optional, very slight `tilt` (`±0.22deg`) so the sheets do not look like perfect cards.
+- The texture layer sits below the content (`z-index`) and `Surface` isolates the stacking context.
 
-**Sin halo.** La cartulina oscura no proyecta luz: sobre `data-paper="dark"` no hay filo interior luminoso, ni velo superior, ni sombra clara. El borde se define con una viñeta oscura y una sombra negra, y la única luz es la del propio papel. Las siete paletas oscuras comparten ese comportamiento; Pergamino conserva su sombra cálida porque su tinta es oscura.
+**No halo.** Dark card stock does not project light: on `data-paper="dark"` there is no luminous inner edge, no top veil, no light shadow. The edge is defined by a dark vignette and a black shadow, and the only light is that of the paper itself. The seven dark palettes share that behaviour; Pergamino keeps its warm shadow because its ink is dark.
 
-**Coste de pintura.** El papel es la parte más cara de la interfaz y por eso se pinta con capas baratas: un `clip-path` de geometría compartido en vez de un `feDisplacementMap` por hoja, una `box-shadow` en vez de un `drop-shadow` sobre el subárbol, y sin `mix-blend-mode` a pantalla completa. Las máscaras (`mask-image`) solo se usan cuando la geometría no puede sustituirlas. Cualquier capa nueva debe medirse con el rendimiento en mente: la concatenación de filtros por tarjeta fue la causa de que la galería tardara segundos en pintar.
+**Paint cost.** Paper is the most expensive part of the interface, which is why it is painted with cheap layers: a shared geometry `clip-path` instead of a per-sheet `feDisplacementMap`, a `box-shadow` instead of a `drop-shadow` on the subtree, and no full-screen `mix-blend-mode`. Masks (`mask-image`) are used only when geometry cannot replace them. Any new layer must be measured with performance in mind: concatenating filters per card was the reason the gallery took seconds to paint.
 
-**Ornamentos.** `Surface` acepta capas físicas opcionales. Todas son decorativas (`aria-hidden`), se pintan bajo el contenido y se apagan con una prop; sólo existen sobre papel.
+**Ornaments.** `Surface` accepts optional physical layers. All of them are decorative (`aria-hidden`), they are painted under the content, and they are turned off with a prop; they exist only on paper.
 
-| Prop | Capa | Tokens |
+| Prop | Layer | Tokens |
 | --- | --- | --- |
-| `stack="single\|double"` | Hojas bajo la tarjeta, desplazadas 9 y 19 px; se distinguen por tono, sin borde ni canto. | `--paper-sheet-*`, `--ui-paper-sheet-back*` |
-| `margin="rule"` | Margen de cuaderno de 38 px con línea vertical de acento. | `--paper-margin-*` |
-| `stains` | Manchas de agua y una marca de marea, sólo en el pie; el propio degradado las apaga fuera del texto, sin máscara. | `--ui-paper-stain*` |
+| `stack="single\|double"` | Sheets under the card, offset 9 and 19 px; they are told apart by tone, with no border or rim. | `--paper-sheet-*`, `--ui-paper-sheet-back*` |
+| `margin="rule"` | 38 px notebook margin with a vertical accent line. | `--paper-margin-*` |
+| `stains` | Water stains and a tide mark, only in the footer; the gradient itself fades them outside the text, with no mask. | `--ui-paper-stain*` |
 
-Las hojas de debajo se tiñen con `--bronze` (papel guardado en un cajón: algo más oscuro y amarillo) y comparten la silueta rasgada del papel principal. El orden de pintado es el físico: la hoja más profunda primero, la que toca la tarjeta encima. **En ningún tema dibujan borde**: no hay canto iluminado ni costura en sombra, y la pila se lee solo por profundidad de tono, cada hoja más oscura que la anterior. Del canto solo se ve el borde, así que no repite el grano: ese tile completo por hoja era otra capa cara sin diferencia visible.
+The sheets underneath are tinted with `--bronze` (paper kept in a drawer: somewhat darker and yellower) and share the torn silhouette of the main paper. The paint order is the physical one: the deepest sheet first, the one touching the card on top. **In no theme do they draw a rim**: there is no lit edge and no shadowed seam, and the stack reads only by depth of tone, each sheet darker than the one before. Of the rim only the border is visible, so it does not repeat the grain: that full tile per sheet was another expensive layer with no visible difference.
 
-Por debajo de 640 px el desplazamiento de la pila baja a 4 y 9 px. El margen de página en móvil es de 16 px y una hoja que asomaba 19 px ensanchaba el documento, no solo la tarjeta; con el desplazamiento reducido la decoración cabe en el margen y la pila sigue leyéndose por tono. Es geometría de arte, así que vive con el resto de los tokens de ornamento (`primitives.css`).
+Below 640 px the stack offset drops to 4 and 9 px. The page margin on mobile is 16 px, and a sheet peeking out 19 px widened the document, not just the card; with the reduced offset the decoration fits within the margin and the stack still reads by tone. It is art geometry, so it lives with the rest of the ornament tokens (`primitives.css`).
 
-El lacre vive aparte: `WaxSeal` estampa el folio en cera con los tokens de la acción principal y anuncia «Folio N» con `role="img"`. La cera se dibuja como SVG con tres trazados —la cera que rebosa, el cuerpo irregular y el anillo de la matriz—, de modo que la silueta nunca es un círculo; la sombra sigue esa silueta con `drop-shadow` sobre el contenedor.
+The wax seal lives apart: `WaxSeal` stamps the folio in wax with the primary action tokens and announces «Folio N» with `role="img"`. The wax is drawn as SVG with three paths —the wax that overflows, the irregular body, and the die ring—, so the silhouette is never a circle; the shadow follows that silhouette with `drop-shadow` on the container.
 
-**Contenedores.** `Card` es la hoja reutilizable: cabecera (kicker, título, descripción, lacre), filete, cuerpo y pie manuscrito. `tilt` es el mismo ornamento de `Surface` y se ignora sobre panel. Tres alturas, con el mismo material y los mismos ornamentos:
+**Containers.** `Card` is the reusable sheet: header (kicker, title, description, wax seal), rule, body, and handwritten footer. `tilt` is the same ornament from `Surface` and is ignored on panel. Three heights, with the same material and the same ornaments:
 
-- `sm`: ficha de 21 rem, padding medio, título `--text-lg`.
-- `md`: pliego de 30 rem, padding grande, título `--text-xl`.
-- `lg`: página completa, padding grande, título `--text-2xl`.
+- `sm`: 21 rem card, medium padding, `--text-lg` title.
+- `md`: 30 rem folio, large padding, `--text-xl` title.
+- `lg`: full page, large padding, `--text-2xl` title.
 
-**La cinta del título.** Sobre papel el título no es una línea de texto: `RibbonTitle` lo lleva a una cinta de cera que cruza el borde superior rasgado. Comparte los tokens de la acción principal (`--ui-primary-*`), como el lacre, y no añade reflejos, filtros ni `backdrop-filter`: la banda es un degradado de tres paradas y las colas, dos `clip-path` estáticos.
+**The title ribbon.** On paper the title is not a line of text: `RibbonTitle` takes it to a wax ribbon that crosses the torn top edge. It shares the primary action tokens (`--ui-primary-*`), like the wax seal, and adds no reflections, filters, or `backdrop-filter`: the band is a three-stop gradient and the tails are two static `clip-path`s.
 
-La banda se sube con el padding heredado de `Surface` (`--surface-pad`) más `--card-ribbon-rise`; así cruza el canto en las tres alturas sin repetir medidas. Debajo, la cinta reserva la caída de las colas más `--space-4` antes de la cabecera. Las colas viven detrás de la banda, asoman `--card-ribbon-tail-peek` y cuelgan `--card-ribbon-tail-drop`; la muesca de golondrina se corta con `clip-path` a partir del asomo visible. La banda se limita a `100% - 2 × asomo`, de modo que la decoración nunca crece el documento. Por debajo de 640 px el asomo baja a 1 rem y el título un paso de escala para que la cinta siga cabiendo a 320 px.
+The band is raised by the padding inherited from `Surface` (`--surface-pad`) plus `--card-ribbon-rise`; that way it crosses the rim at all three heights without repeating measurements. Below it, the ribbon reserves the drop of the tails plus `--space-4` before the header. The tails live behind the band, peek out `--card-ribbon-tail-peek`, and hang `--card-ribbon-tail-drop`; the swallowtail notch is cut with `clip-path` from the visible peek. The band is limited to `100% - 2 × asomo`, so the decoration never grows the document. Below 640 px the peek drops to 1 rem and the title one scale step so the ribbon still fits at 320 px.
 
-Las colas son capas `aria-hidden`; el `<h3>` real vive dentro de la banda y sigue nombrando la tarjeta. El contenedor no crea landmarks. Sobre panel la cinta no se pinta: el título vuelve a ser un encabezado normal.
+The tails are `aria-hidden` layers; the real `<h3>` lives inside the band and still names the card. The container creates no landmarks. On panel the ribbon is not painted: the title goes back to being a normal heading.
 
-Por debajo de 720 px los tres colapsan al ancho de la columna y el margen de cuaderno se desactiva para no comerse el contenido.
+Below 720 px the three collapse to the column width and the notebook margin is disabled so it does not eat the content.
 
-La cabecera del `Card` es un `<div>`, no un `<header>`: una tarjeta reutilizada directamente en el `body` convertiría su fila de título en un segundo landmark `banner`. El contenedor no emite landmarks; el `<h3>` interior (en la cinta o en la cabecera del panel) sigue nombrándolo.
+The `Card` header is a `<div>`, not a `<header>`: a card reused directly in the `body` would turn its title row into a second `banner` landmark. The container emits no landmarks; the inner `<h3>` (in the ribbon or in the panel header) still names it.
 
 ### 5.2 Panel
 
-- Fondo `--panel-*` con gradiente, grano y borde de 1 px.
-- Sin borde rasgado.
-- Brillo interior superior y viñeta interior para simular piedra.
-- Elevación con `--shadow-lg`/`--shadow-xl`.
+- `--panel-*` background with gradient, grain, and a 1 px border.
+- No torn edge.
+- Top inner glow and inner vignette to simulate stone.
+- Elevation with `--shadow-lg`/`--shadow-xl`.
 
-### 5.3 Propagación de contexto
+### 5.3 Context propagation
 
-`Surface` hace dos cosas:
+`Surface` does two things:
 
-1. Pone `data-surface` en el DOM.
-2. Provee un `SurfaceContext` de React.
+1. It sets `data-surface` in the DOM.
+2. It provides a React `SurfaceContext`.
 
-Los popovers se renderizan en un portal al `body`, fuera del árbol visual. Para que conserven el material, `Popover` lee `useSurface()` y escribe `data-surface` en el elemento flotante. Por eso un calendario abierto sobre una hoja es de papel, y uno abierto sobre un panel es de panel.
+Popovers render into a portal to the `body`, outside the visual tree. So that they keep the material, `Popover` reads `useSurface()` and writes `data-surface` on the floating element. That is why a calendar opened over a sheet is made of paper, and one opened over a panel is made of panel.
 
 ---
 
-## 6. Tipografía
+## 6. Typography
 
-### 6.1 Familias y roles
+### 6.1 Families and roles
 
-| Token | Familia | Uso |
+| Token | Family | Use |
 | --- | --- | --- |
-| `--font-body` | IM Fell English | Texto principal, párrafos, inputs, descripciones. |
-| `--font-caps` | IM Fell English SC | Títulos de tarjeta y secciones; versalitas. |
-| `--font-display` | Grenze | Título de página, meses, hora, cabeceras grandes. |
-| `--font-engraved` | Cinzel | Etiquetas de formulario, botones, metadatos, valores numéricos. |
-| `--font-hand` | Caveat | Notas, pistas, folios, subtítulos manuscritos. |
-| `--font-gothic` | Grenze Gotisch | Disponible para acentos góticos; actualmente no se usa en componentes. |
+| `--font-body` | IM Fell English | Main text, paragraphs, inputs, descriptions. |
+| `--font-caps` | IM Fell English SC | Card and section titles; small caps. |
+| `--font-display` | Grenze | Page title, months, time, large headers. |
+| `--font-engraved` | Cinzel | Form labels, buttons, metadata, numeric values. |
+| `--font-hand` | Caveat | Notes, hints, folios, handwritten subtitles. |
+| `--font-gothic` | Grenze Gotisch | Available for gothic accents; currently unused in components. |
 
-Todas las familias se sirven localmente desde `public/fonts` (subconjuntos latin de Google Fonts, SIL Open Font License). `@font-face` está en `src/styles/fonts.css`.
+All families are served locally from `public/fonts` (latin subsets of Google Fonts, SIL Open Font License). `@font-face` is in `src/styles/fonts.css`.
 
-`index.html` precarga con `crossorigin` las dos familias que se pintan en el primer viewport: `im-fell-english-400.woff2` (cuerpo) y `cinzel-400-700.woff2` (marca, navegación y kicker de la topbar y el masthead). El resto se carga bajo demanda. Renombrar esos archivos obliga a actualizar el `href` del preload; si no coincide con el `src` del `@font-face`, el navegador descarga la fuente dos veces.
+`index.html` preloads with `crossorigin` the two families painted in the first viewport: `im-fell-english-400.woff2` (body) and `cinzel-400-700.woff2` (brand, navigation, and the kicker of the topbar and masthead). The rest load on demand. Renaming those files forces an update of the preload `href`; if it does not match the `@font-face` `src`, the browser downloads the font twice.
 
-### 6.2 Escala y jerarquía
+### 6.2 Scale and hierarchy
 
-- Escala de `--text-2xs` (11 px) a `--text-6xl` (72 px).
-- Etiquetas de control: 11 px, `Cinzel`, mayúsculas, tracking amplio.
-- Texto de cuerpo: 15 px, `IM Fell English`, interlineado 1.5.
-- Títulos de tarjeta: `IM Fell English SC` a 28 px.
-- Título de página: `Grenze` con `clamp()` entre 44 y 72 px.
-- Notas: `Caveat` 13–16 px. Nunca se usa para información que no esté también en texto normal o en un atributo accesible.
+- Scale from `--text-2xs` (11 px) to `--text-6xl` (72 px).
+- Control labels: 11 px, `Cinzel`, uppercase, wide tracking.
+- Body text: 15 px, `IM Fell English`, 1.5 line height.
+- Card titles: `IM Fell English SC` at 28 px.
+- Page title: `Grenze` with `clamp()` between 44 and 72 px.
+- Notes: `Caveat` 13–16 px. It is never used for information that is not also in normal text or in an accessible attribute.
 
-### 6.3 Decisiones de lectura
+### 6.3 Reading decisions
 
-- No se usa mayúscula sostenida en párrafos.
-- Las etiquetas en mayúsculas siempre llevan `letter-spacing` y un tamaño pequeño; el contraste se ajustó para que sigan siendo legibles.
-- Los números de valores, contadores y folios usan `font-variant-numeric: tabular-nums` cuando importa la alineación.
-- El mes del calendario empieza con mayúscula solo en la primera letra (`::first-letter`), no capitaliza “De”.
-
----
-
-## 7. Color, estados y elevación
-
-### 7.1 Estructura del color
-
-Cada tema tiene:
-
-- Un **escritorio** (`--stone-*`) que no es el papel.
-- Un **papel** (`--parch`, `--paper-raised`) con tinta propia (`--ink-*`).
-- Un **panel** (`--panel-*`) con tinta hueso (`--bone-*`).
-- Una **cinta** (`--ribbon-*`) para la acción principal.
-- **Estados** del mundo (`--vital-*`) y estados de UI (`--danger-*`, `--success-*`, `--warning-*`, con sus variantes `-text`).
-
-### 7.2 Controles
-
-- Fondo de campo: tinte de tinta al 4 % sobre papel; pozo oscuro sobre panel.
-- Borde: 1 px con mezcla del texto; hover sube el borde a un tono más fuerte.
-- Foco: borde de acento + anillo de 1 px, outline discontinuo.
-- Error: borde en `--ui-danger` y mensaje en `--ui-danger-text`; el label también cambia a la variante de texto.
-- Deshabilitado: `opacity: 0.45` y cursor `not-allowed`; no se depende solo del color.
-- Selección: fondo de acento con texto de contraste; el check/radio usan `--ui-accent-contrast`.
-
-### 7.3 Botones
-
-- **Primary**: cera/ribbon con gradiente oscuro y texto `--pin-hi`. Es la única acción que se permite ser “sólida y ruidosa”.
-- **Secondary**: superficie elevada con borde y grano tenue; la herramienta de mesa.
-- **Ghost**: sin fondo hasta el hover; acciones terciarias.
-- **Danger**: contorno y tinte de peligro, no un bloque rojo saturado.
-- Tamaños: 30/38/44 px; icono solo = cuadrado.
-- Estados: loading con spinner integrado, disabled, full width, iconos a izquierda/derecha.
-
-### 7.4 Sombras y profundidad
-
-Las sombras se derivan de `--ui-shadow-color`:
-
-- Papel claro: tinta cálida en `--ui-paper-drop`, para que la hoja proyecte una sombra de papel.
-- Papel oscuro: negro en `--ui-paper-drop`; nunca la tinta clara, que dibujaría un halo.
-- Panel: `--stone-0`, para una sombra negra de piedra.
-
-No hay sombras “de neón” ni glassmorphism. La profundidad viene de capas, bordes, grano y una luz superior sutil.
+- No sustained uppercase in paragraphs.
+- Uppercase labels always carry `letter-spacing` and a small size; contrast was adjusted so they remain legible.
+- Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
+- The calendar month starts with a capital only on the first letter (`::first-letter`); it does not capitalise “De”.
 
 ---
 
-## 8. Espaciado, forma y textura
+## 7. Colour, states, and elevation
 
-- Ritmo base de 4 px; los tokens de 1 y 2 px existen para offsets ópticos.
-- Radios pequeños: 1–4 px. No hay tarjetas de 16 px redondeadas.
-- Círculos solo para checkbox/radio/switch, días del calendario y botones de icono.
-- Alturas de control: 30/38/44 px. El tamaño `md` (38 px) es el estándar de la galería.
-- Texturas:
-  - Grano general: SVG `feTurbulence` con dos variantes (normal y tenue).
-  - Papel: grano multiplicado o tamizado según `data-paper`.
-  - Panel: grano con mezcla `overlay`.
-  - Bordes rasgados: silueta normalizada `#ui-torn-clip` definida una vez en `TornSilhouette`. Es un `clipPath` con `clipPathUnits="objectBoundingBox"`, determinista y compartido por todas las hojas; sustituye a los antiguos filtros `feTurbulence`, que se reevaluaban por tarjeta en cada pintado.
-  - Papel físico: hojas apiladas y envejecidas, margen de cuaderno y manchas de borde, con geometría en `primitives.css` y color en `themes.css`.
-- Los iconos son paths propios de 24×24 con `currentColor`, trazo 1.5 y extremos redondeados.
+### 7.1 Colour structure
+
+Each theme has:
+
+- A **desktop** (`--stone-*`) that is not the paper.
+- A **paper** (`--parch`, `--paper-raised`) with its own ink (`--ink-*`).
+- A **panel** (`--panel-*`) with bone ink (`--bone-*`).
+- A **ribbon** (`--ribbon-*`) for the primary action.
+- **World states** (`--vital-*`) and UI states (`--danger-*`, `--success-*`, `--warning-*`, with their `-text` variants).
+
+### 7.2 Controls
+
+- Field background: 4 % ink tint on paper; dark well on panel.
+- Border: 1 px with a blend of the text; hover raises the border to a stronger tone.
+- Focus: accent border + 1 px ring, dashed outline.
+- Error: border in `--ui-danger` and message in `--ui-danger-text`; the label also switches to the text variant.
+- Disabled: `opacity: 0.45` and `not-allowed` cursor; colour is not the only cue.
+- Selection: accent background with contrast text; the check/radio use `--ui-accent-contrast`.
+
+### 7.3 Buttons
+
+- **Primary**: wax/ribbon with a dark gradient and `--pin-hi` text. It is the only action allowed to be “solid and loud”.
+- **Secondary**: raised surface with border and faint grain; the desk tool.
+- **Ghost**: no background until hover; tertiary actions.
+- **Danger**: danger outline and tint, not a saturated red block.
+- Sizes: 30/38/44 px; icon only = square.
+- States: loading with an integrated spinner, disabled, full width, icons on the left/right.
+
+### 7.4 Shadows and depth
+
+Shadows are derived from `--ui-shadow-color`:
+
+- Light paper: warm ink in `--ui-paper-drop`, so the sheet casts a paper shadow.
+- Dark paper: black in `--ui-paper-drop`; never the light ink, which would draw a halo.
+- Panel: `--stone-0`, for a black stone shadow.
+
+There are no “neon” shadows and no glassmorphism. Depth comes from layers, borders, grain, and a subtle top light.
 
 ---
 
-## 9. Movimiento
+## 8. Spacing, shape, and texture
 
-- Duraciones: 80 / 140 / 220 / 320 / 480 ms.
-- Easing principal: `cubic-bezier(.2,.8,.25,1)`.
-- Se anima lo que comunica estado: apertura de menús, cambio de chevron, spinner, toast, hover de botones.
-- No hay animaciones de entrada de tarjetas ni parallax.
-- `prefers-reduced-motion` lleva todas las duraciones a 0 y detiene motas/spinner.
-- El cambio de tema desactiva transiciones durante dos frames para evitar que todos los colores se interpolen.
+- 4 px base rhythm; the 1 and 2 px tokens exist for optical offsets.
+- Small radii: 1–4 px. There are no rounded 16 px cards.
+- Circles only for checkbox/radio/switch, calendar days, and icon buttons.
+- Control heights: 30/38/44 px. The `md` size (38 px) is the gallery standard.
+- Textures:
+  - General grain: SVG `feTurbulence` with two variants (normal and faint).
+  - Paper: grain multiplied or screened depending on `data-paper`.
+  - Panel: grain with `overlay` blend.
+  - Torn edges: normalised silhouette `#ui-torn-clip` defined once in `TornSilhouette`. It is a `clipPath` with `clipPathUnits="objectBoundingBox"`, deterministic and shared by all sheets; it replaces the old `feTurbulence` filters, which were reevaluated per card on every paint.
+  - Physical paper: stacked and aged sheets, notebook margin, and edge stains, with geometry in `primitives.css` and colour in `themes.css`.
+- Icons are custom 24×24 paths with `currentColor`, 1.5 stroke, and rounded caps.
 
 ---
 
-## 10. Patrones de componentes
+## 9. Motion
 
-### 10.1 Formularios
+- Durations: 80 / 140 / 220 / 320 / 480 ms.
+- Main easing: `cubic-bezier(.2,.8,.25,1)`.
+- Only what communicates state is animated: menu opening, chevron change, spinner, toast, button hover.
+- There are no card entrance animations and no parallax.
+- `prefers-reduced-motion` takes all durations to 0 and stops motes/spinner.
+- Theme switching disables transitions for two frames to prevent every colour from being interpolated.
 
-- Todos los campos complejos usan `Field`: label, label aside, hint, error y ids `-hint`/`-error`.
-- El `<label>` lleva id `${id}-label` (`getFieldLabelId`) y es lo que nombra a los popups portaleados; `hideLabel` lo oculta con `visually-hidden`, nunca lo omite.
-- Los mensajes se conectan con `aria-describedby`; el error usa `role="alert"`.
-- `hint` y `error` conviven: el error se pinta primero y el hint después, y `aria-describedby` lista `-error` y `-hint` en ese orden (`getFieldMessageIds`). El error nunca hace desaparecer la pista, así que un control que pase ambos sigue explicando cómo corregir.
-- Limpiar `TextInput` es una edición real: el foco vuelve al input y `onChange` recibe `''` tanto en controlado como en no controlado. `onClear` es trabajo extra (`onChange` ya se ha disparado), no la única vía para vaciar el campo.
-- Los controles aceptan controlado/no controlado mediante `useControllableState`.
-- Los inputs nativos conservan semántica nativa siempre que sea posible.
-- Checkbox/Radio/Switch usan inputs nativos visualmente ocultos y un “box” estilizado; el foco se dibuja sobre el box, no sobre el input invisible.
+---
+
+## 10. Component patterns
+
+### 10.1 Forms
+
+- All complex fields use `Field`: label, label aside, hint, error, and `-hint`/`-error` ids.
+- The `<label>` carries the id `${id}-label` (`getFieldLabelId`) and is what names the portaled popups; `hideLabel` hides it with `visually-hidden`, never omits it.
+- Messages are connected with `aria-describedby`; the error uses `role="alert"`.
+- `hint` and `error` coexist: the error is painted first and the hint after, and `aria-describedby` lists `-error` and `-hint` in that order (`getFieldMessageIds`). The error never makes the hint disappear, so a control that passes both still explains how to correct it.
+- Clearing `TextInput` is a real edit: focus returns to the input and `onChange` receives `''` in both controlled and uncontrolled mode. `onClear` is extra work (`onChange` has already fired), not the only way to empty the field.
+- Controls accept controlled/uncontrolled through `useControllableState`.
+- Native inputs keep native semantics whenever possible.
+- Checkbox/Radio/Switch use visually hidden native inputs and a styled “box”; focus is drawn on the box, not on the invisible input.
 
 ### 10.2 Popovers
 
 - `Popover` + `useFloating` + `useDismiss`.
-- Posición fija calculada contra el trigger; `side` se respeta siempre que quepa y el volteo arriba/abajo es solo el recurso cuando la preferencia no tiene sitio.
-- Se portalea al `body` para escapar de `overflow` y filtros del papel.
-- Se cierra con clic fuera, `Escape` y pérdida de foco.
-- `Escape` devuelve el foco al trigger.
-- La superficie se propaga con `useSurface`.
-- El popup portaleado también es contenido de página: o es un landmark por sí mismo o va dentro de uno. `Select` y `Combobox` marcan el nodo flotante como `region` nombrada por el campo; los pickers y el selector de temas usan `role="dialog"`.
-- El tooltip conserva `role="tooltip"` en el nodo medido y el nodo portaleado vive dentro de una `region` nombrada por el trigger: así el aviso no queda fuera de todo landmark y el tooltip sigue conteniendo solo texto.
-- El tooltip es hoverable (WCAG 1.4.13): recibe puntero mientras está abierto, un puente invisible cruza el hueco de 8 px hasta el ancla y un clic sobre el aviso no alcanza lo que hay detrás. `Escape` lo descarta sin mover el foco.
-- `aria-controls` solo se emite mientras el popup está abierto (`open ? id : undefined`): `Popover` se desmonta al cerrar y no se renderizan popups ocultos.
-- Un `<header>` dentro de un popup portaleado crearía un segundo `banner`; las cabeceras de overlays y pickers son `<div>`.
+- Fixed position computed against the trigger; `side` is respected whenever it fits, and flipping top/bottom is only the fallback when the preferred side has no room.
+- It is portaled to `body` to escape the paper's `overflow` and filters.
+- It closes on outside click, `Escape` and focus loss.
+- `Escape` returns focus to the trigger.
+- The surface is propagated with `useSurface`.
+- The portaled popup is also page content: either it is a landmark in its own right or it lives inside one. `Select` and `Combobox` mark the floating node as a `region` named by the field; the pickers and the theme selector use `role="dialog"`.
+- The tooltip keeps `role="tooltip"` on the measured node, and the portaled node lives inside a `region` named by the trigger: that way the notice does not end up outside every landmark and the tooltip still contains text only.
+- The tooltip is hoverable (WCAG 1.4.13): it receives pointer events while open, an invisible bridge crosses the 8 px gap to the anchor, and a click on the notice does not reach what is behind it. `Escape` dismisses it without moving focus.
+- `aria-controls` is only emitted while the popup is open (`open ? id : undefined`): `Popover` unmounts on close and no hidden popups are rendered.
+- A `<header>` inside a portaled popup would create a second `banner`; overlay and picker headers are `<div>`.
 
-### 10.3 Select y Combobox
+### 10.3 Select and Combobox
 
-- Select: el foco queda en el trigger; el listbox se controla con `aria-activedescendant` y navegación por flechas, Home/End, Enter, Escape y escritura (typeahead).
-- Combobox: input editable con filtro normalizado (sin acentos), flechas, Enter, Escape y limpieza.
-- El anchor de posicionamiento del Combobox es el **control completo**, no solo el input, para que limpiar o pulsar el chevron no se interprete como un clic fuera.
-- El foco inicial de menús portaleados se hace en un `requestAnimationFrame`, después de que el portal y las refs estén montados.
+- Select: focus stays on the trigger; the listbox is controlled with `aria-activedescendant` and arrow-key navigation, Home/End, Enter, Escape and typing (typeahead).
+- Combobox: editable input with a normalised filter (accent-insensitive), arrows, Enter, Escape and clearing.
+- The Combobox positioning anchor is the **whole control**, not just the input, so that clearing or pressing the chevron is not interpreted as an outside click.
+- Initial focus for portaled menus happens in a `requestAnimationFrame`, after the portal and the refs are mounted.
 
-### 10.4 Calendario
+### 10.4 Calendar
 
-- Calendario propio, sin `input type="date"`.
-- Lunes como primer día; 6 semanas (42 celdas) para evitar saltos de altura.
-- Fechas fuera de mes visibles y atenuadas.
-- `min`, `max` e `isDateDisabled`; el día deshabilitado es enfocable pero no seleccionable.
-- Roving tabindex: solo el día con foco tiene `tabIndex=0`.
-- Teclado: flechas, Home/End, PageUp/PageDown, Shift+PageUp/PageDown, Enter, Escape.
-- Se abre con foco en la fecha seleccionada o en hoy.
+- Custom calendar, no `input type="date"`.
+- Monday as the first day; 6 weeks (42 cells) to avoid height jumps.
+- Out-of-month dates visible and dimmed.
+- `min`, `max` and `isDateDisabled`; a disabled day is focusable but not selectable.
+- Roving tabindex: only the focused day has `tabIndex=0`.
+- Keyboard: arrows, Home/End, PageUp/PageDown, Shift+PageUp/PageDown, Enter, Escape.
+- It opens with focus on the selected date or on today.
 
-### 10.5 Rueda de hora
+### 10.5 Time wheel
 
-- Formato 24 h; minutos en pasos configurables.
-- Dos listboxes con scroll-snap y una banda central de selección.
-- El scroll actualiza el borrador; “Ahora”, “Limpiar” (opcional) y “Aplicar”.
-- “Ahora” baja los minutos al paso anterior (`Math.floor`), de modo que nunca salta a la hora siguiente: a las 09:58 con paso de 5 da 09:55.
-- `minuteStep` se normaliza una vez a un entero entre 1 y 60; `0`, los negativos y los valores no finitos caen a 5 para no bloquear la rueda ni repetir una sola opción.
-- El foco inicial va a la rueda de horas después del montaje del portal.
-- La rueda se maneja con flechas, PageUp/PageDown, Home/End, Enter y Escape.
+- 24 h format; minutes in configurable steps.
+- Two listboxes with scroll-snap and a central selection band.
+- Scrolling updates the draft; “Ahora”, “Limpiar” (optional) and “Aplicar”.
+- “Ahora” rounds the minutes down to the previous step (`Math.floor`), so it never jumps to the next hour: at 09:58 with a 5-minute step it yields 09:55.
+- `minuteStep` is normalised once to an integer between 1 and 60; `0`, negative values and non-finite values fall back to 5 so the wheel is neither blocked nor left repeating a single option.
+- Initial focus goes to the hour wheel after the portal mounts.
+- The wheel is operated with arrows, PageUp/PageDown, Home/End, Enter and Escape.
 
 ### 10.6 FileUploader
 
-- 100 % local: no hay subida a servidor.
-- Acepta clic, drag & drop y teclado (Enter/Espacio).
-- Valida `accept`, `maxSize` y `maxFiles` con mensajes explicativos.
-- `accept` entiende el comodín total (`*/*` o `*`), comodines de tipo (`image/*`), tipos MIME y extensiones (`.pdf`), sin distinguir mayúsculas ni espacios.
-- Miniaturas de imágenes mediante `URL.createObjectURL` con limpieza.
-- La lista permite eliminar; el input de archivo permanece oculto y fuera del orden de tabulación, mientras el dropzone es el control accesible: se nombra con el `<label>` visible del `Field` (`getFieldLabelId`) más la instrucción de arrastrar, se describe con el hint y expone `aria-invalid` cuando hay error.
+- 100 % local: there is no server upload.
+- Accepts click, drag & drop and keyboard (Enter/Space).
+- Validates `accept`, `maxSize` and `maxFiles` with explanatory messages.
+- `accept` understands the catch-all wildcard (`*/*` or `*`), type wildcards (`image/*`), MIME types and extensions (`.pdf`), ignoring case and spaces.
+- Image thumbnails via `URL.createObjectURL` with cleanup.
+- The list allows removal; the file input stays hidden and out of the tab order, while the dropzone is the accessible control: it is named by the `Field`'s visible `<label>` (`getFieldLabelId`) plus the drag instruction, it is described by the hint and it exposes `aria-invalid` when there is an error.
 
-### 10.7 Slider y Stepper
+### 10.7 Slider and Stepper
 
-- Slider y RangeSlider usan inputs nativos superpuestos; la estética se aplica al thumb y al track.
-- El rango usa dos pulgares y mantiene el orden bajo/alto.
-- `RangeSlider` agrupa los dos pulgares en un `role="group"` nombrado con el `<label>` del `Field`; cada pulgar conserva su `aria-label` (“Valor mínimo”/“Valor máximo”) y ambos reciben `aria-invalid` cuando hay error.
-- `className` se comparte entre los dos inputs del rango; para el contenedor se usa `fieldClassName`.
-- Las marcas en los extremos alinean la etiqueta hacia dentro para no salirse del control.
-- Stepper usa un input numérico nativo con extremos deshabilitados al llegar a los límites.
+- Slider and RangeSlider use overlapping native inputs; the styling is applied to the thumb and the track.
+- The range uses two thumbs and keeps the low/high order.
+- `RangeSlider` groups the two thumbs in a `role="group"` named by the `Field`'s `<label>`; each thumb keeps its `aria-label` (“Valor mínimo”/“Valor máximo”) and both receive `aria-invalid` when there is an error.
+- `className` is shared between the two range inputs; `fieldClassName` is used for the container.
+- Marks at the ends align the label inward so it does not spill outside the control.
+- Stepper uses a native number input with the ends disabled once the limits are reached.
 
 ### 10.8 Toast
 
-- Contexto + portal, viewport abajo a la derecha.
-- Apila hasta cuatro avisos; se pausan al pasar el cursor y mientras el foco de teclado está dentro, y se cierran solos. Al reanudar se concede de nuevo la duración completa, nunca el resto de un temporizador ya vencido.
-- El viewport es una región `aria-live="polite"` con etiqueta.
-- No se persisten; son estado de sesión.
+- Context + portal, viewport at the bottom right.
+- Stacks up to four notices; they pause on hover and while keyboard focus is inside, and they close on their own. On resuming, the full duration is granted again, never the remainder of an already expired timer.
+- The viewport is an `aria-live="polite"` region with a label.
+- They are not persisted; they are session state.
 
 ### 10.9 Questline
 
-- Organismo de ruta: una cadena de hitos (`QuestNode`) y, dentro de cada uno, tareas (`QuestTask`). El modelo es independiente de la UI: ids estables, `title`, `note`, `deadline` y `tasks`.
-- **El estado no se guarda.** `getQuestNodeStates` lo deriva del cumplimiento de los hitos anteriores. Un hito se completa cuando tiene al menos una tarea y todas están marcadas; un hito vacío es un borrador y no abre la puerta siguiente. Un hito ya cumplido sigue editable aunque se reabra uno anterior, para que la cadena no se trague trabajo hecho.
-- **El plazo vive en el hito, no en la tarea** (decisión de producto). `deadline` es una clave local `YYYY-MM-DD`; se compara con el día de hoy y se muestra corta en el raíl («12 ene») y larga en el panel. Vencer no bloquea: solo tiñe el hito de peligro. La comparación se hace con fechas locales, nunca con `toISOString`. `today` vive en el estado del organismo y se refresca al volver a la pestaña y al cruzar la medianoche, para que «Vence hoy» no se quede viejo.
-- **Interacción**: el hito es un botón de divulgación (`aria-expanded` / `aria-controls`) que abre un panel acordeón **debajo de todo el raíl**. Se eligió el acordeón y no un popover anclado porque el CRUD completo —fechas, tareas, confirmación de borrado— no cabe en un menú flotante y en móvil taparía la ruta. El panel se nombra con su `<h4>` y se comporta como `region`.
-- **CRUD**: crear, renombrar, fechar y eliminar hitos; crear, renombrar y eliminar tareas. Al añadir un hito se abre su editor con el foco en el nombre. El borrado del hito pide confirmación en dos pasos: al abrirla el foco va a «Cancelar» y al cancelar vuelve a «Eliminar hito». Al cerrar el panel el foco vuelve al disparador.
-- **Un hito bloqueado se abre** y sus tareas se pueden crear, editar y borrar, pero no marcar: el checkbox es el único gesto cerrado. La nota del candado nombra **todos** los hitos pendientes por delante («…empezando por «A»» cuando hay más de uno): un bloqueado también está incompleto y nombrar solo el primero prometía un desbloqueo que no ocurre. Se evita `description` en el `Checkbox` porque su descripción vive dentro del `<label>` y ampliaría el nombre accesible; el motivo se muestra en la nota y el estado en texto oculto.
-- **Bloqueado y vencido a la vez.** El estado derivado solo puede ser uno, pero el plazo corre igual: raíl y panel llevan `data-overdue` además de `data-state="locked"`, y el vencimiento se tiñe sin perder el candado, el borde discontinuo ni la palabra «Bloqueado».
-- **Un único dueño del anuncio.** `role="status"` de la cadena es el único que escribe: recibe el aviso de borrado y las transiciones de estado comparadas **por id**, no por posición. Borrar un hito delante de uno cumplido ya no se anuncia como cumplimiento, y el mensaje de borrado no se pisa. Se anuncian también los rebloqueos y los desbloqueos reales (`locked → active/overdue`), no el vecino posicional.
-- **Vocabulario:** «cerrar» es solo del panel («Cerrar el panel»); completar se dice «completar / cumplido» («Completa este hito para abrir el siguiente», «· cumplido», badge «Cumplido»). «Terminar la travesía» es el final de la ruta.
-- **Foco:** el panel toma el foco al abrirse (salvo cuando nace en modo edición, que gana el `autoFocus` del nombre) y lo devuelve al disparador al cerrarse. Escape retrocede una capa: confirmación → editor del hito → editor de tarea → panel; los pickers y el editor de tarea consumen su propio Escape con `preventDefault`. Tras renombrar o eliminar una tarea el foco va a la fila vecina, no al panel entero, y se asegura en pantalla con `scrollIntoView({ block: 'nearest' })`.
-- **Borrador:** al añadir un hito se inserta y se abre su editor; si se cancela sin tocarlo (mismo título, sin tareas, nota ni plazo) se descarta. Cualquier guardado o edición de tareas lo conserva. Así un «Nuevo hito» vacío no bloquea la cadena.
-- **La nota es del autor:** se muestra en el panel pero no se edita, aunque `QuestNodePatch` la acepte para consumidores que editen el modelo.
-- **API controlada/no controlada** con `useControllableState`: `nodes` + `onChange`, o `defaultNodes`. Cada mutación emite el array completo; el componente no persiste nada.
-- **El sendero** es un SVG decorativo (`aria-hidden`, `pointer-events: none`) detrás del raíl. `useQuestTrail` mide marcadores y stops con un `ResizeObserver` y dibuja segmentos entre ellos; si una fila envuelve, la ruta baja, recorre el hueco de fila y vuelve a entrar por el primer hito de la siguiente. Así la línea sigue conectada sin `overflow-x` ni scroll horizontal. El tramo que sale de un hito cumplido se entinta con `--ui-accent`; el pendiente usa `--ui-border-strong`. El radio de las esquinas y el `stroke-dasharray` son geometría de arte y se quedan locales.
-- **jsdom no mide ni implementa `ResizeObserver`**: el hook no pinta nada y el componente sigue funcionando. La geometría del sendero, el contraste pintado y el foco real se verifican con `pnpm test:e2e` en Chromium, no en Vitest.
-- **Un `STATE_META` único** (`questline-state.ts`) da icono, palabra accesible, etiqueta y variante de badge a los cuatro estados; el raíl y el panel ya no pueden divergir (así se coló que el estado activo no tuviera palabra). Los componentes se reparten en `QuestRail`, `QuestStop`, `QuestNodePanel`, `QuestNodeEditor`, `QuestTaskRow` y `QuestDeleteConfirm`.
-- **La meta** es el último hito: su línea de estado lleva «Meta» y el icono de bandera. Es una lectura del final de la ruta, no un campo del modelo, y se mueve si se añade o elimina el último hito.
+- Route organism: a chain of milestones (`QuestNode`) and, inside each one, tasks (`QuestTask`). The model is independent of the UI: stable ids, `title`, `note`, `deadline` and `tasks`.
+- **State is not stored.** `getQuestNodeStates` derives it from the completion of the preceding milestones. A milestone is completed when it has at least one task and all of them are checked; an empty milestone is a draft and does not open the next door. An already completed milestone remains editable even if an earlier one is reopened, so the chain does not swallow work already done.
+- **The deadline lives on the milestone, not on the task** (product decision). `deadline` is a local `YYYY-MM-DD` key; it is compared with today's date and shown short in the rail («12 ene») and long in the panel. Going overdue does not lock: it only tints the milestone with danger. The comparison uses local dates, never `toISOString`. `today` lives in the organism's state and is refreshed when returning to the tab and when crossing midnight, so that «Vence hoy» does not go stale.
+- **Interaction**: the milestone is a disclosure button (`aria-expanded` / `aria-controls`) that opens an accordion panel **below the entire rail**. The accordion was chosen over an anchored popover because the full CRUD —dates, tasks, delete confirmation— does not fit in a floating menu and on mobile it would cover the route. The panel is named by its `<h4>` and behaves as a `region`.
+- **CRUD**: create, rename, set dates on and delete milestones; create, rename and delete tasks. When a milestone is added, its editor opens with focus on the name. Deleting a milestone asks for a two-step confirmation: when it opens, focus goes to «Cancelar» and on cancel it returns to «Eliminar hito». When the panel closes, focus returns to the trigger.
+- **A locked milestone opens** and its tasks can be created, edited and deleted, but not checked: the checkbox is the only closed gesture. The lock note names **all** pending milestones ahead («…empezando por «A»» when there is more than one): a locked one is also incomplete, and naming only the first promised an unlock that does not happen. `description` is avoided on the `Checkbox` because its description lives inside the `<label>` and would widen the accessible name; the reason is shown in the note and the state in hidden text.
+- **Locked and overdue at the same time.** The derived state can only be one, but the deadline runs all the same: rail and panel carry `data-overdue` in addition to `data-state="locked"`, and the overdue tint is applied without losing the lock, the dashed border or the word «Bloqueado».
+- **A single owner for the announcement.** The chain's `role="status"` is the only one that writes: it receives the delete notice and the state transitions compared **by id**, not by position. Deleting a milestone in front of a completed one is no longer announced as a completion, and the delete message is not overwritten. Re-locks and real unlocks (`locked → active/overdue`) are announced too, not the positional neighbour.
+- **Vocabulary:** «cerrar» belongs only to the panel («Cerrar el panel»); completing is said as «completar / cumplido» («Completa este hito para abrir el siguiente», «· cumplido», badge «Cumplido»). «Terminar la travesía» is the end of the route.
+- **Focus:** the panel takes focus on opening (except when it is born in edit mode, where the name's `autoFocus` wins) and returns it to the trigger on closing. Escape steps back one layer: confirmation → milestone editor → task editor → panel; the pickers and the task editor consume their own Escape with `preventDefault`. After renaming or deleting a task, focus goes to the neighbouring row, not to the whole panel, and it is brought on screen with `scrollIntoView({ block: 'nearest' })`.
+- **Draft:** when a milestone is added it is inserted and its editor opens; if it is cancelled without being touched (same title, no tasks, note or deadline) it is discarded. Any save or task edit keeps it. That way an empty «Nuevo hito» does not block the chain.
+- **The note belongs to the author:** it is shown in the panel but not edited, even though `QuestNodePatch` accepts it for consumers that edit the model.
+- **Controlled/uncontrolled API** with `useControllableState`: `nodes` + `onChange`, or `defaultNodes`. Every mutation emits the full array; the component persists nothing.
+- **The trail** is a decorative SVG (`aria-hidden`, `pointer-events: none`) behind the rail. `useQuestTrail` measures markers and stops with a `ResizeObserver` and draws segments between them; if a row wraps, the route goes down, crosses the row gap and re-enters through the first milestone of the next one. That way the line stays connected without `overflow-x` or horizontal scroll. The segment leaving a completed milestone is inked with `--ui-accent`; the pending one uses `--ui-border-strong`. The corner radius and the `stroke-dasharray` are art geometry and stay local.
+- **jsdom neither measures nor implements `ResizeObserver`**: the hook paints nothing and the component keeps working. The trail geometry, the painted contrast and real focus are verified with `pnpm test:e2e` in Chromium, not in Vitest.
+- **A single `STATE_META`** (`questline-state.ts`) gives icon, accessible word, label and badge variant to the four states; the rail and the panel can no longer diverge (that is how it slipped in that the active state had no word). The components are split across `QuestRail`, `QuestStop`, `QuestNodePanel`, `QuestNodeEditor`, `QuestTaskRow` and `QuestDeleteConfirm`.
+- **The goal** is the last milestone: its status line carries «Meta» and the flag icon. It is a reading of the end of the route, not a model field, and it moves if the last milestone is added or removed.
 
 ---
 
-## 11. Galería
+## 11. Gallery
 
-La galería es la superficie de revisión del sistema; no se usa Storybook.
+The gallery is the system's review surface; Storybook is not used.
 
-- Una sola página, once secciones.
-- Índice lateral sticky en escritorio; índice horizontal desplazable en móvil.
-- Scroll-spy con `IntersectionObserver`.
-- Selector de tema dialog con muestras, metadatos y navegación por teclado.
-- Interruptor **Papel / Panel** global: todas las tarjetas y controles cambian de superficie.
-- Las hojas de demo son `Card size="lg"` sin envoltorio propio: el badge con el nombre del componente entra por `kicker`, el título va en la cinta sobre papel y el folio en lacre. Así la galería enseña el contenedor real y no un clon.
-- Cada demo incluye notas manuscritas con el estado actual para que el comportamiento sea visible sin abrir las devtools.
-- La sección “En contexto” usa todos los patrones en una mini todo-list real.
-- La sección “La travesía” demuestra los tres estados de un hito (cumplido, vencido y bloqueado), el CRUD completo y el sendero que se entinta. Sus plazos son relativos a hoy para que los estados sigan siendo ciertos al abrir la galería.
-- La sección “Contenedores” muestra `Card` en sus tres alturas con la lista de componentes de otras secciones.
-- El primer elemento enfocable es “Saltar al contenido”, que apunta a `main#contenido` (`tabIndex={-1}`) y vive fuera del flujo con `position: fixed` para no mover la topbar.
-- El selector de tema mantiene una palabra visible (“Tema”) cuando el nombre completo no cabe; el toggle de superficie conserva “Papel”/“Panel” como nombre explícito aunque sus etiquetas se oculten visualmente en móvil.
+- A single page, eleven sections.
+- Sticky side index on desktop; horizontally scrollable index on mobile.
+- Scroll-spy with `IntersectionObserver`.
+- Theme selector dialog with swatches, metadata and keyboard navigation.
+- Global **Papel / Panel** switch: every card and control changes surface.
+- The demo sheets are `Card size="lg"` with no wrapper of their own: the badge with the component name comes in through `kicker`, the title goes on the ribbon over paper and the folio in the wax seal. That way the gallery shows the real container and not a clone.
+- Each demo includes handwritten notes with the current state so the behaviour is visible without opening the devtools.
+- The section “En contexto” uses every pattern in a real mini todo-list.
+- The section “La travesía” demonstrates the three states of a milestone (completed, overdue and locked), the full CRUD and the trail that gets inked. Its deadlines are relative to today so the states remain true when the gallery is opened.
+- The section “Contenedores” shows `Card` in its three heights with the list of components from other sections.
+- The first focusable element is “Saltar al contenido”, which points to `main#contenido` (`tabIndex={-1}`) and lives out of flow with `position: fixed` so the topbar is not moved.
+- The theme selector keeps one word visible (“Tema”) when the full name does not fit; the surface toggle keeps “Papel”/“Panel” as an explicit name even though its labels are visually hidden on mobile.
 
 ---
 
 ## 12. Responsive
 
-- La página usa un gutter fluido (`clamp`) y un ancho máximo de 90 rem.
-- Escritorio: índice sticky + contenido.
-- ≤ 1180 px: se ocultan los enlaces de la topbar.
-- ≤ 1024 px: el layout pasa a una columna; el índice se convierte en una fila horizontal.
-- ≤ 980 px: las rejillas de tres columnas pasan a dos.
-- ≤ 860 px: masthead en dos filas; estadísticas e intro se apilan.
-- ≤ 720 px: las rejillas de demos pasan a una columna.
-- ≤ 640 px: topbar compacta; las etiquetas del toggle de superficie se ocultan visualmente pero siguen en el árbol de accesibilidad; el selector de tema muestra “Tema” en lugar del nombre completo; el crest del masthead desaparece para dar ancho al título.
-- `Questline` envuelve en filas: la ruta se mide y se dibuja en un SVG que baja y vuelve a entrar en la fila siguiente, y el panel se coloca bajo el raíl completo. Sin scroll horizontal a 320 px.
-- La página no debe producir scroll horizontal en ningún ancho entre 320 y 1440 px. Se verificó en 320, 375, 480, 768, 1024 y 1440 px (y 640 px en la revisión anterior). No se usa `body { overflow-x: hidden }`: bajo 640 px las hojas apiladas se reescalan con `--paper-sheet-offset-*` y, si algo se sale, se corrige el elemento, no se oculta.
+- The page uses a fluid gutter (`clamp`) and a maximum width of 90 rem.
+- Desktop: sticky index + content.
+- ≤ 1180 px: the topbar links are hidden.
+- ≤ 1024 px: the layout switches to one column; the index becomes a horizontal row.
+- ≤ 980 px: the three-column grids go to two.
+- ≤ 860 px: masthead in two rows; stats and intro stack.
+- ≤ 720 px: the demo grids go to one column.
+- ≤ 640 px: compact topbar; the surface toggle's labels are visually hidden but stay in the accessibility tree; the theme selector shows “Tema” instead of the full name; the masthead crest disappears to give the title width.
+- `Questline` wraps in rows: the route is measured and drawn in an SVG that goes down and re-enters on the next row, and the panel is placed below the whole rail. No horizontal scroll at 320 px.
+- The page must not produce horizontal scroll at any width between 320 and 1440 px. It was verified at 320, 375, 480, 768, 1024 and 1440 px (and 640 px in the previous review). `body { overflow-x: hidden }` is not used: below 640 px the stacked sheets are rescaled with `--paper-sheet-offset-*` and, if something overflows, the element is fixed, not hidden.
 
 ---
 
-## 13. Accesibilidad
+## 13. Accessibility
 
-- Etiquetas asociadas; `aria-describedby` para pistas y errores.
-- Roles y estados ARIA en listboxes, combobox, calendario, ruedas, diálogo de temas y progressbar.
-- Foco visible con outline discontinuo de acento.
-- Foco devuelto al trigger al cerrar con Escape.
-- `aria-live` en toasts; `role="alert"` en errores.
-- Todos los controles tienen un nombre accesible; los iconos decorativos son `aria-hidden`.
-- Los toasts tienen botón de cierre con etiqueta.
-- `prefers-reduced-motion` respetado.
-- Auditoría axe-core WCAG 2 A/AA + buenas prácticas automatizada con `pnpm test:e2e` sobre los 8 temas × 2 superficies y los estados abiertos, sin línea base: hoy **0 violaciones**. El arnés encontró y se corrigieron cinco hallazgos de contraste y de nombres accesibles.
-- **Contraste sobre texturas: cerrado.** axe deja en `incomplete` los nodos cuyo fondo es un degradado, una imagen o lleva pseudo-elementos encima (las texturas de papel y panel). El propietario del proyecto revisó esos nodos a mano en los 8 temas y los dio por válidos; no se cuentan como hallazgo abierto ni se vuelven a proponer herramientas para medirlos. El arnés los imprime como diagnóstico.
-- El foco inicial de los popovers se retrasa un frame para que el portal esté montado antes de mover el foco y no se cierre por “focus fuera”.
-- Los listboxes portaleados se nombran con el `<label>` del `Field` (`getFieldLabelId`), no con el trigger: un `combobox` no se nombra por contenido.
-- `required` se expone con `aria-required` donde el rol lo admite (`Select`, `Combobox`); en los triggers de `DatePicker`/`TimePicker` y en los grupos se anuncia como descripción «Campo obligatorio», porque `aria-required` no es válido en `role="button"` ni en `role="group"`. Los pickers no participan en la validación nativa (input oculto): el consumidor valida en el submit.
-- El skip link es el primer elemento enfocable y mueve el foco a `main#contenido`; el foco programático no depende de que el navegador mueva la secuencia.
-- `ProgressBar` exige nombre por tipos: `label` visible o `aria-label`; el porcentaje es texto de valor y no puede ser el nombre.
-- `TaskRow` replica prioridad y vencimiento en texto `visually-hidden`, enlazado con `aria-describedby`; el color deja de ser la única señal (WCAG 1.4.1).
-- Los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1); el viewport sigue siendo una única región `aria-live="polite"` para no duplicar anuncios.
-- `Questline` expone `aria-expanded` / `aria-controls` en cada hito, nombra el panel con su encabezado, lo enfoca al abrirse y devuelve el foco al disparador al cerrar. Cada hito lleva su número y su estado en texto `visually-hidden`; las transiciones se anuncian por id en una región `status` («Hito «X» cumplido», «Se ha desbloqueado/«bloqueado «Y»»).
-- Los hitos bloqueados deshabilitan el checkbox (no el CRUD de preparación) y explican el motivo en una nota visible; el estado no depende del color: el marcador cambia de forma y la nota lleva candado.
-
----
-
-## 14. Límites y compromisos conocidos
-
-- **Sin backend**: FileUploader y Toast son locales; no hay red.
-- **Sin router**: la galería es una sola página con anclas.
-- **Sin Storybook**: la página de galería cumple ese rol y es el entregable de revisión.
-- **Tests de interacción, no de layout**: Vitest + Testing Library cubren el comportamiento y `pnpm test:e2e` mide en Chromium el sendero, los anchos (320–1440 px), el teclado y axe; jsdom no mide nada de eso.
-- **Questline sin reordenación**: el orden de hitos y tareas es narrativo; no hay arrastrar y soltar.
-- **Papel y rendimiento**: la silueta rasgada es geometría compartida y la sombra es una `box-shadow`. No se vuelve a un filtro de turbulencia por hoja ni a un `drop-shadow` sobre el subárbol: medido en la galería, eso multiplicaba por más de dos el coste de raster y hacía perder fotogramas al hacer scroll. El grano sí sigue siendo un SVG `feTurbulence`, pero se rasteriza una vez como imagen de fondo, no por elemento.
-- **Breakpoints y arte**: los valores de media queries y la geometría de los SVG no están tokenizados porque CSS no permite variables en media queries y el arte es geometría, no diseño de sistema.
-- **Temas**: no hay un “modo claro/oscuro” global separado; el tipo de papel es parte de cada tema.
-- **Grenze Gotisch**: está disponible como familia, pero todavía no se usa en componentes.
+- Associated labels; `aria-describedby` for hints and errors.
+- ARIA roles and states on listboxes, combobox, calendar, wheels, theme dialog and progressbar.
+- Visible focus with a dashed accent outline.
+- Focus returned to the trigger when closing with Escape.
+- `aria-live` on toasts; `role="alert"` on errors.
+- Every control has an accessible name; decorative icons are `aria-hidden`.
+- Toasts have a labelled close button.
+- `prefers-reduced-motion` respected.
+- axe-core WCAG 2 A/AA + best-practices audit automated with `pnpm test:e2e` across the 8 themes × 2 surfaces and the open states, with no baseline: today **0 violations**. The harness found, and we fixed, five contrast and accessible-name findings.
+- **Contrast over textures: closed.** axe leaves in `incomplete` the nodes whose background is a gradient, an image or has pseudo-elements on top (the paper and panel textures). The project owner reviewed those nodes by hand in the 8 themes and accepted them as valid; they are not counted as an open finding and tools to measure them are not proposed again. The harness prints them as diagnostics.
+- The initial focus of popovers is delayed by one frame so the portal is mounted before focus moves and it does not close because of “focus out”.
+- Portaled listboxes are named by the `Field`'s `<label>` (`getFieldLabelId`), not by the trigger: a `combobox` is not named by content.
+- `required` is exposed with `aria-required` where the role allows it (`Select`, `Combobox`); on the `DatePicker`/`TimePicker` triggers and on groups it is announced as the description «Campo obligatorio», because `aria-required` is not valid on `role="button"` or on `role="group"`. The pickers do not take part in native validation (hidden input): the consumer validates on submit.
+- The skip link is the first focusable element and moves focus to `main#contenido`; programmatic focus does not depend on the browser moving the sequence.
+- `ProgressBar` requires a name by types: a visible `label` or an `aria-label`; the percentage is value text and cannot be the name.
+- `TaskRow` mirrors priority and overdue in `visually-hidden` text, linked with `aria-describedby`; colour stops being the only signal (WCAG 1.4.1).
+- Toasts pause on hover and on keyboard focus (WCAG 2.2.1); the viewport remains a single `aria-live="polite"` region so announcements are not duplicated.
+- `Questline` exposes `aria-expanded` / `aria-controls` on each milestone, names the panel with its heading, focuses it on opening and returns focus to the trigger on closing. Each milestone carries its number and its state in `visually-hidden` text; transitions are announced by id in a `status` region («Hito «X» cumplido», «Se ha desbloqueado/«bloqueado «Y»»).
+- Locked milestones disable the checkbox (not the preparation CRUD) and explain the reason in a visible note; the state does not depend on colour: the marker changes shape and the note carries a lock.
 
 ---
 
-## 15. Dónde vive cada decisión
+## 14. Known limits and trade-offs
 
-| Decisión | Archivo |
+- **No backend**: FileUploader and Toast are local; there is no network.
+- **No router**: the gallery is a single page with anchors.
+- **No Storybook**: the gallery page fills that role and is the review deliverable.
+- **Interaction tests, not layout tests**: Vitest + Testing Library cover behaviour and `pnpm test:e2e` measures in Chromium the trail, the widths (320–1440 px), the keyboard and axe; jsdom measures none of that.
+- **Questline without reordering**: the order of milestones and tasks is narrative; there is no drag and drop.
+- **Paper and performance**: the torn silhouette is shared geometry and the shadow is a `box-shadow`. There is no going back to a turbulence filter per sheet or to a `drop-shadow` over the subtree: measured in the gallery, that multiplied the raster cost by more than two and dropped frames while scrolling. The grain is still an `feTurbulence` SVG, but it is rasterised once as a background image, not per element.
+- **Breakpoints and art**: media query values and SVG geometry are not tokenised because CSS does not allow variables in media queries and art is geometry, not system design.
+- **Themes**: there is no separate global “light/dark mode”; the paper type is part of each theme.
+- **Grenze Gotisch**: it is available as a family, but it is not used in components yet.
+
+---
+
+## 15. Where each decision lives
+
+| Decision | File |
 | --- | --- |
-| Tokens invariantes | `src/styles/tokens/primitives.css` |
-| Paletas, semántica y superficies | `src/styles/tokens/themes.css` |
-| Reset, lienzo, foco global, reduced motion | `src/styles/base.css` |
-| Fuentes locales | `src/styles/fonts.css`, `public/fonts/` |
-| Material papel/panel y contexto | `src/components/Surface/` |
-| Propagación de superficie a portales | `src/components/Popover/`, `useSurface` |
-| Tema, persistencia y selector | `src/theme/` |
-| Botón de cera y estados | `src/components/Button/` |
-| Questline: modelo, estados y plazos | `src/components/Questline/questline-model.ts` |
-| Sendero medido del Questline | `src/components/Questline/useQuestTrail.ts` |
-| Campos y mensajes | `src/components/Field/`, `TextInput`, `Textarea` |
-| Calendario y rueda | `src/components/DatePicker/`, `TimePicker/` |
-| Galería y tarjetas de muestra | `src/gallery/` |
-| Mockup de referencia | `design/mockup.html` |
+| Invariant tokens | `src/styles/tokens/primitives.css` |
+| Palettes, semantics and surfaces | `src/styles/tokens/themes.css` |
+| Reset, canvas, global focus, reduced motion | `src/styles/base.css` |
+| Local fonts | `src/styles/fonts.css`, `public/fonts/` |
+| Paper/panel material and context | `src/components/Surface/` |
+| Surface propagation to portals | `src/components/Popover/`, `useSurface` |
+| Theme, persistence and selector | `src/theme/` |
+| Wax button and states | `src/components/Button/` |
+| Questline: model, states and deadlines | `src/components/Questline/questline-model.ts` |
+| Measured Questline trail | `src/components/Questline/useQuestTrail.ts` |
+| Fields and messages | `src/components/Field/`, `TextInput`, `Textarea` |
+| Calendar and wheel | `src/components/DatePicker/`, `TimePicker/` |
+| Gallery and demo cards | `src/gallery/` |
+| Reference mockup | `design/mockup.html` |

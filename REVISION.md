@@ -1,75 +1,75 @@
-# Revisión técnica — LifeRPG UI
+# Technical review — LifeRPG UI
 
-**Estado:** cerrada. La revisión base (32 hallazgos) se implementó y verificó antes; esta tanda cierra los hallazgos de `Questline` y convierte `§2` en un arnés automático. El detalle histórico está en `git log -p REVISION.md` y las decisiones de diseño en `DESIGN.md`.
+**Status:** closed. The base review (32 findings) was implemented and verified earlier; this round closes the `Questline` findings and turns `§2` into an automated harness. The historical detail is in `git log -p REVISION.md` and the design decisions in `DESIGN.md`.
 
-**Verificación:** `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (12 archivos, 95 tests), `pnpm build` y `pnpm test:e2e` (36 tests en Chromium) en verde.
+**Verification:** `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (12 files, 95 tests), `pnpm build` and `pnpm test:e2e` (36 tests in Chromium), all green.
 
 ---
 
-## 1. Questline — resuelto
+## 1. Questline — resolved
 
-Cada hallazgo se reprodujo antes de arreglarlo: los tests nuevos se ejecutaron contra el código original y fallaban (15 en el núcleo, 14 en el panel). No hubo falsos positivos.
+Every finding was reproduced before it was fixed: the new tests were run against the original code and failed (15 in the core, 14 in the panel). There were no false positives.
 
-| # | Hallazgo | Resolución | Tests |
+| # | Finding | Resolution | Tests |
 | --- | --- | --- | --- |
-| Q-01 | El cierre se anunciaba por posición y competía con el borrado | Transiciones comparadas por `Map<id, estado>`; un único escritor de la región `status` compone el aviso de borrado (encolado) con las transiciones del mismo commit | `questline.test.tsx` (borrado delante de un cumplido, mensaje de borrado) |
-| Q-02 | La validación nativa bloqueaba el error propio | `noValidate` en el formulario, `required` se mantiene como semántica; `submitNode` siempre corre | `questline-panel.test.tsx` |
-| Q-03 | Bloqueos y desbloqueos en silencio | Se anuncian ambos sentidos y se guarda el último elemento enfocado para devolver el foco si un control pasa a `disabled` | `questline.test.tsx` (rebloqueo al añadir tarea y al reabrir) |
-| Q-04 | El panel no recibía el foco al abrirse | Foco en `requestAnimationFrame` al montar (salvo cuando nace en modo edición: gana el `autoFocus`), sin robar el foco a un clic ya hecho | `questline-panel.test.tsx` |
-| Q-05 | La nota del candado señalaba un hito que no desbloquea | `getBlockingNodes` devuelve todos los pendientes por delante; con varios, «…empezando por «A»»; comentario corregido | `questline-model.test.ts`, `questline-panel.test.tsx` |
-| Q-06 | «Se ha desbloqueado B» podía ser falso | Se deriva el primer `locked → active/overdue`; «La travesía está completa» solo si todos los estados quedan cumplidos | `questline.test.tsx` |
-| Q-07 | Copy del último hito | `index === total - 1`: «Completa este hito para terminar la travesía» / «La travesía está completa» | `questline-panel.test.tsx` |
-| Q-08 | «Cerrar el hito» significaba dos cosas | «Cerrar el panel» para el panel; «completar / cumplido» para el hito (pie, tally, badge) | `questline-panel.test.tsx` |
-| Q-09 | Cancelar dejaba un hito borrador | El hito recién añadido se descarta al cerrar el editor si sigue intacto; cualquier guardado o edición de tareas lo conserva | `questline.test.tsx` |
-| Q-10 | Copy y recuentos | El header no muestra «0 de 0 tareas»; el plazo se muestra una sola vez (kicker); la nota queda documentada como nota de autor | `questline.test.tsx`, `questline-panel.test.tsx` |
-| Q-11 | Añadir tarea no se anunciaba | El foco va a la casilla nueva (o al botón de la fila si está bloqueada) y se asegura en pantalla | `questline-panel.test.tsx` |
-| Q-12 | El estado activo no tenía texto oculto | `STATE_META` con palabra para los cuatro estados, compartido por raíl y panel | `questline.test.tsx` |
-| Q-13 | Hito bloqueado y vencido sin tinte | `data-overdue` en raíl y panel: se tiñe el vencimiento sin perder candado, borde discontinuo ni la palabra «Bloqueado» | `questline.test.tsx` |
-| Q-14 | Escape y validaciones de tareas | Escape retrocede una capa (confirmación → editor → editor de tarea → panel) con retorno de foco; título vacío en alta y renombrado muestra «La tarea necesita un nombre.» | `questline-panel.test.tsx` |
-| Q-15 | Foco tras renombrar o eliminar tarea | Va a la fila vecina y se asegura con `scrollIntoView({ block: 'nearest' })`, sin `preventScroll` | `questline-panel.test.tsx` |
-| Q-16 | Texto dinámico sin `overflow-wrap` | `overflow-wrap: anywhere` + `min-width: 0` en nota, confirmación, candado y label de `Checkbox` | `e2e/overflow.spec.ts` (320–1440 px) |
-| Q-17 | Código muerto y comentarios inexactos | Fuera `triggerId`, `deadlineToKey` y `data-done`; comentarios de `getBlockingNode` y de la hoja de estilos corregidos | lint/build |
-| Q-18 | `label` por defecto en inglés | Default «Ruta de hitos»; con `label=""` el raíl se nombra «Hitos» | `questline.test.tsx` |
-| Q-19 | Plazos obsoletos a medianoche | `today` en estado, refrescado en `visibilitychange`, `focus` y medianoche; el panel se recalcula al re-renderizar | `questline.test.tsx` |
-| Q-20 | IDs DOM y API pública | Base `useId` + `domFragment` (seguro para `[A-Za-z0-9_-]`); reexportados tipos y `formatQuestNumber` desde `Questline.tsx` | `questline.test.tsx` |
-| — | Duplicación y tamaño | `updateTasks`, `STATE_META` único y división en `QuestRail`, `QuestStop`, `QuestNodeEditor`, `QuestTaskRow`, `QuestDeleteConfirm`; `Questline.tsx` 588→449 y `QuestNodePanel.tsx` 602→456 | suite completa |
-| — | Memoización del sendero | **No se hace**: `sameTrail` ya evita el `setState` con geometría idéntica y una caché extra habría que sincronizarla con el wrapping y las métricas de fuente. Decisión escrita en `useQuestTrail.ts` | — |
+| Q-01 | Completion was announced by position and competed with deletion | Transitions compared by `Map<id, state>`; a single writer of the `status` region composes the delete notice (queued) with the transitions of the same commit | `questline.test.tsx` (delete ahead of a completed one, delete message) |
+| Q-02 | Native validation blocked our own error | `noValidate` on the form, `required` kept as semantics; `submitNode` always runs | `questline-panel.test.tsx` |
+| Q-03 | Locking and unlocking in silence | Both directions are announced and the last focused element is stored so focus can be returned if a control becomes `disabled` | `questline.test.tsx` (re-lock when adding a task and when reopening) |
+| Q-04 | The panel did not receive focus when opened | Focus in `requestAnimationFrame` on mount (except when it is born in edit mode: `autoFocus` wins), without stealing focus from a click already made | `questline-panel.test.tsx` |
+| Q-05 | The lock note pointed at a milestone that unlocks nothing | `getBlockingNodes` returns every pending milestone ahead; with several, «…empezando por «A»»; comment fixed | `questline-model.test.ts`, `questline-panel.test.tsx` |
+| Q-06 | «Se ha desbloqueado B» could be a lie | The first `locked → active/overdue` is derived; «La travesía está completa» only if every state ends completed | `questline.test.tsx` |
+| Q-07 | Last-milestone copy | `index === total - 1`: «Completa este hito para terminar la travesía» / «La travesía está completa» | `questline-panel.test.tsx` |
+| Q-08 | «Cerrar el hito» meant two things | «Cerrar el panel» for the panel; «completar / cumplido» for the milestone (footer, tally, badge) | `questline-panel.test.tsx` |
+| Q-09 | Cancelling left a draft milestone | A freshly added milestone is discarded when the editor closes if it is still untouched; any save or task edit keeps it | `questline.test.tsx` |
+| Q-10 | Copy and counts | The header does not show «0 de 0 tareas»; the deadline is shown once (kicker); the note is documented as an author note | `questline.test.tsx`, `questline-panel.test.tsx` |
+| Q-11 | Adding a task was not announced | Focus goes to the new checkbox (or the row button if it is locked) and is brought on screen | `questline-panel.test.tsx` |
+| Q-12 | The active state had no hidden text | `STATE_META` with a word for all four states, shared by rail and panel | `questline.test.tsx` |
+| Q-13 | Locked and overdue milestone without tint | `data-overdue` on rail and panel: the overdue state is tinted without losing the lock, the dashed border or the word «Bloqueado» | `questline.test.tsx` |
+| Q-14 | Escape and task validation | Escape backs out one layer (confirmation → editor → task editor → panel) with focus returned; an empty title when adding and renaming shows «La tarea necesita un nombre.» | `questline-panel.test.tsx` |
+| Q-15 | Focus after renaming or deleting a task | It goes to the neighbouring row and is secured on screen with `scrollIntoView({ block: 'nearest' })`, with no `preventScroll` | `questline-panel.test.tsx` |
+| Q-16 | Dynamic text without `overflow-wrap` | `overflow-wrap: anywhere` + `min-width: 0` on the note, confirmation, lock and `Checkbox` label | `e2e/overflow.spec.ts` (320–1440 px) |
+| Q-17 | Dead code and inaccurate comments | Out: `triggerId`, `deadlineToKey` and `data-done`; comments in `getBlockingNode` and the stylesheet fixed | lint/build |
+| Q-18 | Default `label` in English | Default «Ruta de hitos»; with `label=""` the rail is named «Hitos» | `questline.test.tsx` |
+| Q-19 | Deadlines going stale at midnight | `today` in state, refreshed on `visibilitychange`, `focus` and midnight; the panel recomputes on re-render | `questline.test.tsx` |
+| Q-20 | DOM ids and public API | `useId` base + `domFragment` (safe for `[A-Za-z0-9_-]`); types and `formatQuestNumber` re-exported from `Questline.tsx` | `questline.test.tsx` |
+| — | Duplication and size | `updateTasks`, a single `STATE_META` and the split into `QuestRail`, `QuestStop`, `QuestNodeEditor`, `QuestTaskRow`, `QuestDeleteConfirm`; `Questline.tsx` 588→449 and `QuestNodePanel.tsx` 602→456 | full suite |
+| — | Trail memoisation | **Not done**: `sameTrail` already avoids the `setState` with identical geometry, and an extra cache would have to be kept in sync with wrapping and font metrics. Decision written in `useQuestTrail.ts` | — |
 
 ---
 
-## 2. Verificación — ahora automatizada
+## 2. Verification — now automated
 
-`§2` ya no es una lista de comprobaciones manuales: `pnpm test:e2e` levanta Vite en Chromium real (Playwright 1.64.1, `chromium-1248` en caché) y ejecuta **36 tests**.
+`§2` is no longer a list of manual checks: `pnpm test:e2e` starts Vite in real Chromium (Playwright 1.64.1, `chromium-1248` cached) and runs **36 tests**.
 
-- **axe** WCAG 2 A/AA + best practices en los **8 temas × 2 superficies** y en los estados abiertos (panel, editor, confirmación de borrado, `Select`, `Combobox`, `DatePicker`). Los estados abiertos se auditan en diferencial contra el estado anterior: así un hallazgo preexistente no oculta lo que introduce el overlay.
-- **Overflow** a **320, 375, 480, 768, 1024 y 1440 px** con la galería completa, el panel abierto y un título de 60 caracteres sin espacios.
-- **Teclado y foco**: Tab/Enter/Escape del panel con retorno al disparador, `ThemePicker`, `Select`, `Combobox` y humo del sendero (paths con `d` no vacío en 2 y 3 filas).
+- **axe** WCAG 2 A/AA + best practices on the **8 themes × 2 surfaces** and on the open states (panel, editor, delete confirmation, `Select`, `Combobox`, `DatePicker`). Open states are audited differentially against the previous state, so a pre-existing finding does not hide what the overlay introduces.
+- **Overflow** at **320, 375, 480, 768, 1024 and 1440 px** with the full gallery, the panel open and a 60-character title with no spaces.
+- **Keyboard and focus**: Tab/Enter/Escape of the panel with the trigger restored, `ThemePicker`, `Select`, `Combobox` and a trail smoke test (paths with a non-empty `d` across 2 and 3 rows).
 
-### Hallazgos que encontró y ya están arreglados
+### Findings it surfaced and that are already fixed
 
-| # | Hallazgo | Arreglo |
+| # | Finding | Fix |
 | --- | --- | --- |
-| A11Y-01 | `FileUploader`: el nombre accesible no contenía la instrucción visible (WCAG 2.5.3) | El nombre incluye label + instrucción de la zona |
-| A11Y-02 | Marcador de hito vencido: 2.74:1 en Nord+Panel, 3.68 en Pergamino, 3.81 en Gruvbox | `--ui-danger-text` por superficie (4.86–6.03:1) |
-| A11Y-03 | Número del índice activo en Nord: 4.42:1 | `--accent-panel-strong` a 4.66:1 |
-| A11Y-04 | Panel sobre papel Pergamino: kicker 4.18, nota/tally/etiquetas 4.2 | `--ui-success-text` y `--ui-text-muted` de papel claro (4.66–5.51:1) |
-| A11Y-05 | Botón de peligro en Pergamino+Panel: 4.02:1 | `--ui-danger-text` (5.59:1) |
-| — | `DatePicker` conocido (§3 anterior): «01 de noviembre» frente a «1» visible | Nombre del día sin relleno y **sin exclusión** en axe |
-| — | `form-field-multiple-labels` en `TaskRow` (`incomplete`) | Una sola `<label>` nativa; nombre exacto «Marcar/Desmarcar «título»» conservado |
+| A11Y-01 | `FileUploader`: the accessible name did not contain the visible instruction (WCAG 2.5.3) | The name includes the label plus the area instruction |
+| A11Y-02 | Overdue milestone marker: 2.74:1 in Nord+Panel, 3.68 in Pergamino, 3.81 in Gruvbox | `--ui-danger-text` per surface (4.86–6.03:1) |
+| A11Y-03 | Active index number in Nord: 4.42:1 | `--accent-panel-strong` at 4.66:1 |
+| A11Y-04 | Panel on Pergamino paper: kicker 4.18, note/tally/labels 4.2 | `--ui-success-text` and light-paper `--ui-text-muted` (4.66–5.51:1) |
+| A11Y-05 | Danger button in Pergamino+Panel: 4.02:1 | `--ui-danger-text` (5.59:1) |
+| — | Known `DatePicker` issue (former §3): «01 de noviembre» versus the visible «1» | Day name without padding and **no exclusion** in axe |
+| — | `form-field-multiple-labels` in `TaskRow` (`incomplete`) | A single native `<label>`; the exact name «Marcar/Desmarcar «título»» kept |
 
-### Decisiones cerradas
+### Closed decisions
 
-- **Contraste sobre texturas: verificado a mano.** axe deja cientos de nodos `color-contrast` en `incomplete` porque las texturas de papel y panel (gradientes, imágenes de fondo, pseudo-elementos) impiden componer el fondo. El propietario del proyecto revisó esos nodos en los 8 temas y **los dio por válidos** (2026-11-18): no se reabre, no se reporta como pendiente y no se proponen herramientas nuevas para medirlo. El arnés los imprime y los adjunta como diagnóstico.
-- **Sin lector de pantalla real ni Safari/Firefox**: el arnés es Chromium. Es un límite aceptado del arnés, no un hallazgo.
-- **La revisión visual de los 8 temas** (jerarquía de muted, rojo de Nord, acento de panel) es del propietario; los ratios de los textos corregidos están medidos.
-- **El arnés no tiene línea base**: un hallazgo nuevo deja el test rojo y se documenta en `e2e/FINDINGS.md`; no se silencia con `disableRules`.
+- **Contrast over textures: verified by hand.** axe leaves hundreds of `color-contrast` nodes in `incomplete` because the paper and panel textures (gradients, background images, pseudo-elements) prevent the background from being composed. The project owner reviewed those nodes in the 8 themes and **accepted them as valid** (2026-11-18): it is not reopened, not reported as pending and no new tools are proposed to measure it. The harness prints them and attaches them as diagnostics.
+- **No real screen reader and no Safari/Firefox**: the harness is Chromium. This is an accepted limit of the harness, not a finding.
+- **The visual review of the 8 themes** (muted hierarchy, Nord red, panel accent) belongs to the owner; the ratios of the corrected texts are measured.
+- **The harness has no baseline**: a new finding leaves the test red and is documented in `e2e/FINDINGS.md`; it is not silenced with `disableRules`.
 
 ---
 
-## 3. Trampas conocidas y decisiones cerradas
+## 3. Known traps and closed decisions
 
-- **Puerto del arnés**: `playwright.config.ts` sirve `127.0.0.1:4317` con `reuseExistingServer`. Dos worktrees ejecutando `pnpm test:e2e` a la vez comparten servidor: uno auditaría el código del otro.
-- **Chromium fijado**: `@playwright/test` 1.64.1 corresponde a `chromium-1248`. Actualizarlo puede exigir `pnpm exec playwright install chromium`.
-- **Preload de fuentes**: los `href` de los dos `<link rel="preload">` de `index.html` son literales; renombrar un `.woff2` obliga a actualizarlos.
-- **ESLint**: `exhaustive-deps` está en `warn` a propósito y quedan seis `eslint-disable-next-line` justificados (patrón `aria-activedescendant` y `aria-invalid` sobre `role="button"`).
-- **Decisiones ya tomadas, no reabrir sin motivo**: «Ahora» redondea hacia abajo; `minuteStep` se normaliza a 1–60 (fallback 5); las hojas de `Surface` bajan a 4/9 px bajo 640 px; los popups portaleados usan `region` nombrada y no `dialog`; `required` se anuncia como descripción cuando el rol no admite `aria-required`; el acento de estado (`--ui-danger`, `--ui-success`, `--ui-warning`) nunca se usa como texto: para eso están `--ui-*-text`; el `DatePicker` nombra el día sin relleno de cero para que el nombre contenga el texto visible.
+- **Harness port**: `playwright.config.ts` serves `127.0.0.1:4317` with `reuseExistingServer`. Two worktrees running `pnpm test:e2e` at the same time share a server: one would be auditing the other's code.
+- **Pinned Chromium**: `@playwright/test` 1.64.1 corresponds to `chromium-1248`. Upgrading it may require `pnpm exec playwright install chromium`.
+- **Font preload**: the `href`s of the two `<link rel="preload">` in `index.html` are literals; renaming a `.woff2` forces updating them.
+- **ESLint**: `exhaustive-deps` is a `warn` on purpose and six justified `eslint-disable-next-line` remain (the `aria-activedescendant` and `aria-invalid` pattern on `role="button"`).
+- **Decisions already made, do not reopen without a reason**: «Ahora» rounds down; `minuteStep` is normalised to 1–60 (fallback 5); `Surface` sheets drop to 4/9 px below 640 px; portalled popups use a named `region` and not `dialog`; `required` is announced as a description when the role does not accept `aria-required`; the state accent (`--ui-danger`, `--ui-success`, `--ui-warning`) is never used as text: that is what `--ui-*-text` is for; the `DatePicker` names the day without zero padding so that the name contains the visible text.

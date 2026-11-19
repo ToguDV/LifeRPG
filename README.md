@@ -1,129 +1,129 @@
-# LifeRPG UI — Códice de Componentes
+# LifeRPG UI — Component Codex
 
-Galería interactiva de componentes React para una aplicación de tareas con la estética de **El Largo Invierno**: papel pergamino gastado, paneles de piedra, tinta, cera y ocho paletas de color.
+Interactive gallery of React components for a task application with the aesthetic of **El Largo Invierno**: worn parchment paper, stone panels, ink, wax and eight colour palettes.
 
-El proyecto nace del mockup estático original (`design/mockup.html`) y lo convierte en un sistema de componentes reutilizables, con **tokens de diseño** para color, tipografía, espaciado, geometría de controles, sombras y movimiento.
+The project starts from the original static mockup (`design/mockup.html`) and turns it into a system of reusable components, with **design tokens** for colour, typography, spacing, control geometry, shadows and motion.
 
-## Arrancar
+## Getting started
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Abre la URL que imprime Vite (por defecto `http://localhost:5173`).
+Open the URL Vite prints (by default `http://localhost:5173`).
 
-La verificación E2E necesita Chromium. La versión fijada de Playwright usa la revisión `chromium-1248`; si no está en `~/.cache/ms-playwright`, instálala una vez con `pnpm exec playwright install chromium`.
+E2E verification needs Chromium. The pinned Playwright version uses revision `chromium-1248`; if it is not in `~/.cache/ms-playwright`, install it once with `pnpm exec playwright install chromium`.
 
-| Comando | Qué hace |
+| Command | What it does |
 | --- | --- |
-| `pnpm dev` | Servidor de desarrollo con recarga en caliente. |
-| `pnpm build` | Comprueba tipos y genera `dist/` para producción. |
-| `pnpm preview` | Sirve la build de producción. |
-| `pnpm typecheck` | Solo la comprobación de TypeScript (incluye `tests/` y `e2e/`). |
-| `pnpm lint` | ESLint: correctitud y accesibilidad (`jsx-a11y`), sin reglas de estilo. |
-| `pnpm test` | Vitest en modo watch. |
-| `pnpm test:run` | Vitest una sola vez, para verificación. |
-| `pnpm test:e2e` | Auditoría en Chromium real: axe en los 8 temas × 2 superficies, estados abiertos, overflow a 320–1440 px, teclado/foco y sendero. |
-| `pnpm test:e2e:report` | Abre el informe HTML de la última ejecución E2E. |
+| `pnpm dev` | Dev server with hot reload. |
+| `pnpm build` | Type-checks and produces `dist/` for production. |
+| `pnpm preview` | Serves the production build. |
+| `pnpm typecheck` | TypeScript only (includes `tests/` and `e2e/`). |
+| `pnpm lint` | ESLint: correctness and accessibility (`jsx-a11y`), no style rules. |
+| `pnpm test` | Vitest in watch mode. |
+| `pnpm test:run` | Vitest once, for verification. |
+| `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, overflow from 320 to 1440 px, keyboard/focus and trail. |
+| `pnpm test:e2e:report` | Opens the HTML report of the last E2E run. |
 
 ## Stack
 
 - **Vite + React 19 + TypeScript**.
-- **CSS Modules** por componente. Sin framework de UI ni librería de estilos.
-- **CSS custom properties** como única fuente de verdad para el diseño.
-- **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + reglas de hooks) sin reglas de estilo: no reformatea el código.
-- **Vitest + Testing Library** sobre jsdom, para las interacciones que originaron los bugs de la revisión.
-- **Playwright + axe-core** sobre Chromium real para la verificación de accesibilidad, overflow y teclado (`pnpm test:e2e`).
-- **Tipografías locales** en `public/fonts` (subconjunto latin de IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch y Caveat).
-- Popovers, calendarios, ruedas y menús propios; sin dependencias de fechas o de componentes.
+- **CSS Modules** per component. No UI framework and no styling library.
+- **CSS custom properties** as the single source of truth for the design.
+- **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + hooks rules) with no style rules: it does not reformat the code.
+- **Vitest + Testing Library** on jsdom, for the interactions that originated the review bugs.
+- **Playwright + axe-core** on real Chromium for accessibility, overflow and keyboard verification (`pnpm test:e2e`).
+- **Local fonts** in `public/fonts` (latin subset of IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch and Caveat).
+- Popovers, calendars, wheels and menus of our own; no date or component dependencies.
 
-## La galería
+## The gallery
 
-Una sola página con todas las piezas, navegación por secciones, selector de tema y un interruptor **Papel / Panel** que cambia la superficie de muestra de todas las tarjetas.
+A single page with every piece, section navigation, a theme picker and a **Papel / Panel** switch that changes the sample surface of every card.
 
-- **08 temas**: Pergamino (por defecto), Tiza, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine y Tokyo Night.
-- **13 controles**: los 12 pedidos (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker y FileUploader) más `RangeSlider`.
-- **Primitivas de apoyo**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider y Toast.
-- **Contenedores**: `Card` con tres alturas (ficha, pliego, página), ornamentos de papel (hojas apiladas y envejecidas, margen de cuaderno y lacre) y, sobre papel, el título en una cinta de cera que cruza el borde superior.
-- **Compuestos de tarea**: TaskRow, TaskList, EmptyState y una demo final “El diario en marcha” que usa todo junto.
-- **La travesía**: `Questline` encadena hitos con tareas y plazo; el sendero se entinta al completar un hito y la línea sigue conectada cuando el raíl envuelve. Hitos y tareas se crean, editan y eliminan en el sitio.
+- **8 themes**: Pergamino (default), Tiza, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
+- **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
+- **Support primitives**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider and Toast.
+- **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, notebook margin and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
+- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “El diario en marcha” that uses everything together.
+- **La travesía**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
 
-Todo es interactivo: escribe, filtra, abre calendarios y ruedas, arrastra archivos, marca tareas, elimina, cambia de tema y alterna papel/panel.
+Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, delete, switch themes and toggle paper/panel.
 
-## Sistema de diseño
+## Design system
 
 ### Tokens
 
 ```
 src/styles/
-  fonts.css              @font-face de las familias locales
+  fonts.css              @font-face for the local families
   tokens/
-    primitives.css       tipografía, escala, espaciado, controles, motion, capas, texturas
-    themes.css           paletas, tokens semánticos y superficies
-  base.css               reset, lienzo, accesibilidad y utilidades globales
+    primitives.css       typography, scale, spacing, controls, motion, layers, textures
+    themes.css           palettes, semantic tokens and surfaces
+  base.css               reset, canvas, accessibility and global utilities
 ```
 
-- `primitives.css` define la escala invariante: `--space-*`, `--text-*`, `--font-*`, `--control-*`, `--radius-*`, `--shadow-*`, `--duration-*`, `--z-*`, etc.
-- `themes.css` contiene las ocho paletas. Cada tema solo cambia la tinta: colores, textura del papel y acentos semánticos.
-- Los componentes **nunca leen colores de paleta directamente**. Leen tokens semánticos `--ui-*` (`--ui-text`, `--ui-accent`, `--ui-field-bg`, `--ui-danger`…).
-- Los valores de layout que no pueden ser variables CSS —breakpoints y geometría de los SVG decorativos— viven en sus módulos; el resto de color, espaciado y tipografía sale de tokens.
+- `primitives.css` defines the invariant scale: `--space-*`, `--text-*`, `--font-*`, `--control-*`, `--radius-*`, `--shadow-*`, `--duration-*`, `--z-*`, etc.
+- `themes.css` holds the eight palettes. Each theme only changes the ink: colours, paper texture and semantic accents.
+- Components **never read palette colours directly**. They read semantic `--ui-*` tokens (`--ui-text`, `--ui-accent`, `--ui-field-bg`, `--ui-danger`…).
+- Layout values that cannot be CSS variables —breakpoints and the geometry of the decorative SVGs— live in their modules; every other colour, spacing and typography value comes from tokens.
 
-### Superficies
+### Surfaces
 
-Hay dos materiales, y un mismo control se adapta a ambos:
+There are two materials, and the same control adapts to both:
 
-- **Papel** (`data-surface="paper"`): tinta oscura sobre pergamino en Pergamino; tinta clara sobre cartulina oscura en los otros temas.
-- **Panel** (`data-surface="panel"`): piedra oscura con acentos metálicos.
+- **Paper** (`data-surface="paper"`): dark ink on parchment in Pergamino; light ink on dark card stock in the other themes.
+- **Panel** (`data-surface="panel"`): dark stone with metallic accents.
 
-El componente `Surface` propaga el contexto por React y pone `data-surface` en el DOM. Los popovers portaleados recuperan ese contexto con `useSurface`, de modo que un calendario abierto dentro de una hoja sigue siendo de papel, y uno abierto en un panel sigue siendo de panel.
+The `Surface` component propagates the context through React and sets `data-surface` in the DOM. Portalled popovers recover that context with `useSurface`, so a calendar opened inside a sheet is still paper, and one opened on a panel is still panel.
 
-El tema activo se guarda en `localStorage` (`liferpg-ui-theme`) y se aplica antes del primer pintado para evitar parpadeos. En el `<html>` se escriben `data-theme` y `data-paper`. `src/theme/themes.ts` es la única lista de temas: un plugin de `vite.config.ts` inyecta esa lista en el script de arranque de `index.html`.
+The active theme is stored in `localStorage` (`liferpg-ui-theme`) and applied before the first paint to avoid flicker. `data-theme` and `data-paper` are written on `<html>`. `src/theme/themes.ts` is the only list of themes: a plugin in `vite.config.ts` injects that list into the `index.html` boot script.
 
-### Añadir un tema
+### Adding a theme
 
-1. Añade una entrada en `src/theme/themes.ts` (clave, etiqueta, meta, tipo de papel y muestras).
-2. Añade su bloque de paleta en `src/styles/tokens/themes.css` con los tokens `--stone-*`, `--bone-*`, `--panel-*`, `--parch`, `--ink-*`, `--ribbon-*`, etc.
+1. Add an entry in `src/theme/themes.ts` (key, label, meta, paper type and swatches).
+2. Add its palette block in `src/styles/tokens/themes.css` with the `--stone-*`, `--bone-*`, `--panel-*`, `--parch`, `--ink-*`, `--ribbon-*`, etc. tokens.
 
-No hay que tocar ningún componente ni `index.html`: el script de arranque se genera desde `THEMES`.
+No component and no `index.html` needs touching: the boot script is generated from `THEMES`.
 
-## Accesibilidad
+## Accessibility
 
-- Etiquetas asociadas, roles ARIA y estados (`aria-expanded`, `aria-checked`, `aria-activedescendant`, `aria-selected`, `aria-valuenow`, `aria-live`).
-- Navegación completa por teclado en Select, Combobox, calendario, rueda de hora, menú de temas y controles nativos.
-- «Saltar al contenido» es el primer elemento enfocable y lleva el foco a `main#contenido`.
-- El tooltip es hoverable y se descarta con `Escape` (WCAG 1.4.13); los toasts se pausan con hover y con foco de teclado (WCAG 2.2.1).
-- Prioridad y vencimiento de `TaskRow` no dependen del color; `ProgressBar` exige `label` o `aria-label`; `RangeSlider` se anuncia como grupo.
-- Foco visible y devuelto al disparador al cerrar con `Escape`.
-- Cierre por clic fuera y por pérdida de foco.
-- `Questline` deriva el bloqueo y el vencimiento del estado de las tareas; los hitos bloqueados se abren para preparar la lista, pero sus checkboxes están deshabilitados. El cierre de un hito se anuncia en una región `status`.
-- `prefers-reduced-motion` desactiva animaciones y transiciones.
-- `pnpm test:e2e` audita la galería completa con axe-core (WCAG 2.0/2.1 A y AA + best practices) en los **8 temas × 2 superficies**, más el panel, el editor y la confirmación de borrado de `Questline` y los popovers de Select, Combobox y DatePicker. Los estados abiertos se comparan con el estado anterior para que un hallazgo heredado no oculte el que introduce el overlay.
-- **Hallazgos abiertos** en la primera ejecución del arnés (los tests están en rojo a propósito, no hay línea base): `label-content-name-mismatch` en las tres zonas de `FileUploader` (el nombre accesible es la label del campo y no contiene el texto visible de la zona); contraste del marcador vencido de `Questline` sobre panel en Pergamino, Nord y Gruvbox; contraste del número del índice activo en Nord (4.42:1); texto del panel de `Questline` sobre papel en Pergamino (4.18–4.2:1); botón de borrado sobre panel (4.02:1). El `DatePicker` conserva el hallazgo conocido de `REVISION.md` §3 en las celdas de día: está documentado en el test y excluido solo en esa pasada. Detalle con selectores y ratios en [`e2e/FINDINGS.md`](e2e/FINDINGS.md).
-- axe deja cientos de nodos de `color-contrast` en `incomplete` sobre las texturas de papel y panel. El arnés los imprime y los adjunta por separado; **no cuentan como aprobados** y el contraste sigue necesitando revisión manual.
+- Associated labels, ARIA roles and states (`aria-expanded`, `aria-checked`, `aria-activedescendant`, `aria-selected`, `aria-valuenow`, `aria-live`).
+- Full keyboard navigation in Select, Combobox, the calendar, the time wheel, the theme menu and native controls.
+- “Saltar al contenido” is the first focusable element and moves focus to `main#contenido`.
+- The tooltip is hoverable and is dismissed with `Escape` (WCAG 1.4.13); toasts pause on hover and on keyboard focus (WCAG 2.2.1).
+- `TaskRow` priority and overdue status do not rely on colour; `ProgressBar` requires `label` or `aria-label`; `RangeSlider` is announced as a group.
+- Focus is visible and returned to the trigger on closing with `Escape`.
+- Closing on click outside and on loss of focus.
+- `Questline` derives locking and overdue from the state of the tasks; locked milestones open so the list can be prepared, but their checkboxes are disabled. Completing a milestone is announced in a `status` region.
+- `prefers-reduced-motion` disables animations and transitions.
+- `pnpm test:e2e` audits the whole gallery with axe-core (WCAG 2.0/2.1 A and AA + best practices) across the **8 themes × 2 surfaces**, plus the `Questline` panel, editor and delete confirmation and the Select, Combobox and DatePicker popovers. Open states are compared against the previous state so that an inherited finding does not hide the one the overlay introduces.
+- **Open findings** in the first run of the harness (the tests are red on purpose, there is no baseline): `label-content-name-mismatch` in the three areas of `FileUploader` (the accessible name is the field label and does not contain the visible text of the area); contrast of the `Questline` overdue marker on panel in Pergamino, Nord and Gruvbox; contrast of the active index number in Nord (4.42:1); `Questline` panel text on paper in Pergamino (4.18–4.2:1); delete button on panel (4.02:1). The `DatePicker` keeps the known finding from `REVISION.md` §3 in the day cells: it is documented in the test and excluded only in that pass. Details with selectors and ratios in [`e2e/FINDINGS.md`](e2e/FINDINGS.md).
+- axe leaves hundreds of `color-contrast` nodes in `incomplete` over the paper and panel textures. The harness prints them and attaches them separately; **they do not count as passed** and contrast still needs manual review.
 
-Atajos principales:
+Main shortcuts:
 
-| Control | Teclas |
+| Control | Keys |
 | --- | --- |
-| Select / Combobox | `↑` `↓` `Home` `End` `Enter` `Esc`; escribir filtra en Combobox. |
-| DatePicker | Flechas para el día, `Home`/`End` para la semana, `PageUp`/`PageDown` para el mes, `Shift` + `PageUp`/`PageDown` para el año, `Enter`, `Esc`. |
-| TimePicker | `↑` `↓` cambian la rueda enfocada, `PageUp`/`PageDown` saltan cinco, `Home`/`End`, `Enter`. |
-| Menú de temas | Flechas, `Home`/`End`, `Enter`, `Esc`. |
+| Select / Combobox | `↑` `↓` `Home` `End` `Enter` `Esc`; typing filters in Combobox. |
+| DatePicker | Arrows for the day, `Home`/`End` for the week, `PageUp`/`PageDown` for the month, `Shift` + `PageUp`/`PageDown` for the year, `Enter`, `Esc`. |
+| TimePicker | `↑` `↓` move the focused wheel, `PageUp`/`PageDown` skip five, `Home`/`End`, `Enter`. |
+| Theme menu | Arrows, `Home`/`End`, `Enter`, `Esc`. |
 
-## Estructura
+## Structure
 
 ```
 LifeRPG/
-  index.html                 entrada de Vite (tema antes del primer paint)
-  design/mockup.html         mockup estático original conservado
-  public/fonts/              fuentes locales .woff2
-  eslint.config.js           flat config: correctitud y accesibilidad, sin estilo
-  vitest.config.ts           Vitest + jsdom + setup de Testing Library
-  playwright.config.ts       E2E: Vite en 4317, Chromium, trazas al fallar
-  tests/                     un archivo por asunto, escritos contra roles y nombres
-  e2e/                       axe (8 temas × 2 superficies), overflow y teclado
-  e2e/FINDINGS.md            hallazgos abiertos de la primera pasada
+  index.html                 Vite entry (theme before first paint)
+  design/mockup.html         original static mockup, kept
+  public/fonts/              local .woff2 fonts
+  eslint.config.js           flat config: correctness and accessibility, no style
+  vitest.config.ts           Vitest + jsdom + Testing Library setup
+  playwright.config.ts       E2E: Vite on 4317, Chromium, traces on failure
+  tests/                     one file per subject, written against roles and names
+  e2e/                       axe (8 themes × 2 surfaces), overflow and keyboard
+  e2e/FINDINGS.md            open findings from the first pass
   src/
     App.tsx
     main.tsx
@@ -134,28 +134,28 @@ LifeRPG/
       Divider/ Toast/ EmptyState/ TaskList/ Questline/ Field/ Popover/
       Ornaments/
     gallery/
-      GalleryPage.tsx        página única con índice, temas y superficies
-      sections/              una sección por familia de componentes
-      Demo.tsx               rejillas, grupos, filas y notas de las demos
-    lib/                     cx, estado controlado, floating, dismiss, fechas y formato
-    styles/                  fuentes, tokens, temas y base
-    theme/                   metadata, provider y selector de temas
+      GalleryPage.tsx        single page with index, themes and surfaces
+      sections/              one section per component family
+      Demo.tsx               grids, groups, rows and notes for the demos
+    lib/                     cx, controlled state, floating, dismiss, dates and formatting
+    styles/                  fonts, tokens, themes and base
+    theme/                   metadata, provider and theme picker
 ```
 
-## Notas
+## Notes
 
-- **DatePicker / TimePicker** son implementaciones propias: no hay `input type="date"` ni dependencias de calendario. El calendario empieza en lunes y respeta `min`, `max` y fechas deshabilitadas. La rueda de hora trabaja en pasos configurables.
-- **FileUploader** valida tipo y tamaño, permite arrastrar y soltar, muestra miniaturas de imágenes y lista de archivos. No sube nada a un servidor: la demo es 100% local.
-- **Toast** es una demo en memoria; los avisos se apilan, se pausan al pasar el cursor y mientras el foco de teclado está dentro, y se cierran solos.
-- **Questline** no guarda estados de bloqueo: se derivan de las tareas. El plazo vive en el hito (`deadline` como `YYYY-MM-DD`), no en la tarea. El sendero es un SVG decorativo medido en el navegador; en jsdom no se pinta, así que su continuidad se revisa a mano.
-- El mockup original sigue en `design/mockup.html`, con `design/fonts/local.css` apuntando a las fuentes locales de `public/fonts`.
+- **DatePicker / TimePicker** are our own implementations: there is no `input type="date"` and no calendar dependency. The calendar starts on Monday and honours `min`, `max` and disabled dates. The time wheel works in configurable steps.
+- **FileUploader** validates type and size, supports drag and drop, shows image thumbnails and a file list. It uploads nothing to a server: the demo is 100% local.
+- **Toast** is an in-memory demo; notices stack, pause on hover and while keyboard focus is inside, and close by themselves.
+- **Questline** stores no locked state: it is derived from the tasks. The deadline lives on the milestone (`deadline` as `YYYY-MM-DD`), not on the task. The trail is a decorative SVG measured in the browser; jsdom does not paint it, so its continuity is checked by hand.
+- The original mockup is still in `design/mockup.html`, with `design/fonts/local.css` pointing at the local fonts in `public/fonts`.
 
-## Documentación de diseño
+## Design documentation
 
-- `DESIGN.md` — decisiones de diseño, modelo de tokens, temas, superficies, tipografía, accesibilidad y límites.
-- `AGENTS.md` — guía operativa para agentes: comandos, reglas no obvias y trampas. Tiene presupuesto cerrado (`pnpm check:docs`).
-- `design/mockup.html` — referencia estática original.
+- `DESIGN.md` — design decisions, token model, themes, surfaces, typography, accessibility and limits.
+- `AGENTS.md` — operating guide for agents: commands, non-obvious rules and traps. It has a closed budget (`pnpm check:docs`).
+- `design/mockup.html` — original static reference.
 
-## Créditos
+## Credits
 
-Diseño original del diario, la paleta y los temas: el mockup `El Largo Invierno — Diario de la Marca Hueca`. Esta versión lo convierte en un kit React con tokens y componentes interactivos. Tipografías: Google Fonts, distribuidas bajo SIL Open Font License.
+Original design of the journal, the palette and the themes: the `El Largo Invierno — Diario de la Marca Hueca` mockup. This version turns it into a React kit with tokens and interactive components. Typography: Google Fonts, distributed under the SIL Open Font License.
