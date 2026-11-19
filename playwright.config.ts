@@ -21,6 +21,15 @@ export default defineConfig({
   outputDir: `${CACHE_DIR}/liferpg-playwright-results`,
   fullyParallel: true,
   retries: 0,
+  /*
+    Not one worker per core. Each test drives a full Chromium over a ~9 000
+    px gallery and axe walks the whole document, so the default half of the
+    12 threads saturated every core for the whole run and left the machine
+    unusable. Three workers keep the box responsive and only cost wall
+    clock: `pnpm test:e2e --workers=1` is the quietest run, `--workers=6`
+    the fastest.
+  */
+  workers: 3,
   reporter: [
     ['list'],
     [
