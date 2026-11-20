@@ -56,8 +56,10 @@ counts, how levels and rewards work — is **not designed yet**.
 
 ## 4. Current phase: UI planning
 
-The repository is in the **UI planning phase**. It is not the app yet; it is
-the place where the app's interface is being decided and verified.
+The repository is still in the **UI planning phase**, but the first official
+screen exists. `/` is the journal — a task list and the questline, saved in
+`localStorage`; `/gallery` is the place where the interface is decided and
+verified.
 
 **What exists:**
 
@@ -69,14 +71,15 @@ the place where the app's interface is being decided and verified.
 - The **Component Codex** gallery: a single page that renders every component
   on both surfaces and in every theme. It is the review surface, not the
   product.
+- The first **journal screen** at `/`: a local task list and a questline, built
+  from the components below and persisted in `localStorage`.
 - The verification harness: Vitest for interaction, Playwright + axe for
   accessibility, overflow from 320 to 1440 px, keyboard and focus.
 
 **Deliberately absent for now:**
 
-- Application state and persistence beyond the theme preference.
-- Routing and the real screens of the app (the daily journal, the route, the
-  character sheet).
+- More screens (the character sheet, the full route view) and a router; `/`
+  and `/gallery` are switched by pathname.
 - Backend, accounts, sync and notifications.
 - The XP economy, level curve, rewards and streaks.
 - A mobile app, PWA/offline strategy and data import/export.
@@ -102,9 +105,8 @@ the place where the app's interface is being decided and verified.
 - **Can a quest be abandoned?** What does the journal record — failure, a
   closed chapter, or nothing?
 - **One character or several journals?**
-- **Language and tone.** The code and docs are in English; a few defaults are
-  in Spanish (`ariaLabel="Tareas"`, the empty state). The product's voice is
-  not decided.
+- **Language and tone.** The code, docs and the first journal screen are in
+  English. The product's voice is not decided.
 - **What ships first?** A local-first single-player journal is the smallest
   honest version; accounts and sync come only if the loop works without them.
 

@@ -1,0 +1,20 @@
+.add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* Aligns the button with the control, under the field label. */
+.addButton {
+  margin-top: calc(var(--text-xs) * var(--leading-tight) + var(--field-gap));
+}
+
+.progress {
+  margin-top: var(--space-4);
+}
+
+.list {
+  margin-top: var(--space-3);
+  min-width: 0;
+}

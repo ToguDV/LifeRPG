@@ -590,6 +590,16 @@
   color: var(--ui-accent-strong);
 }
 
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.footer a:hover {
+  color: var(--ui-text);
+}
+
 .footerLine {
   width: var(--space-8);
   height: var(--border-width);

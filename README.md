@@ -2,7 +2,7 @@
 
 **An RPG-style to-do list.** Real-life tasks are written as quests, grouped into milestones and completed along a route the journal remembers.
 
-> **Status: UI planning phase.** This repository holds the UI layer of LifeRPG: design tokens, the component set and the **Component Codex** gallery used to decide and verify the interface. There is no application state, routing, persistence or backend yet. The product direction, the intended loop and the open decisions live in [`PRODUCT.md`](PRODUCT.md).
+> **Status: first screen.** `/` is the journal: a local task list plus the questline, saved in `localStorage`. `/gallery` remains the **Component Codex** used to review the interface. There is no backend, accounts or sync yet. The product direction, the intended loop and the open decisions live in [`PRODUCT.md`](PRODUCT.md).
 
 The visual starting point is the static mockup **The Long Winter — Journal of the Hollow Mark** (`design/mockup.html`): worn parchment, stone panels, ink, wax and eight colour palettes. The work so far turns that mockup into a system of reusable components, with **design tokens** for colour, typography, spacing, control geometry, shadows and motion — the foundation the app's screens will be built from.
 
@@ -10,7 +10,7 @@ The visual starting point is the static mockup **The Long Winter — Journal of 
 
 LifeRPG is a journal, not a backlog. The player writes real tasks, gives them a place on a route, completes them and watches the journal record the progress: the route inks in, milestones unlock and experience accumulates. The game is a reading layer over real work — the task stays the unit of work, and the journal has to be a good task journal before it is a good game.
 
-The UI already contains the pieces this loop needs: `Questline` for milestones and their tasks, `TaskList` for the daily list, `ProgressBar` for meters, `Card` and `Surface` for the materials, and `Toast` for notices. The XP economy, the application state and the real screens are still to be designed; the current phase is about making the interface ready to carry them. [`PRODUCT.md`](PRODUCT.md) explains the pillars, the loop and what is still open.
+The UI already contains the pieces this loop needs: `Questline` for milestones and their tasks, `TaskList` for the daily list, `ProgressBar` for meters, `Card` and `Surface` for the materials, and `Toast` for notices. The journal at `/` composes `TaskList` and `Questline`; the XP economy and the application layer (backend, accounts, sync) are still to be designed. [`PRODUCT.md`](PRODUCT.md) explains the pillars, the loop and what is still open.
 
 ## Getting started
 
@@ -48,7 +48,7 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 
 ## The Component Codex
 
-The gallery is the review surface of the UI planning phase: a single page with every piece, section navigation, a theme picker and a **Paper / Panel** switch that changes the sample surface of every card. It is not the app yet — it is where the app's interface is being decided and demonstrated.
+The gallery is the review surface of the UI planning phase: a single page with every piece, section navigation, a theme picker and a **Paper / Panel** switch that changes the sample surface of every card. It is not the app — it is where the app's interface is being decided and demonstrated. Open it at `/gallery`.
 
 - **8 themes**: Parchment (default), Chalk, Catppuccin, Dracula, Nord, Gruvbox, Rosé Pine and Tokyo Night.
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
@@ -133,7 +133,8 @@ LifeRPG/
   e2e/                       axe (8 themes × 2 surfaces), overflow and keyboard
   e2e/FINDINGS.md            open findings from the first pass
   src/
-    App.tsx
+    App.tsx                  pathname switch: journal at `/`, codex at `/gallery`
+    journal/                 first screen: tasks + questline, localStorage
     main.tsx
     components/
       Button/ Checkbox/ Radio/ Switch/ TextInput/ Textarea/

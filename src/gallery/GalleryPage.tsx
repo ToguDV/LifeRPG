@@ -2,7 +2,7 @@ import { useState, type ComponentType } from 'react'
 import { Icon } from '../components/Icon/Icon'
 import { ThemePicker } from '../theme/ThemePicker'
 import type { SurfaceValue } from '../components/Surface/surface-context'
-import { Atmosphere } from './Atmosphere'
+import { Atmosphere } from '../components/Atmosphere/Atmosphere'
 import { cx } from '../lib/cx'
 import { SECTIONS, type SectionId } from './sections'
 import { SectionHeading } from './Demo'
@@ -103,6 +103,7 @@ export function GalleryPage() {
             </a>
 
             <nav className={styles.topLinks} aria-label="Main sections">
+              <a href="/">Journal</a>
               {TOP_LINKS.map((link) => (
                 <a key={link.id} href={`#${link.id}`}>
                   {link.label}
@@ -221,6 +222,7 @@ export function GalleryPage() {
           <span className={styles.footerLine} aria-hidden="true" />
           <span>ink, ash, and wax</span>
           <span className={styles.diamond} aria-hidden="true" />
+          <a href="/">The journal</a>
           <p className={styles.footerTech}>
             React 19 · TypeScript · CSS Modules · design tokens · local fonts
           </p>

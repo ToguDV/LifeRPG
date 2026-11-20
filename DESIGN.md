@@ -534,8 +534,8 @@ The gallery is the system's review surface; Storybook is not used.
 
 ## 14. Known limits and trade-offs
 
-- **UI layer only**: the repository is the interface, not the application. There is no product state, routing, XP economy or backend yet; FileUploader and Toast are local demos and there is no network. This is the scope of the planning phase, not a defect.
-- **No router yet**: the gallery is a single page with anchors; the app's screens are not composed.
+- **Local-first, not connected**: the journal keeps its tasks and milestones in `localStorage`. There is no backend, account, sync, XP economy or notification layer yet; FileUploader and Toast remain local demos.
+- **No router**: `/` and `/gallery` are a pathname switch. A static host needs an SPA fallback for `/gallery`; the gallery is a single page with anchors.
 - **No Storybook**: the gallery page fills that role and is the review deliverable.
 - **Interaction tests, not layout tests**: Vitest + Testing Library cover behaviour and `pnpm test:e2e` measures in Chromium the trail, the widths (320–1440 px), the keyboard and axe; jsdom measures none of that.
 - **Questline without reordering**: the order of milestones and tasks is narrative; there is no drag and drop.

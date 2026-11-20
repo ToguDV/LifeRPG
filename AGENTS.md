@@ -1,6 +1,6 @@
 # AGENTS.md — Operating guide
 
-> **LifeRPG**: an RPG-style to-do app where tasks are quests. This repository is its UI layer — design system, components and the Component Codex gallery — currently in the **planning phase**: no app logic, persistence or backend yet.
+> **LifeRPG**: an RPG-style to-do app where tasks are quests. This repository is its UI layer — design system, components, the journal screen and the Component Codex gallery. The journal is local-only: `localStorage`, no backend.
 > This file is short on purpose: commands, rules you cannot infer from the code, and traps.
 > Before touching styles, tokens, themes or surfaces, read **`DESIGN.md`**; for the product direction read **`PRODUCT.md`**.
 
@@ -24,7 +24,8 @@ pnpm build        # typecheck + production build
 - `src/styles/tokens/` — `primitives.css` (invariants) and `themes.css` (8 palettes + `--ui-*`).
 - `src/theme/` — `themes.ts` (the only theme list), provider and picker.
 - `src/lib/` — `useControllableState`, `useFloating`, `useDismiss`, `cx`, dates and formatting.
-- `src/gallery/` — the gallery is the review surface. Every demo sheet is a `Card size="lg"` with the component name in the `Badge` of the `kicker`.
+- `src/gallery/` — the gallery is the review surface at `/gallery`. Every demo sheet is a `Card size="lg"` with the component name in the `Badge` of the `kicker`.
+- `src/journal/` — the first official screen at `/`: task list and questline, stored in `localStorage`.
 - `tests/` (jsdom, one subject per file) and `e2e/` (real Chromium).
 - `DESIGN.md` — the visual why · `README.md` — usage and structure · `design/mockup.html` — original reference.
 

@@ -54,7 +54,7 @@ function escapeForRegExp(value: string): string {
 
 /** Loads the gallery from a clean context and waits for fonts and layout. */
 export async function gotoGallery(page: Page): Promise<void> {
-  await page.goto('/')
+  await page.goto('/gallery')
   await expect(page.locator('main#content')).toBeVisible()
   await page.evaluate(() => document.fonts.ready.then(() => true))
 }
