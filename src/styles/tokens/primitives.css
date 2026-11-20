@@ -7,22 +7,24 @@
 
 :root {
   /* ---------- type families ---------- */
-  --font-body: "IM Fell English", "Iowan Old Style", Georgia, serif;
-  --font-caps: "IM Fell English SC", "IM Fell English", Georgia, serif;
-  --font-display: "Grenze", "IM Fell English", Georgia, serif;
-  --font-engraved: "Cinzel", Georgia, serif;
-  --font-hand: "Caveat", "Bradley Hand", cursive;
-  --font-gothic: "Grenze Gotisch", "Grenze", Georgia, serif;
+  /*
+    Two families, and only two. Alegreya carries everything read, labelled
+    or counted; Cinzel is the titling face and appears only in headings.
+    The roles are gone as tokens: a label is the body face at weight 600 with
+    tracking, a note is the body face in italic.
+  */
+  --font-body: "Alegreya", Georgia, serif;
+  --font-display: "Cinzel", Georgia, serif;
 
   /* ---------- type scale ---------- */
   /*
     14px is the floor of the kit (DESIGN.md §6.2): nothing readable is set
     below it. The 11/12/13px steps this scale used to carry were collapsed
     into --text-xs, which is now the smallest step and the only one under
-    the body size. Engraved uppercase metadata still reads as metadata
-    through family, weight and tracking, not through being tiny.
+    the body size. Uppercase metadata still reads as metadata
+    through uppercase, weight and tracking, not through being tiny.
   */
-  --text-xs: 0.875rem;    /* 14px · floor: engraved labels, badges, counters */
+  --text-xs: 0.875rem;    /* 14px · floor: uppercase labels, badges, counters */
   --text-base: 0.9375rem; /* 15px */
   --text-md: 1rem;
   --text-lg: 1.125rem;
@@ -35,11 +37,11 @@
 
   /* ---------- reading roles ---------- */
   /*
-    Caveat's x-height is 0.36em against 0.46em of IM Fell English: at the same
-    font-size the handwritten note reads 22% smaller, and its strokes are thin
-    enough for the paper grain to eat them. These are the floors for anything
-    meant to be read, as opposed to ornament: prose never goes below
-    --text-prose and a handwritten note never goes below --text-note-sm.
+    These are the floors for anything meant to be read, as opposed to
+    ornament: prose never goes below --text-prose, and an italic note (the
+    second voice of the kit, §2.4 of DESIGN.md) never goes below
+    --text-note-sm. Alegreya's italic shares the roman's x-height, so the
+    size is hierarchy, not a correction for a small face.
   */
   --text-prose: 0.9375rem; /* 15px · descriptions, hints, messages, tooltips */
   --text-note-sm: 1rem; /* 16px · a note under a label: optional, aside, footer */

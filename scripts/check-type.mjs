@@ -11,8 +11,8 @@
   - no `--text-*` token may be defined below 14px (the floor, DESIGN.md §6.2);
   - no `font-size` in a CSS module may resolve below 14px, and none may skip
     the scale: the token is the only way to set type;
-  - a `--font-hand` rule declares its size with `--text-note-sm` or
-    `--text-note` (Caveat's x-height is 0.36em, so 14px reads as 10px);
+  - an italic note (`font-style: italic` on the body face) declares its size
+    with `--text-note-sm` or `--text-note`, never with the floor step;
   - a reading selector (`description`, `hint`, `message`, `aside`…) resolves
     to at least 15px, one step above the floor.
 */
@@ -74,9 +74,9 @@ for (const file of files) {
       continue
     }
 
-    if (/font-family:\s*var\(--font-hand\)/.test(body)) {
+    if (/font-style:\s*italic/.test(body) && /font-family:\s*var\(--font-body\)/.test(body)) {
       if (!name || !HAND_SIZES.has(name)) {
-        problems.push(`${where}: ${selector.trim()} uses ${value} on Caveat (use --text-note-sm or --text-note)`)
+        problems.push(`${where}: ${selector.trim()} is an italic note at ${value} (use --text-note-sm or --text-note)`)
       }
       continue
     }
@@ -100,7 +100,7 @@ if (problems.length > 0) {
   console.error(
     `\nSee DESIGN.md §6.2: nothing below ${FLOOR_PX}px (--text-xs), ` +
       '--text-prose (15px) for anything meant to be read, ' +
-      '--text-note-sm/--text-note (16/18px) for Caveat.',
+      '--text-note-sm/--text-note (16/18px) for an italic note.',
   )
   process.exit(1)
 }

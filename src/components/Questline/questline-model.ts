@@ -15,7 +15,7 @@ export interface QuestTask {
 export interface QuestNode {
   id: string
   title: string
-  /** Handwritten aside: the rumour, the warning, the reason. */
+  /** Italic aside: the rumour, the warning, the reason. */
   note?: string
   /** Local calendar date as `YYYY-MM-DD`; the deadline lives on the milestone. */
   deadline?: string

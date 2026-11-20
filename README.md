@@ -43,7 +43,7 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 - **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + hooks rules) with no style rules: it does not reformat the code.
 - **Vitest + Testing Library** on jsdom, for the interactions that originated the review bugs.
 - **Playwright + axe-core** on real Chromium for accessibility, overflow and keyboard verification (`pnpm test:e2e`).
-- **Local fonts** in `public/fonts` (latin subset of IM Fell English, IM Fell English SC, Cinzel, Grenze, Grenze Gotisch and Caveat).
+- **Local fonts** in `public/fonts` (latin subset of Alegreya and Cinzel; the reference mockup keeps its own families in `design/fonts`).
 - Popovers, calendars, wheels and menus of our own; no date or component dependencies.
 
 ## The Component Codex
@@ -156,7 +156,7 @@ LifeRPG/
 - **FileUploader** validates type and size, supports drag and drop, shows image thumbnails and a file list. It uploads nothing to a server: the demo is 100% local.
 - **Toast** is an in-memory demo; notices stack, pause on hover and while keyboard focus is inside, and close by themselves.
 - **Questline** stores no locked state: it is derived from the tasks. The deadline lives on the milestone (`deadline` as `YYYY-MM-DD`), not on the task. The trail is a decorative SVG measured in the browser; jsdom does not paint it, so its continuity is checked by hand.
-- The original mockup is still in `design/mockup.html`, with `design/fonts/local.css` pointing at the local fonts in `public/fonts`.
+- The original mockup is still in `design/mockup.html`, with `design/fonts/local.css` pointing at the families the mockup keeps for itself, all of them under `design/fonts/` except `cinzel-400-700.woff2`.
 
 ## Design documentation
 

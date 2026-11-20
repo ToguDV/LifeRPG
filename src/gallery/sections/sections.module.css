@@ -50,7 +50,7 @@
 }
 
 .taskKicker {
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-widest);
@@ -61,7 +61,7 @@
 
 .taskTitle {
   margin-top: var(--space-1);
-  font-family: var(--font-caps);
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: var(--weight-book);
   line-height: var(--leading-tight);
@@ -149,7 +149,7 @@
 }
 
 .cardRowNum {
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);

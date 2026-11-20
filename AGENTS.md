@@ -52,7 +52,7 @@ pnpm build        # typecheck + production build
 
 - **Contrast `incomplete`: closed.** axe cannot compose textured backgrounds. The owner reviewed those nodes by hand in the 8 themes and accepted them on 2026-11-18. It is not pending: do not report it and do not propose measuring it again.
 - **Shared port 4317.** `playwright.config.ts` uses `reuseExistingServer`: two worktrees at once share a server and one audits the other's code. Change `PORT` or stop the other server.
-- **Font preload.** `index.html` preloads `im-fell-english-400` and `cinzel-400-700`; if you change the body font or rename the file, update the `href` or it will be downloaded twice.
+- **Font preload.** `index.html` preloads `alegreya-400-700` and `cinzel-400-700`; if you change the body font or rename the file, update the `href` or it will be downloaded twice.
 - **Accent contrast.** The primary button text sits on the dark band of the gradient; light paper does not use `--ink-3` directly for muted. Measure before lightening.
 - **Art performance.** The torn edge is a shared `clip-path` (`#ui-torn-clip`), not a per-card filter; the paper shadow is `box-shadow`. No `mix-blend-mode` on fixed layers, no `backdrop-filter` on the topbar. The grain is a shared background tile, not a per-element filter.
 - **`design/mockup.html`** is the original reference: adjust it only to keep it working, not to mirror the app.

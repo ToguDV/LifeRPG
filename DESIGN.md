@@ -43,11 +43,11 @@ A control can live on **paper** or on **panel**. They are not two different comp
 
 Textures and torn edges are used to build the feel of paper, not to fill space. Heavy SVG filters are limited to the background layer of the cards; the content is not filtered.
 
-### 2.4 Handwritten annotation is state, not decoration
+### 2.4 Italic annotation is state, not decoration
 
-The `Caveat` typeface is reserved for notes, hints, subheadings and secondary values. It serves to narrate state (“2 de 3 provisiones”, “Has sellado el diario 2 veces”) without competing with the main text.
+The italic of the body face is reserved for notes, hints, subheadings and secondary values. It serves to narrate state (“2 de 3 provisiones”, “Has sellado el diario 2 veces”) without competing with the main text: there is one reading face, and a note is the same face leaning.
 
-Critical information does not rest on handwritten text alone: there is always a label, a value or an ARIA state backing it. A note is written in muted ink, never in the accent: the accent belongs to the state itself — a value, a danger, a completion — not to the sentence that narrates it.
+Critical information does not rest on italic text alone: there is always a label, a value or an ARIA state backing it. A note is written in muted ink, never in the accent: the accent belongs to the state itself — a value, a danger, a completion — not to the sentence that narrates it.
 
 ### 2.5 Accessibility inside the material
 
@@ -229,7 +229,7 @@ Below 640 px the stack offset drops to 4 and 9 px. The page margin on mobile is 
 
 The wax seal lives apart: `WaxSeal` stamps the folio in wax with the primary action tokens and announces “Folio N” with `role="img"`. The wax is drawn as SVG with three paths —the wax that overflows, the irregular body, and the die ring—, so the silhouette is never a circle; the shadow follows that silhouette with `drop-shadow` on the container.
 
-**Containers.** `Card` is the reusable sheet: header (kicker, title, description, wax seal), rule, body, and handwritten footer. `tilt` is the same ornament from `Surface` and is ignored on panel. Three heights, with the same material and the same ornaments:
+**Containers.** `Card` is the reusable sheet: header (kicker, title, description, wax seal), rule, body, and an italic footer. `tilt` is the same ornament from `Surface` and is ignored on panel. Three heights, with the same material and the same ornaments:
 
 - `sm`: 21 rem card, medium padding, `--text-lg` title.
 - `md`: 30 rem folio, large padding, `--text-xl` title.
@@ -267,37 +267,37 @@ Popovers render into a portal to the `body`, outside the visual tree. So that th
 
 ### 6.1 Families and roles
 
+Two families carry the whole kit, and nothing else is loaded:
+
 | Token | Family | Use |
 | --- | --- | --- |
-| `--font-body` | IM Fell English | Main text, paragraphs, inputs, descriptions. |
-| `--font-caps` | IM Fell English SC | Card and section titles; small caps. |
-| `--font-display` | Grenze | Page title, months, time, large headers. |
-| `--font-engraved` | Cinzel | Form labels, buttons, metadata, numeric values. |
-| `--font-hand` | Caveat | Notes, hints, folios, handwritten subtitles. |
-| `--font-gothic` | Grenze Gotisch | Available for gothic accents; currently unused in components. |
+| `--font-body` | Alegreya | Everything read, labelled or counted: prose, inputs, descriptions, control labels, buttons, badges, counters and the italic of every note. |
+| `--font-display` | Cinzel | Headings only: page title, card and ribbon titles, section titles, months, large headers. |
 
-All families are served locally from `public/fonts` (latin subsets of Google Fonts, SIL Open Font License). `@font-face` is in `src/styles/fonts.css`.
+Alegreya is a book face with a true italic and a 400–700 range, so the roles that used to cost a family are now styles: the 14 px uppercase label is the body face at weight 600 with tracking, and a note is the body face in italic. Cinzel is a Roman titling face and its lowercase is small caps, so a heading is set in caps by the face and needs no `text-transform`.
 
-`index.html` preloads with `crossorigin` the two families painted in the first viewport: `im-fell-english-400.woff2` (body) and `cinzel-400-700.woff2` (brand, navigation, and the kicker of the topbar and masthead). The rest load on demand. Renaming those files forces an update of the preload `href`; if it does not match the `@font-face` `src`, the browser downloads the font twice.
+Both families are served locally from `public/fonts` (latin subsets of Google Fonts, SIL Open Font License). `@font-face` is in `src/styles/fonts.css`.
+
+`index.html` preloads with `crossorigin` the two families painted in the first viewport: `alegreya-400-700.woff2` (body and every label) and `cinzel-400-700.woff2` (headings). Renaming those files forces an update of the preload `href`; if it does not match the `@font-face` `src`, the browser downloads the font twice.
 
 ### 6.2 Scale and hierarchy
 
 - Scale from `--text-xs` (14 px) to `--text-6xl` (72 px). Nothing in the kit is set below 14 px.
-- `--text-xs` is the floor and the only step under the body size: engraved uppercase metadata, badges, counters and the labels of the smallest controls. They read as metadata through `Cinzel`, uppercase, tracking and weight, not through being tiny. When a label needs to recede, it loses contrast, not size.
-- Two reading roles sit on top of the scale and are the floor for anything meant to be read: `--text-prose` (15 px) for descriptions, hints, messages and tooltips, and `--text-note` (18 px) / `--text-note-sm` (16 px) for handwritten notes.
-- Control labels: 14 px, `Cinzel`, uppercase, wide tracking.
-- Body text: 15 px, `IM Fell English`, 1.5 line height.
-- Card titles: `IM Fell English SC` at 28 px.
-- Page title: `Grenze` with `clamp()` between 44 and 72 px.
-- Notes: `Caveat` 16–18 px, `--leading-note`. Its x-height is 0.36 em against the 0.46 em of `IM Fell English`, so at the same size a note reads 22 % smaller and its thin strokes lose to the paper grain: 16 px is the floor and 18 px the size when the note speaks. It is never used for information that is not also in normal text or in an accessible attribute.
+- `--text-xs` is the floor and the only step under the body size: uppercase metadata, badges, counters and the labels of the smallest controls. They read as metadata through `Alegreya` at weight 600, uppercase, tracking and weight, not through being tiny. When a label needs to recede, it loses contrast, not size.
+- Two reading roles sit on top of the scale: `--text-prose` (15 px) for descriptions, hints, messages and tooltips, and `--text-note` (18 px) / `--text-note-sm` (16 px) for an italic note.
+- Control labels: 14 px, `Alegreya` 600, uppercase, wide tracking.
+- Body text: 15 px, `Alegreya`, 1.5 line height.
+- Card titles: `Cinzel` at 28 px.
+- Page title: `Cinzel` with `clamp()` between 44 and 72 px.
+- Notes: `Alegreya` italic at 16–18 px, `--leading-note`. Alegreya's italic shares the roman's x-height, so a note is not set apart by a smaller size: the slant and the muted ink are the signal. 16 px is the floor and 18 px the size when the note speaks. It is never used for information that is not also in normal text or in an accessible attribute.
 - Colour on a note is not emphasis: a note that reports state is written in muted ink and the accent colours the value or the state word, so the eye has a reason to go there.
 
 ### 6.3 Reading decisions
 
 - No sustained uppercase in paragraphs.
-- The 14 px floor is absolute: nothing is set at 11, 12 or 13 px. Anything meant to be read stays at `--text-prose` (15 px) and a handwritten note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step. `pnpm lint` fails on a step under the floor.
+- The 14 px floor is absolute: nothing is set at 11, 12 or 13 px. Anything meant to be read stays at `--text-prose` (15 px) and an italic note never goes below `--text-note-sm` (16 px). A description shrinks its width, not its size: the small card keeps the prose step. `pnpm lint` fails on a step under the floor.
 - Density is bought with padding, not with type: compact controls keep their 30/38/44 px heights and the floor size, and lose padding or tracking instead.
-- The italic is not used for running prose. IM Fell's italic is 16 % narrower per glyph and its stems are thinner, so at 15 px it is the hardest body text in the kit, over the paper grain: descriptions, hints and asides are set in roman. The slant stays for placeholders and short quotes, where it marks an empty field or a borrowed voice and there is no paragraph to read.
+- The italic is the note voice and the empty field: notes, hints, asides, placeholders and short quotes. Running prose stays roman, and a paragraph is never set in italic.
 - Uppercase labels always carry `letter-spacing` and sit at the floor size; contrast was adjusted so they remain legible.
 - Value numbers, counters, and folios use `font-variant-numeric: tabular-nums` when alignment matters.
 - Month names come already capitalised from `Intl`, so no extra casing rule is applied to the heading.
@@ -484,7 +484,7 @@ The gallery is the system's review surface; Storybook is not used.
 - Theme selector dialog with swatches, metadata and keyboard navigation.
 - Global **Paper / Panel** switch: every card and control changes surface.
 - The demo sheets are `Card size="lg"` with no wrapper of their own: the badge with the component name comes in through `kicker`, the title goes on the ribbon over paper and the folio in the wax seal. That way the gallery shows the real container and not a clone.
-- Each demo includes handwritten notes with the current state so the behaviour is visible without opening the devtools.
+- Each demo includes italic notes with the current state so the behaviour is visible without opening the devtools.
 - The section “In context” uses every pattern in a real mini todo-list.
 - The section “The journey” demonstrates the three states of a milestone (completed, overdue and locked), the full CRUD and the trail that gets inked. Its deadlines are relative to today so the states remain true when the gallery is opened.
 - The section “Containers” shows `Card` in its three heights with the list of components from other sections.
@@ -542,7 +542,7 @@ The gallery is the system's review surface; Storybook is not used.
 - **Paper and performance**: the torn silhouette is shared geometry and the shadow is a `box-shadow`. There is no going back to a turbulence filter per sheet or to a `drop-shadow` over the subtree: measured in the gallery, that multiplied the raster cost by more than two and dropped frames while scrolling. The grain is still an `feTurbulence` SVG, but it is rasterised once as a background image, not per element.
 - **Breakpoints and art**: media query values and SVG geometry are not tokenised because CSS does not allow variables in media queries and art is geometry, not system design.
 - **Themes**: there is no separate global “light/dark mode”; the paper type is part of each theme.
-- **Grenze Gotisch**: it is available as a family, but it is not used in components yet.
+- **Grenze Gotisch**: it is not part of the kit. The reference mockup still sets its masthead with it, so the file lives in `design/fonts/` and is not served with the app.
 
 ---
 

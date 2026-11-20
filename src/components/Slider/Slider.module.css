@@ -155,7 +155,7 @@
   background-color: var(--ui-surface-raised);
   box-shadow: var(--shadow-sm);
   color: var(--ui-accent-strong);
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   line-height: var(--leading-tight);
@@ -209,7 +209,7 @@
 }
 
 .markLabel {
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   color: var(--ui-text-muted);
@@ -217,7 +217,7 @@
 }
 
 .value {
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-wide);

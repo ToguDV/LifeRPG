@@ -79,7 +79,7 @@
 .prefix,
 .suffix {
   flex: none;
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;

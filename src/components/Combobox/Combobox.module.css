@@ -206,7 +206,8 @@
 }
 
 .optionDescription {
-  font-family: var(--font-hand);
+  font-family: var(--font-body);
+  font-style: italic;
   font-size: var(--text-note-sm);
   line-height: var(--leading-note);
   color: var(--ui-text-muted);
@@ -220,7 +221,8 @@
 
 .empty {
   padding: var(--space-3);
-  font-family: var(--font-hand);
+  font-family: var(--font-body);
+  font-style: italic;
   font-size: var(--text-note-sm);
   line-height: var(--leading-note);
   color: var(--ui-text-muted);

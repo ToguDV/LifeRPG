@@ -11,13 +11,13 @@ export interface CardProps extends PaperOrnamentProps {
   /** Container width and type scale: a filing card, a sheet, a full page. */
   size?: CardSize
   surface?: SurfaceProps['surface']
-  /** Small engraved line that introduces the card (under the ribbon on paper). */
+  /** Small uppercase line that introduces the card (under the ribbon on paper). */
   kicker?: ReactNode
   title?: ReactNode
   description?: ReactNode
   /** Pressed into the wax seal in the header. */
   folio?: string
-  /** Handwritten note under the body. */
+  /** Italic note under the body. */
   footer?: ReactNode
   /** Hand-placed sheet angle; only applies on the paper surface. */
   tilt?: SurfaceProps['tilt']

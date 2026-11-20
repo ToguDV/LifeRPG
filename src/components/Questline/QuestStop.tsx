@@ -25,7 +25,7 @@ export interface QuestStopProps {
 
 /*
    The rail keeps the numbers short: state lives in the marker, the icon and
-   a screen-reader word, while the handwritten line carries progress and date.
+   a screen-reader word, while the italic line carries progress and date.
 */
 function stopMeta(
   tally: { done: number; total: number },

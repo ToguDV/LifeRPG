@@ -76,7 +76,7 @@
   border: 0;
   background: transparent;
   color: var(--ui-text);
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-lg);
   line-height: var(--leading-none);
   text-align: center;
@@ -99,7 +99,7 @@
 .suffix {
   align-self: center;
   padding-inline-end: var(--space-2);
-  font-family: var(--font-engraved);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;

@@ -39,7 +39,7 @@
   margin: 0;
   padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-xs);
-  font-family: var(--font-caps);
+  font-family: var(--font-display);
   font-weight: var(--weight-book);
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
