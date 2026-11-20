@@ -30,6 +30,8 @@ export function useDismiss({ open, onClose, refs }: UseDismissOptions) {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' || event.key === 'Esc') {
+        /* An IME owns Escape while it composes: let it cancel the candidate. */
+        if (event.isComposing || event.keyCode === 229) return
         event.preventDefault()
         event.stopPropagation()
         onCloseRef.current(true)

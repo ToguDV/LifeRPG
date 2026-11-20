@@ -96,7 +96,7 @@ export function Select({
     Without a `Field` label there is no label node to reference, so the popup
     inherits the visible value instead of pointing at an id that is not there.
   */
-  const popupName = selected?.label || placeholder || 'Opciones'
+  const popupName = selected?.label || placeholder || 'Options'
   const messageId = getFieldMessageIds(fieldId, { hint, error }).join(' ') || undefined
 
   const close = useCallback(
@@ -139,6 +139,16 @@ export function Select({
     if (!open) return
     if (activeIndex >= options.length) setActiveIndex(firstEnabledIndex(options))
   }, [activeIndex, open, options])
+
+  /*
+    The typeahead reset is the only timer a closed field can leave behind.
+    Capture the ref object, not its value: the cleanup has to read whatever
+    is pending at unmount.
+  */
+  useEffect(() => {
+    const pending = typeahead
+    return () => window.clearTimeout(pending.current.timer)
+  }, [])
 
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return

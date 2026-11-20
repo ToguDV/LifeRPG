@@ -79,14 +79,79 @@ function serveAppRequest(request) {
   return net.fetch(pathToFileURL(file).toString()).catch(() => notFound())
 }
 
+/*
+  Only `https:` reaches the OS. A `will-navigate` or `window.open` URL comes
+  from the page, and the shell hands whatever it is given to the desktop: a
+  `file:`, `smb:` or custom scheme must not be opened just because a link
+  carried it. No `mailto:` link exists in the app, so it is not allowed.
+*/
 function openExternal(url) {
-  if (url.startsWith('https://') || url.startsWith('http://')) void shell.openExternal(url)
+  let target
+  try {
+    target = new URL(url)
+  } catch {
+    return
+  }
+  if (target.protocol !== 'https:') return
+  void shell.openExternal(target.toString())
 }
 
 function isInternal(url) {
   const base = new URL(DEV_URL || APP_ORIGIN)
   const target = new URL(url)
   return target.protocol === base.protocol && target.host === base.host
+}
+
+/*
+  Content-Security-Policy for the packaged renderer.
+
+  Scripts need `'unsafe-inline'`: the theme boot script lives inline in
+  `index.html`'s `<head>` and its body is generated from the theme manifest at
+  build time, so it changes with the themes and a static hash cannot match it.
+  The hash (`'sha256-…'`) is the alternative if that script ever becomes a
+  file of its own. Styles are inline as well: the floating layer writes `style`
+  attributes for its geometry. The rest is closed:
+
+    img-src   the paper grain and the icon are `data:` URIs and the
+              FileUploader previews are `blob:` object URLs; nothing remote.
+    font-src  the woff2 files are served from `dist/` (same origin).
+    connect-src no fetch, no XHR, no websocket: the journal is `localStorage`.
+    object-src / base-uri / frame-ancestors  no plugins, no `<base>`, and the
+              window is never framed.
+*/
+const CSP = [
+  "default-src 'none'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'none'",
+  "form-action 'none'",
+  "frame-ancestors 'none'",
+].join('; ')
+
+/*
+  `webRequest` URL patterns only accept the schemes Chromium knows, so
+  `app://liferpg/*` is rejected with “Wrong scheme type” (electron#23413) and
+  the origin check happens here instead. Every request passes through, but
+  only the `app://` document is answered with the header: the Vite dev server
+  keeps its own headers, and nothing else is ever loaded.
+*/
+function applyContentSecurityPolicy() {
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    if (!details.url.startsWith(`${APP_ORIGIN}/`)) {
+      callback({})
+      return
+    }
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [CSP],
+      },
+    })
+  })
 }
 
 let mainWindow = null
@@ -121,10 +186,19 @@ function buildMenu() {
       {
         label: 'View',
         submenu: [
-          { role: 'reload' },
-          { role: 'forceReload' },
-          { role: 'toggleDevTools' },
-          { type: 'separator' },
+          /*
+            Reload and DevTools are development tools: the packaged build
+            ships neither, so the menu cannot reopen the inspector or throw
+            away the renderer state in front of a player.
+          */
+          ...(app.isPackaged
+            ? []
+            : [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+              ]),
           { role: 'resetZoom' },
           { role: 'zoomIn' },
           { role: 'zoomOut' },
@@ -208,6 +282,7 @@ if (!app.requestSingleInstanceLock()) {
         callback(false)
       })
       session.defaultSession.setPermissionCheckHandler(() => false)
+      applyContentSecurityPolicy()
 
       buildMenu()
       createWindow()

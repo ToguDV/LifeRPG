@@ -1,8 +1,10 @@
 name: CI
 
-# Path filter: a change to a component, a token, a test, the tooling config or
-# `AGENTS.md` (its budget is enforced by `pnpm lint`) runs the whole pipeline.
-# A prose edit to `README.md` or `DESIGN.md` spends no runner minutes.
+# Path filter: a change to a component, a token, a test, the tooling config,
+# `AGENTS.md` (its budget is enforced by `pnpm lint`) or anything that ships in
+# the desktop build (the main process, the packaging config, the icon, the Node
+# version) runs the whole pipeline. A prose edit to `README.md` or `DESIGN.md`
+# spends no runner minutes.
 #
 # Caveat: a workflow skipped by `paths` never reports its checks, so if these
 # jobs are marked "required" in branch protection, a docs-only PR stays
@@ -27,6 +29,12 @@ on:
       - 'vitest.config.ts'
       - 'playwright.config.ts'
       - 'eslint.config.js'
+      # Desktop: the main process and the packaging are only exercised by a
+      # tag, so a change here must at least pass lint, unit, build and e2e.
+      - 'electron/**'
+      - 'electron-builder.yml'
+      - 'build/**'
+      - '.nvmrc'
       # `pnpm lint` runs scripts/check-docs.mjs against this file.
       - 'AGENTS.md'
       - '.github/**'

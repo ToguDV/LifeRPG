@@ -1,8 +1,12 @@
 onlyBuiltDependencies:
+  # The postinstall downloads the Electron binary; without it the desktop
+  # build has no runtime to package.
+  - electron
   - esbuild
 allowBuilds:
   # NSIS is the Windows target; Squirrel.Windows is not used.
   electron-winstaller: false
+  electron: true
   esbuild: true
 minimumReleaseAgeExclude:
   - '@vitest/mocker@5.1.1'

@@ -14,20 +14,20 @@
   background:
     radial-gradient(
       1100px 720px at 12% -8%,
-      color-mix(in srgb, var(--bone) 4.5%, transparent),
+      color-mix(in srgb, var(--ui-desk-halo) 4.5%, transparent),
       transparent 62%
     ),
     radial-gradient(
       850px 620px at 92% 2%,
-      color-mix(in srgb, var(--bronze) 3%, transparent),
+      color-mix(in srgb, var(--ui-desk-lamp) 3%, transparent),
       transparent 62%
     ),
     radial-gradient(
       ellipse at 50% 118%,
-      color-mix(in srgb, var(--stone-0) 92%, transparent),
+      color-mix(in srgb, var(--ui-desk-0) 92%, transparent),
       transparent 62%
     ),
-    linear-gradient(180deg, var(--stone-2) 0%, var(--stone-1) 40%, var(--stone-0) 100%);
+    linear-gradient(180deg, var(--ui-desk-2) 0%, var(--ui-desk-1) 40%, var(--ui-desk-0) 100%);
 }
 
 .atmosphere::before {
@@ -50,9 +50,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(900px 560px at 22% -6%, color-mix(in srgb, var(--bone) 5%, transparent), transparent 65%),
-    radial-gradient(680px 500px at 96% 10%, color-mix(in srgb, var(--bronze) 3.5%, transparent), transparent 65%),
-    radial-gradient(120% 90% at 50% 38%, transparent 42%, color-mix(in srgb, var(--stone-0) 52%, transparent) 100%);
+    radial-gradient(900px 560px at 22% -6%, color-mix(in srgb, var(--ui-desk-halo) 5%, transparent), transparent 65%),
+    radial-gradient(680px 500px at 96% 10%, color-mix(in srgb, var(--ui-desk-lamp) 3.5%, transparent), transparent 65%),
+    radial-gradient(120% 90% at 50% 38%, transparent 42%, color-mix(in srgb, var(--ui-desk-0) 52%, transparent) 100%);
 }
 
 .map {
@@ -60,7 +60,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  color: var(--bone);
+  color: var(--ui-desk-halo);
   opacity: 0.35;
 }
 
@@ -75,8 +75,8 @@
   width: var(--mote-size);
   height: var(--mote-size);
   border-radius: var(--radius-circle);
-  background: color-mix(in srgb, var(--bone) 56%, transparent);
-  box-shadow: 0 0 var(--mote-glow) 1px color-mix(in srgb, var(--bone) 30%, transparent);
+  background: color-mix(in srgb, var(--ui-desk-halo) 56%, transparent);
+  box-shadow: 0 0 var(--mote-glow) 1px color-mix(in srgb, var(--ui-desk-halo) 30%, transparent);
   opacity: 0;
   animation: drift linear infinite;
 }

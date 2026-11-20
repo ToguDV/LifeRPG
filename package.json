@@ -4,6 +4,7 @@
   "desktopName": "liferpg.desktop",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
   "type": "module",
   "main": "electron/main.cjs",
   "description": "An RPG-style to-do list: real-life tasks are written as quests and completed along a route the journal remembers.",
@@ -17,6 +18,9 @@
     "url": "git+https://github.com/ToguDV/LifeRPG.git"
   },
   "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "vite",
     "dev:desktop": "node scripts/desktop-dev.mjs",

@@ -16,16 +16,26 @@ function text(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() ? value : undefined
 }
 
-/** Keeps only the fields the UI reads; anything unexpected is dropped. */
+/**
+ * Keeps only the fields the UI reads; anything unexpected is dropped.
+ *
+ * Only a payload that is not an array is rejected. A record that does not fit
+ * is skipped so one hand-edited row cannot take the rest of the journal with
+ * it — the fallback is the seed, and adopting it would erase real tasks.
+ */
 export function parseTasks(value: unknown): Task[] | null {
   if (!Array.isArray(value)) return null
 
   const tasks: Task[] = []
+  const seen = new Set<string>()
   for (const item of value) {
-    if (!isRecord(item)) return null
+    if (!isRecord(item)) continue
     const id = text(item.id)
     const title = text(item.title)
-    if (!id || !title || typeof item.done !== 'boolean') return null
+    if (!id || !title || typeof item.done !== 'boolean') continue
+    /* Duplicate ids would make one edit rewrite several rows: first wins. */
+    if (seen.has(id)) continue
+    seen.add(id)
 
     const task: Task = { id, title, done: item.done }
     const note = text(item.note)
@@ -43,22 +53,33 @@ export function parseTasks(value: unknown): Task[] | null {
   return tasks
 }
 
+/**
+ * The milestone parser follows `parseTasks`: a single bad milestone or quest
+ * is skipped, never the whole route.
+ */
 export function parseNodes(value: unknown): QuestNode[] | null {
   if (!Array.isArray(value)) return null
 
   const nodes: QuestNode[] = []
+  const nodeIds = new Set<string>()
   for (const item of value) {
-    if (!isRecord(item) || !Array.isArray(item.tasks)) return null
+    if (!isRecord(item) || !Array.isArray(item.tasks)) continue
     const id = text(item.id)
     const title = text(item.title)
-    if (!id || !title) return null
+    if (!id || !title) continue
+    if (nodeIds.has(id)) continue
+    nodeIds.add(id)
 
     const tasks: QuestTask[] = []
+    const taskIds = new Set<string>()
     for (const rawTask of item.tasks) {
-      if (!isRecord(rawTask)) return null
+      if (!isRecord(rawTask)) continue
       const taskId = text(rawTask.id)
       const taskTitle = text(rawTask.title)
-      if (!taskId || !taskTitle || typeof rawTask.done !== 'boolean') return null
+      if (!taskId || !taskTitle || typeof rawTask.done !== 'boolean') continue
+      /* The same rule inside a milestone: a repeated quest id, first wins. */
+      if (taskIds.has(taskId)) continue
+      taskIds.add(taskId)
       tasks.push({ id: taskId, title: taskTitle, done: rawTask.done })
     }
 

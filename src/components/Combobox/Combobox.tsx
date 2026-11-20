@@ -98,7 +98,7 @@ export function Combobox({
     Without a `Field` label the input is named by its placeholder, so the
     popup inherits that text instead of pointing at an id that is not there.
   */
-  const popupName = placeholder || 'Opciones'
+  const popupName = placeholder || 'Options'
 
   const [query, setQuery] = useState(selectedLabel)
   const [open, setOpen] = useState(false)

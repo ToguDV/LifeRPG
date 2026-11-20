@@ -56,6 +56,14 @@ export function QuestTaskRow({
             autoFocus
             fieldClassName={styles.taskEditField}
             onKeyDown={(event) => {
+              /*
+                The first Escape of an IME composition cancels the candidate
+                list, not the rename: closing here would drop the draft.
+                React's synthetic event does not carry `isComposing`, so read
+                the native one.
+              */
+              const { isComposing, keyCode } = event.nativeEvent
+              if (isComposing || keyCode === 229) return
               if (event.key === 'Escape') {
                 event.preventDefault()
                 onCancelEdit()

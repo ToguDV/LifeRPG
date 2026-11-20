@@ -25,7 +25,7 @@
 .control.open {
   border-color: var(--ui-focus);
   box-shadow:
-    0 0 0 1px var(--ui-focus),
+    0 0 0 var(--focus-ring-width) var(--ui-focus),
     var(--shadow-inset);
 }
 

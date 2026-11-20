@@ -32,7 +32,7 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 | `pnpm lint` | ESLint: correctness and accessibility (`jsx-a11y`), no style rules. |
 | `pnpm test` | Vitest in watch mode. |
 | `pnpm test:run` | Vitest once, for verification. |
-| `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, overflow from 320 to 1440 px, keyboard/focus and trail. |
+| `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, the journal (add, delete, empty state, announcements, keyboard-only), overflow from 320 to 1440 px, keyboard/focus and trail. |
 | `pnpm test:e2e:report` | Opens the HTML report of the last E2E run. |
 | `pnpm dev:desktop` | Opens the journal in Electron with Vite hot reload. |
 | `pnpm build:desktop` | Packages this OS into `release/` (NSIS on Windows; AppImage and `.deb` on Linux). |
@@ -44,8 +44,9 @@ The desktop app is the same renderer, packaged with Electron. `electron/main.cjs
 
 - `pnpm dev:desktop` starts Vite on 5174 and opens it in Electron.
 - `pnpm build:desktop` packages for the current OS: an NSIS installer on Windows; AppImage and `.deb` on Linux.
-- Releases are tag-driven: pushing `v0.1.0` runs `.github/workflows/desktop.yml`, takes the packaged version from the tag and attaches the installers plus `SHA256SUMS.txt` to a GitHub Release. A manual run only leaves workflow artifacts.
+- Releases are tag-driven: pushing a `v*` tag (the first release is `v0.1.0`) runs `.github/workflows/desktop.yml`, takes the packaged version from the tag and attaches the installers plus `SHA256SUMS.txt` to a GitHub Release. A manual run only leaves workflow artifacts.
 - Builds are unsigned, so Windows shows the SmartScreen warning. The uninstaller keeps the journal: on Linux it lives in `~/.config/LifeRPG`; on Windows, `%APPDATA%\LifeRPG`.
+- **AppImage on Ubuntu 24.04 and later.** That release restricts unprivileged user namespaces through AppArmor, and the window runs with `sandbox: true`, so the AppImage refuses to start. Allow it with `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`, or drop the same setting in `/etc/sysctl.d/` to keep it. `--no-sandbox` is not the fix.
 
 ## Stack
 
@@ -185,4 +186,4 @@ LifeRPG/
 
 ## Credits
 
-Original design of the journal, the palette and the themes: the `The Long Winter — Journal of the Hollow Mark` mockup. This repository builds LifeRPG's UI layer on top of it: tokens, interactive components and the codex gallery. The game and its data layer are not implemented yet. Typography: Google Fonts, distributed under the SIL Open Font License.
+Original design of the journal, the palette and the themes: the `The Long Winter — Journal of the Hollow Mark` mockup. This repository builds LifeRPG's UI layer on top of it: tokens, interactive components and the codex gallery. The journal at `/` and its `localStorage` data layer ship with this first screen; the XP economy and the application layer (accounts, sync) are still to be designed. Typography: Google Fonts, distributed under the SIL Open Font License.

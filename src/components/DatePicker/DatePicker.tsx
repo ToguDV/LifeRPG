@@ -395,13 +395,13 @@ export function DatePicker({
             disabled={isDisabledDate(today)}
             onClick={() => selectDate(today)}
           >
-            Hoy
+            Today
           </Button>
           <Button variant="ghost" size="sm" disabled={!currentDate} onClick={() => {
             setCurrent(null)
             close(true)
           }}>
-            Limpiar
+            Clear
           </Button>
         </div>
       </Popover>

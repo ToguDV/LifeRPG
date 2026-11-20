@@ -50,7 +50,7 @@
     layer below it on every scroll frame. A near-opaque ink reads the
     same over the dark canvas (and matches the "no glassmorphism" rule).
   */
-  background-color: color-mix(in srgb, var(--stone-1) 95%, transparent);
+  background-color: color-mix(in srgb, var(--ui-desk) 95%, transparent);
 }
 
 .topbarInner {

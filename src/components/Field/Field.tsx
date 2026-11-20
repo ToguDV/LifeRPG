@@ -99,7 +99,7 @@ export function Field({
       ) : null}
 
       {hint ? (
-        <p id={hintId} className={cx(styles.message, styles.hint)}>
+        <p id={hintId} className={styles.message}>
           {hint}
         </p>
       ) : null}

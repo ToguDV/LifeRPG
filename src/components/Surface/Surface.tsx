@@ -74,10 +74,8 @@ export function Surface({
         {paper && stack !== 'none' ? (
           <span className={styles.sheets} aria-hidden="true" />
         ) : null}
-        <span
-          className={cx(styles.texture, paper && torn && styles.torn)}
-          aria-hidden="true"
-        />
+        {/* The torn silhouette comes from `[data-torn]` on the sheet, not a class. */}
+        <span className={styles.texture} aria-hidden="true" />
         {paper && stains ? <span className={styles.stains} aria-hidden="true" /> : null}
         <div className={styles.content}>{children}</div>
       </Tag>

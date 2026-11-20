@@ -748,6 +748,23 @@
   --ui-paper-focus: var(--accent-paper);
   --ui-paper-shadow-color: var(--ink);
 
+  /*
+    ---------- desk (the canvas behind every sheet) ----------
+    The page canvas, its topbar tint and the atmosphere are the one thing
+    that is neither paper nor panel: they are the desk the sheets lie on.
+    Components read these names, so a theme can retint its chrome without
+    anyone reaching into `--stone-*`, and the palette stays below.
+    `-0` is the deepest step, `-2` the lit one at the top of the gradient.
+  */
+  --ui-desk-0: var(--stone-0);
+  --ui-desk-1: var(--stone-1);
+  --ui-desk-2: var(--stone-2);
+  --ui-desk: var(--ui-desk-1);
+  /* pale light: the canopy glow, the drifting motes and the drawn map */
+  --ui-desk-halo: var(--bone);
+  /* warm lamplight falling from the top corners */
+  --ui-desk-lamp: var(--bronze);
+
   /* ---------- surface-agnostic ---------- */
   --ui-overlay: color-mix(in srgb, var(--stone-0) 74%, transparent);
   --ui-scrim: color-mix(in srgb, var(--stone-0) 62%, transparent);

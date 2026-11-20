@@ -33,7 +33,7 @@ export function Badge({
           {icon}
         </span>
       ) : null}
-      <span className={styles.label}>{children}</span>
+      <span>{children}</span>
     </span>
   )
 }

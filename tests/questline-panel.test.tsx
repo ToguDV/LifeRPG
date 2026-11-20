@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Questline } from '../src/components/Questline/Questline'
@@ -265,6 +265,46 @@ describe('QuestNodePanel', () => {
       screen.queryByRole('textbox', { name: 'Milestone name' }),
     ).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Edit milestone' })).toHaveFocus()
+  })
+
+  it('leaves the first Escape of an IME composition to the IME', async () => {
+    const user = renderChain(SOLO)
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
+
+    const input = screen.getByRole('textbox', { name: 'Milestone name' })
+    await user.clear(input)
+    await user.type(input, 'The pass')
+
+    /* While the candidate list is open, Escape belongs to the IME. */
+    fireEvent.keyDown(input, { key: 'Escape', isComposing: true, keyCode: 229 })
+
+    expect(screen.getByRole('region', { name: 'Supplies' })).toBeVisible()
+    expect(screen.getByRole('textbox', { name: 'Milestone name' })).toBe(input)
+
+    await user.type(input, ' of dawn')
+    expect(
+      screen.getByRole('textbox', { name: 'Milestone name' }),
+    ).toHaveValue('The pass of dawn')
+  })
+
+  it('keeps the task draft when Escape belongs to an IME composition', async () => {
+    const user = renderChain(SOLO)
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
+
+    const input = screen.getByRole('textbox', {
+      name: 'Title of “Fill the waterskin”',
+    })
+    await user.type(input, ' of the well')
+
+    fireEvent.keyDown(input, { key: 'Escape', isComposing: true })
+
+    expect(input).toHaveValue('Fill the waterskin of the well')
+    await user.type(input, ' at dawn')
+    expect(
+      screen.getByRole('textbox', { name: /Title of/ }),
+    ).toHaveValue('Fill the waterskin of the well at dawn')
   })
 
   it('validates a new task with no name', async () => {

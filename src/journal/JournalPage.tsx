@@ -1,11 +1,15 @@
 import { Atmosphere } from '../components/Atmosphere/Atmosphere'
 import { formatDate } from '../lib/format'
+import { useToday } from '../lib/useToday'
 import { ThemePicker } from '../theme/ThemePicker'
 import { QuestJournal } from './QuestJournal'
 import { TaskJournal } from './TaskJournal'
 import styles from './JournalPage.module.css'
 
 export function JournalPage() {
+  /* The heading is a date: it has to turn over with the day, not with a reload. */
+  const today = useToday()
+
   return (
     <div className={styles.page} id="top">
       <a className={styles.skipLink} href="#content">
@@ -36,7 +40,7 @@ export function JournalPage() {
         <main className={styles.main} id="content" tabIndex={-1}>
           <div className={styles.heading}>
             <h1>The journal</h1>
-            <p className={styles.date}>{formatDate(new Date())}</p>
+            <p className={styles.date}>{formatDate(today)}</p>
           </div>
 
           <div className={styles.sections}>

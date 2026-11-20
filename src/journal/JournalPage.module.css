@@ -43,7 +43,7 @@
   top: 0;
   z-index: var(--z-sticky);
   border-bottom: var(--border-width) solid var(--ui-divider);
-  background-color: color-mix(in srgb, var(--stone-1) 95%, transparent);
+  background-color: color-mix(in srgb, var(--ui-desk) 95%, transparent);
 }
 
 .topbarInner {

@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { JournalPage } from '../src/journal/JournalPage'
 import { TASKS_KEY } from '../src/journal/journal-data'
 import { ThemeProvider } from '../src/theme/ThemeProvider'
@@ -15,6 +15,10 @@ function renderJournal() {
 
 beforeEach(() => {
   window.localStorage.clear()
+})
+
+afterEach(() => {
+  vi.useRealTimers()
 })
 
 describe('JournalPage', () => {
@@ -84,5 +88,21 @@ describe('JournalPage', () => {
       }),
     ).toHaveFocus()
     expect(screen.getByText(/Task deleted:/)).toBeInTheDocument()
+  })
+
+  it('turns the headline date over at midnight', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 0, 12, 23, 55))
+
+    renderJournal()
+    expect(screen.getByText('12 January 2026')).toBeVisible()
+
+    act(() => {
+      vi.setSystemTime(new Date(2026, 0, 13, 0, 5))
+      document.dispatchEvent(new Event('visibilitychange'))
+    })
+
+    expect(screen.getByText('13 January 2026')).toBeVisible()
+    expect(screen.queryByText('12 January 2026')).not.toBeInTheDocument()
   })
 })

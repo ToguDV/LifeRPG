@@ -10,6 +10,7 @@ import {
 import { createPortal } from 'react-dom'
 import { cx } from '../../lib/cx'
 import { Icon, type IconName } from '../Icon/Icon'
+import { useSurface } from '../Surface/surface-context'
 import styles from './Toast.module.css'
 
 export type ToastVariant = 'info' | 'success' | 'warning' | 'danger'
@@ -56,6 +57,13 @@ function ToastItem({
   const paused = hovered || focused
   const variant = toast.variant ?? 'info'
   const duration = toast.duration ?? 4200
+  /*
+    A toast is portaled to `body`, so it takes its material from the context
+    it was raised in, not from the DOM it lands in: paper over a sheet, panel
+    outside one. The CSS reads only surface-aware tokens, so this one
+    attribute is the whole binding.
+  */
+  const surface = useSurface()
 
   useEffect(() => {
     if (paused || duration <= 0) return
@@ -66,7 +74,7 @@ function ToastItem({
   return (
     <div
       className={cx(styles.toast, styles[variant])}
-      data-surface="panel"
+      data-surface={surface}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setFocused(true)}
@@ -121,7 +129,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className={styles.viewport}
               role="region"
               aria-live="polite"
-              aria-label="Notificaciones"
+              aria-label="Notifications"
             >
               {toasts.map((item) => (
                 <ToastItem key={item.id} toast={item} onDismiss={dismiss} />

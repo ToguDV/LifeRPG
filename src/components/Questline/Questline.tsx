@@ -7,8 +7,8 @@ import {
   type ReactNode,
 } from 'react'
 import { cx } from '../../lib/cx'
-import { startOfDay } from '../../lib/format'
 import { useControllableState } from '../../lib/useControllableState'
+import { useToday } from '../../lib/useToday'
 import { Button } from '../Button/Button'
 import { Icon } from '../Icon/Icon'
 import { QuestNodePanel } from './QuestNodePanel'
@@ -145,7 +145,7 @@ export function Questline({
   const [openId, setOpenId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [status, setStatus] = useState('')
-  const [today, setToday] = useState(() => startOfDay(new Date()))
+  const today = useToday()
 
   const addRowRef = useRef<HTMLDivElement>(null)
   const triggerRefs = useRef<Array<HTMLButtonElement | null>>([])
@@ -210,9 +210,31 @@ export function Questline({
       title: newNodeTitle,
       tasks: [],
     }
+    /*
+      A second press would strand the previous draft: `draftRef` only keeps
+      one id, so the cleanup effect can never see the first one again. An
+      empty milestone never completes, so a stranded one would lock every
+      milestone after it. Replace it here while it is still untouched; a
+      draft that was edited or saved stays where it is.
+    */
+    const abandoned = draftRef.current
+    const pruneId =
+      abandoned &&
+      isUntouchedDraft(
+        nodes.find((item) => item.id === abandoned.id),
+        abandoned,
+        keptDrafts.current,
+      )
+        ? abandoned.id
+        : null
+
+    if (pruneId) keptDrafts.current.delete(pruneId)
     draftRef.current = { id: node.id, title: newNodeTitle }
     keptDrafts.current.delete(node.id)
-    setNodes((previous) => [...previous, node])
+    setNodes((previous) => [
+      ...previous.filter((item) => item.id !== pruneId),
+      node,
+    ])
     setOpenId(node.id)
     setEditingId(node.id)
   }
@@ -339,44 +361,6 @@ export function Questline({
       null
     if (fallback && fallback !== focused) fallback.focus()
   }, [nodes, states, openIndex, baseId])
-
-  /* “Due today” must expire at midnight and after returning to the tab. */
-  useEffect(() => {
-    let timer = 0
-
-    const refresh = () => {
-      setToday((current) => {
-        const next = startOfDay(new Date())
-        return next.getTime() === current.getTime() ? current : next
-      })
-    }
-
-    const scheduleMidnight = () => {
-      const now = new Date()
-      const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-      timer = window.setTimeout(
-        () => {
-          refresh()
-          scheduleMidnight()
-        },
-        Math.max(1000, next.getTime() - now.getTime() + 1000),
-      )
-    }
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') refresh()
-    }
-
-    document.addEventListener('visibilitychange', onVisibility)
-    window.addEventListener('focus', refresh)
-    scheduleMidnight()
-
-    return () => {
-      window.clearTimeout(timer)
-      document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('focus', refresh)
-    }
-  }, [])
 
   return (
     <div

@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { useFloating } from '../../lib/useFloating'
+import { useSurface } from '../Surface/surface-context'
 import styles from './Tooltip.module.css'
 
 export interface TooltipProps {
@@ -42,6 +43,14 @@ export function Tooltip({ content, children, side = 'top', delay = 240, id }: To
   const showTimer = useRef(0)
   const hideTimer = useRef(0)
   const autoId = useId()
+  /*
+    The tooltip is portaled to `body`, outside the visual tree, so it has to
+    carry the surface it belongs to the way `Popover` does; the context is
+    still React's, so it survives the portal. Its own tokens are
+    surface-agnostic today, which is exactly why this must not be left to be
+    discovered by the first `--ui-text` rule added here.
+  */
+  const surface = useSurface()
   const tooltipId = id ?? `tooltip-${autoId}`
   const [open, setOpen] = useState(false)
   const landmarkLabel =
@@ -124,6 +133,7 @@ export function Tooltip({ content, children, side = 'top', delay = 240, id }: To
                 id={tooltipId}
                 role="tooltip"
                 data-side={floating.side}
+                data-surface={surface}
                 className={styles.tooltip}
                 style={floating.style}
                 onMouseEnter={show}

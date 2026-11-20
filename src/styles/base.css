@@ -44,7 +44,7 @@ body {
     gradient lives there (Atmosphere.module.css) and body keeps only the
     colour that shows behind it.
   */
-  background-color: var(--stone-1);
+  background-color: var(--ui-desk);
 }
 
 h1,

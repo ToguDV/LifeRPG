@@ -421,8 +421,8 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
 
 - 24 h format; minutes in configurable steps.
 - Two listboxes with scroll-snap and a central selection band.
-- Scrolling updates the draft; “Ahora”, “Limpiar” (optional) and “Aplicar”.
-- “Ahora” rounds the minutes down to the previous step (`Math.floor`), so it never jumps to the next hour: at 09:58 with a 5-minute step it yields 09:55.
+- Scrolling updates the draft; “Now”, “Clear” (optional) and “Apply”.
+- “Now” rounds the minutes down to the previous step (`Math.floor`), so it never jumps to the next hour: at 09:58 with a 5-minute step it yields 09:55.
 - `minuteStep` is normalised once to an integer between 1 and 60; `0`, negative values and non-finite values fall back to 5 so the wheel is neither blocked nor left repeating a single option.
 - Initial focus goes to the hour wheel after the portal mounts.
 - The wheel is operated with arrows, PageUp/PageDown, Home/End, Enter and Escape.

@@ -316,6 +316,34 @@ describe('Questline · deletion and drafts', () => {
 
     expect(screen.getByRole('button', { name: /New milestone/ })).toBeInTheDocument()
   })
+
+  it('asks for one new milestone when “Add milestone” is pressed twice', async () => {
+    const user = renderChain([
+      {
+        id: 'provisiones',
+        title: 'Supplies',
+        tasks: [{ id: 'odre', title: 'Fill the waterskin', done: true }],
+      },
+    ])
+
+    await user.click(screen.getByRole('button', { name: 'Add milestone' }))
+    await user.click(screen.getByRole('button', { name: 'Add milestone' }))
+
+    /*
+      The first draft was never touched, so it must be replaced, not stranded:
+      an empty milestone is never complete and would lock everything after it.
+    */
+    const drafts = screen.getAllByRole('button', { name: /New milestone/ })
+    expect(drafts).toHaveLength(1)
+    expect(drafts[0]).toHaveAccessibleName(/In progress/)
+    expect(screen.getByText(/^1 of 2 milestones/)).toBeInTheDocument()
+    expect(screen.queryByText(/unlocks when/i)).not.toBeInTheDocument()
+
+    /* The second press opens its own editor, so the route keeps growing. */
+    expect(screen.getByRole('textbox', { name: 'Milestone name' })).toHaveValue(
+      'New milestone',
+    )
+  })
 })
 
 describe('Questline · state, names and ids', () => {

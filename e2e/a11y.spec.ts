@@ -52,12 +52,14 @@ test.describe('gallery · 8 themes × 2 surfaces', () => {
   the default theme and both surfaces; the palette matrix above covers the
   closed state of all eight themes.
 
-  The audits are differential. The page before opening already carries the
-  FileUploader and overdue-marker findings and the base matrix above keeps
-  them red; repeating them here would hide whether the overlay itself added
-  anything. Editor and confirmation are compared against the already-open
-  panel, so their baseline includes the panel's own findings; that keeps the
-  signal on what the editor or confirmation adds.
+  The closed-state matrix is strict and green: nothing is skipped, baselined
+  or disabled there. The audits below are differential for a different
+  reason — an overlay is drawn over the page it opens on, and that page keeps
+  its own DOM: the baseline is the same instance, so only the nodes the
+  overlay contributes can be new, and a finding that already sits on the page
+  cannot mask the one the overlay adds. Editor and confirmation are compared
+  against the already-open panel, so their baseline includes the panel's own
+  nodes; that keeps the signal on what the editor or confirmation adds.
 */
 async function auditOpenState<Prepared>(
   page: Page,

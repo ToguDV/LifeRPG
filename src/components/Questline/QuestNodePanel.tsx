@@ -235,9 +235,12 @@ export function QuestNodePanel({
     Escape backs out one layer at a time: the delete confirmation, the
     milestone editor, the task editor, then the panel itself. Pickers and the
     task editor call `preventDefault` first, so their own Escape is not stolen.
+    While an IME is composing, Escape only dismisses the candidate list; it
+    must not tear the editor down and take the typed text with it.
   */
   const handlePanelKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Escape' || event.defaultPrevented) return
+    if (event.isComposing || event.keyCode === 229) return
     if (confirmDelete) {
       event.preventDefault()
       setConfirmDelete(false)

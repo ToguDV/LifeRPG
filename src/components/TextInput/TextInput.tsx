@@ -141,7 +141,7 @@ export function TextInput({
             type="button"
             className={styles.clear}
             onClick={handleClear}
-            aria-label="Limpiar campo"
+            aria-label="Clear field"
           >
             <Icon name="close" size="xs" />
           </button>
