@@ -34,6 +34,18 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 | `pnpm test:run` | Vitest once, for verification. |
 | `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, overflow from 320 to 1440 px, keyboard/focus and trail. |
 | `pnpm test:e2e:report` | Opens the HTML report of the last E2E run. |
+| `pnpm dev:desktop` | Opens the journal in Electron with Vite hot reload. |
+| `pnpm build:desktop` | Packages this OS into `release/` (NSIS on Windows; AppImage and `.deb` on Linux). |
+| `pnpm build:icon` | Re-renders `build/icon.png` from `build/icon.svg`. |
+
+## Desktop (Electron)
+
+The desktop app is the same renderer, packaged with Electron. `electron/main.cjs` serves `dist/` over the custom `app://liferpg` scheme — not `file://`, which Chromium refuses for ES modules — and the journal stays in the renderer's `localStorage` under the app's `userData` directory.
+
+- `pnpm dev:desktop` starts Vite on 5174 and opens it in Electron.
+- `pnpm build:desktop` packages for the current OS: an NSIS installer on Windows; AppImage and `.deb` on Linux.
+- Releases are tag-driven: pushing `v0.1.0` runs `.github/workflows/desktop.yml`, takes the packaged version from the tag and attaches the installers plus `SHA256SUMS.txt` to a GitHub Release. A manual run only leaves workflow artifacts.
+- Builds are unsigned, so Windows shows the SmartScreen warning. The uninstaller keeps the journal: on Linux it lives in `~/.config/LifeRPG`; on Windows, `%APPDATA%\LifeRPG`.
 
 ## Stack
 
@@ -43,6 +55,7 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 - **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + hooks rules) with no style rules: it does not reformat the code.
 - **Vitest + Testing Library** on jsdom, for the interactions that originated the review bugs.
 - **Playwright + axe-core** on real Chromium for accessibility, overflow and keyboard verification (`pnpm test:e2e`).
+- **Electron + electron-builder** for the desktop build (see [Desktop](#desktop-electron)).
 - **Local fonts** in `public/fonts` (latin subset of Alegreya and Cinzel; the reference mockup keeps its own families in `design/fonts`).
 - Popovers, calendars, wheels and menus of our own; no date or component dependencies.
 
@@ -129,6 +142,10 @@ LifeRPG/
   eslint.config.js           flat config: correctness and accessibility, no style
   vitest.config.ts           Vitest + jsdom + Testing Library setup
   playwright.config.ts       E2E: Vite on 4317, Chromium, traces on failure
+  electron/main.cjs          main process: app:// protocol, window and menu
+  electron-builder.yml       packaging: NSIS, AppImage and .deb
+  build/                     icon source; build/icon.png is generated
+  .github/workflows/         CI and tag-driven desktop releases
   tests/                     one file per subject, written against roles and names
   e2e/                       axe (8 themes × 2 surfaces), overflow and keyboard
   e2e/FINDINGS.md            open findings from the first pass

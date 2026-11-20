@@ -1,12 +1,28 @@
 {
   "name": "liferpg-ui",
+  "productName": "LifeRPG",
+  "desktopName": "liferpg.desktop",
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "main": "electron/main.cjs",
+  "description": "An RPG-style to-do list: real-life tasks are written as quests and completed along a route the journal remembers.",
+  "author": {
+    "name": "ToguDV",
+    "email": "timeofgetup@gmail.com"
+  },
+  "homepage": "https://github.com/ToguDV/LifeRPG",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ToguDV/LifeRPG.git"
+  },
   "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "vite",
+    "dev:desktop": "node scripts/desktop-dev.mjs",
     "build": "tsc --noEmit && vite build",
+    "build:desktop": "pnpm build && electron-builder --publish never",
+    "build:icon": "node scripts/render-icon.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint . && pnpm -s check:docs && pnpm -s check:type",
@@ -31,6 +47,8 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "electron": "45.4.1",
+    "electron-builder": "26.18.0",
     "eslint": "^9.39.5",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",

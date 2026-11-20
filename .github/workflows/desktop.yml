@@ -1,0 +1,165 @@
+name: Desktop
+
+# Tags publish installers to GitHub Releases. A manual run builds the chosen
+# ref and leaves the installers as workflow artifacts, so a release can be
+# rehearsed without creating one.
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Unsigned Windows builds. To sign, set CSC_LINK and CSC_KEY_PASSWORD and
+  # remove this line (see electron-builder docs, `win.sign`).
+  CSC_IDENTITY_AUTO_DISCOVERY: false
+
+jobs:
+  # A tag can point at a commit that never ran CI. Re-run the fast checks so a
+  # release cannot ship a tree that fails lint or the unit suite. The e2e
+  # harness (axe, overflow, keyboard) still runs in ci.yml on `main`.
+  verify:
+    name: verify · lint · unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (eslint, AGENTS.md budget, 14 px floor)
+        run: pnpm lint
+
+      - name: Unit tests (jsdom)
+        run: pnpm test:run
+
+  package:
+    name: package · ${{ matrix.platform }}
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Read Electron version
+        id: electron
+        shell: bash
+        run: echo "version=$(node -p "JSON.parse(require('fs').readFileSync('node_modules/electron/package.json','utf8')).version")" >> "$GITHUB_OUTPUT"
+
+      # The Electron binary and the NSIS/AppImage tooling are ~150 MB per job;
+      # the key follows Electron, the only input that invalidates them.
+      - name: Cache Electron and packaging tools
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cache/electron
+            ~/AppData/Local/electron/Cache
+            ~/.cache/electron-builder
+            ~/AppData/Local/electron-builder/Cache
+          key: ${{ runner.os }}-electron-${{ steps.electron.outputs.version }}
+
+      # `electron-builder` reads the version from package.json. The tag is the
+      # single source of truth, so the checked-in version never has to move.
+      - name: Version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          tag="$GITHUB_REF_NAME"
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$tag' is not vMAJOR.MINOR.PATCH"
+            exit 1
+          fi
+          echo "Packaging ${tag#v}"
+          npm pkg set version="${tag#v}"
+
+      - name: Build (typecheck + Vite bundle)
+        run: pnpm build
+
+      - name: Package (${{ matrix.platform }}, x64)
+        run: pnpm exec electron-builder --${{ matrix.platform }} --x64 --publish never
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-${{ matrix.platform }}
+          path: |
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: publish · GitHub Release
+    needs: package
+    # Manual runs are rehearsals: they stop at the artifacts.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: desktop-*
+          path: installers
+          merge-multiple: true
+
+      - name: Write checksums
+        working-directory: installers
+        run: sha256sum *.exe *.AppImage *.deb > SHA256SUMS.txt
+
+      # Re-running a failed release re-uploads with --clobber instead of
+      # creating a second release for the same tag.
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          flags=(--title "LifeRPG $TAG" --generate-notes)
+          if [[ "$TAG" == *-* ]]; then
+            flags+=(--prerelease)
+          fi
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" installers/* --clobber
+          else
+            gh release create "$TAG" installers/* "${flags[@]}" --verify-tag
+          fi

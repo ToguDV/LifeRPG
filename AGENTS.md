@@ -13,6 +13,8 @@ pnpm lint         # ESLint + check:docs (this file) + check:type (reading floors
 pnpm test:run     # Vitest on jsdom
 pnpm test:e2e     # Playwright: axe, overflow and keyboard in real Chromium
 pnpm build        # typecheck + production build
+pnpm dev:desktop   # Electron on the Vite server (hot reload)
+pnpm build:desktop # NSIS (Windows) or AppImage + deb (Linux) into release/
 ```
 
 - Before handing off: `pnpm typecheck && pnpm build && pnpm lint && pnpm test:run && pnpm test:e2e`.
@@ -26,6 +28,7 @@ pnpm build        # typecheck + production build
 - `src/lib/` — `useControllableState`, `useFloating`, `useDismiss`, `cx`, dates and formatting.
 - `src/gallery/` — the gallery is the review surface at `/gallery`. Every demo sheet is a `Card size="lg"` with the component name in the `Badge` of the `kicker`.
 - `src/journal/` — the first official screen at `/`: task list and questline, stored in `localStorage`.
+- `electron/` — Electron main process: `app://liferpg` protocol for `dist/`, window and menu. `electron-builder.yml` packages it; `.github/workflows/desktop.yml` releases tags.
 - `tests/` (jsdom, one subject per file) and `e2e/` (real Chromium).
 - `DESIGN.md` — the visual why · `README.md` — usage and structure · `design/mockup.html` — original reference.
 
@@ -58,6 +61,7 @@ pnpm build        # typecheck + production build
 - **Art performance.** The torn edge is a shared `clip-path` (`#ui-torn-clip`), not a per-card filter; the paper shadow is `box-shadow`. No `mix-blend-mode` on fixed layers, no `backdrop-filter` on the topbar. The grain is a shared background tile, not a per-element filter.
 - **`design/mockup.html`** is the original reference: adjust it only to keep it working, not to mirror the app.
 - **No Storybook** and no UI, Tailwind or date library; local fonts, no CDN. Do not add dependencies without justifying it.
+- **Desktop protocol.** The packaged renderer is served from `dist/` over `app://liferpg`, not `file://`: Chromium refuses ES modules from a file origin. Extensionless paths fall back to `index.html`, so `/gallery` works in-app, and `release/` is gitignored.
 
 ## Manual verification
 

@@ -1,0 +1,61 @@
+# Packaging only: the renderer comes from `pnpm build` (Vite). The desktop
+# workflow runs both; locally `pnpm build:desktop` packages for this OS.
+# `build/icon.png` is rendered from `build/icon.svg` by `pnpm build:icon`.
+appId: com.togudv.liferpg
+copyright: Copyright © 2025 ToguDV
+
+directories:
+  buildResources: build
+  output: release
+
+# No runtime node_modules: React is bundled by Vite and the main process has
+# no dependencies. The asar holds the built renderer and the Electron entry.
+files:
+  - dist/**
+  - electron/**
+  - package.json
+  - '!node_modules/**'
+
+asar: true
+npmRebuild: false
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.png
+  artifactName: ${productName}-${version}-windows-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: LifeRPG
+  # The journal is localStorage in userData: uninstalling keeps it.
+  deleteAppDataOnUninstall: false
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  icon: build/icon.png
+  category: Utility
+  synopsis: An RPG-style to-do list
+  description: Real-life tasks are written as quests and completed along a route the journal remembers.
+  executableName: liferpg
+  # The window class Electron takes from `desktopName` in package.json must
+  # match the installed .desktop file, or launchers cannot group the window.
+  syncDesktopName: true
+
+appImage:
+  artifactName: ${productName}-${version}-linux-x86_64.${ext}
+
+deb:
+  packageName: liferpg
+  artifactName: ${productName}-${version}-linux-amd64.${ext}
+  priority: optional
+  compression: xz

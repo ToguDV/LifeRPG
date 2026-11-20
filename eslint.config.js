@@ -47,9 +47,20 @@ export default tseslint.config(
     },
   },
   {
-    files: ['eslint.config.js', 'vite.config.ts', 'vitest.config.ts', 'scripts/**/*.mjs'],
+    files: [
+      'eslint.config.js',
+      'vite.config.ts',
+      'vitest.config.ts',
+      'scripts/**/*.mjs',
+      'electron/**/*.cjs',
+    ],
     languageOptions: {
       globals: { ...globals.node },
+    },
+    rules: {
+      // The main process is CommonJS by design: the `.cjs` extension makes
+      // the module system explicit regardless of the package's `type: module`.
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
