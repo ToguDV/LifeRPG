@@ -15,7 +15,13 @@ export function questlineTriggers(page: Page): Locator {
 }
 
 export function questlinePanel(page: Page): Locator {
-  return questlineSection(page).locator('section[tabindex="-1"]')
+  /*
+    The panel is now the sheet inside a centred dialog, portaled to the
+    body: it is no longer under `#questline`. The section is still the
+    only `section[tabindex="-1"]` on the page and carries the id that the
+    trigger's `aria-controls` points at.
+  */
+  return page.locator('section[tabindex="-1"]')
 }
 
 /** Two frames: floating geometry and the trail's ResizeObserver settle. */

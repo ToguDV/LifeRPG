@@ -15,7 +15,7 @@ export interface QuestStateMeta {
 /*
    One table for the four derived states. The rail and the panel used to keep
    separate maps, so a state could read one way in the rail and another in the
-   drawer — that is how the active milestone ended up without a spoken word.
+   sheet — that is how the active milestone ended up without a spoken word.
 */
 export const STATE_META: Record<QuestNodeState, QuestStateMeta> = {
   locked: {

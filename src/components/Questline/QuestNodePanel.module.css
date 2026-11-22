@@ -1,30 +1,16 @@
 /* ============================================================
-   QUEST NODE PANEL — the drawer under the route
-   One milestone at a time: header, editor dialog, quests, add row
-   and the two-step delete. Measures come from tokens except a few
-   single-use flex bases (12rem, 8rem, 14rem) and the 560px
-   breakpoint, which belong to this component's layout.
+   QUEST NODE PANEL — the milestone sheet
+   It lives inside a `Dialog`: the shell owns the material, the
+   padding, the shadow and the scroll, so this file keeps the
+   inner layout only. Tokenised except a few single-use flex
+   bases (12rem, 8rem, 14rem) and the 560px breakpoint, which
+   belong to this component's layout.
    ============================================================ */
 
 .panel {
-  position: relative;
-  padding: var(--space-4);
-  border: var(--border-width) solid var(--ui-border);
-  border-radius: var(--radius-sm);
-  background-color: var(--ui-surface-sunken);
-  box-shadow: var(--shadow-sm);
-  animation: panel-in var(--duration-base) var(--ease-out);
-}
-
-@keyframes panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(calc(var(--space-1) * -1));
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 /* ---------- header ---------- */
@@ -326,10 +312,6 @@
 /* ---------- narrow ---------- */
 
 @media (max-width: 560px) {
-  .panel {
-    padding: var(--space-3);
-  }
-
   .deadlineRow {
     align-items: flex-start;
     flex-direction: column;

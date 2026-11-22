@@ -44,6 +44,12 @@ test.describe('keyboard and focus', () => {
     await expect(panel).toBeVisible()
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
 
+    /* The sheet is the content of a centred, modal dialog. */
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toHaveAttribute('aria-modal', 'true')
+    await expect(dialog).toContainText('Milestone')
+
     const panelId = await panel.getAttribute('id')
     expect(panelId, 'the open panel needs an id for aria-controls').toBeTruthy()
     await expect(trigger).toHaveAttribute('aria-controls', panelId ?? '')

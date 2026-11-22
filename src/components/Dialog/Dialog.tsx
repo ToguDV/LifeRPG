@@ -1,6 +1,7 @@
 import {
   useEffect,
   useRef,
+  useState,
   type ReactNode,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -28,6 +29,21 @@ const FOCUSABLE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
+/*
+  Dialogs nest — the milestone panel hosts its own editor, which hosts the
+  task editor and the pickers. Depth is stamped at render, so a child always
+  outranks the dialog that contains it, and only the topmost one answers
+  Escape or traps Tab: one press backs out one layer.
+*/
+let nextDepth = 0
+const openDepths = new Set<number>()
+
+function isTopmost(depth: number): boolean {
+  let top = -1
+  for (const value of openDepths) if (value > top) top = value
+  return depth === top
+}
+
 /**
  * A centred dialog over a blurred scrim. Editors live here instead of inside
  * their card, so opening one never reflows the journal; the page behind is
@@ -47,6 +63,18 @@ export function Dialog({
   const panelRef = useRef<HTMLDivElement>(null)
   const scrimRef = useRef<HTMLDivElement>(null)
   const surface = useSurface()
+  const [depth] = useState(() => {
+    nextDepth += 1
+    return nextDepth
+  })
+
+  useEffect(() => {
+    if (!open) return
+    openDepths.add(depth)
+    return () => {
+      openDepths.delete(depth)
+    }
+  }, [open, depth])
 
   /*
     Escape closes the topmost dialog. A nested picker owns the first press:
@@ -57,12 +85,13 @@ export function Dialog({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' && event.key !== 'Esc') return
       if (event.isComposing || event.keyCode === 229) return
+      if (!isTopmost(depth)) return
       event.preventDefault()
       onClose(true)
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [open, onClose])
+  }, [open, depth, onClose])
 
   /* The focus starts on the first control (the title) and never leaves. */
   useEffect(() => {
@@ -71,6 +100,8 @@ export function Dialog({
     if (!panel) return
 
     const frame = requestAnimationFrame(() => {
+      /* A nested dialog opened with this one keeps the focus it claimed. */
+      if (!isTopmost(depth)) return
       if (panel.contains(document.activeElement)) return
       const first = panel.querySelector<HTMLElement>(FOCUSABLE)
       ;(first ?? panel).focus()
@@ -78,6 +109,7 @@ export function Dialog({
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Tab') return
+      if (!isTopmost(depth)) return
       const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE))
       if (!items.length) {
         event.preventDefault()
@@ -104,7 +136,7 @@ export function Dialog({
       cancelAnimationFrame(frame)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [open])
+  }, [open, depth])
 
   /* Only the scrim closes: a click inside the panel bubbles to it too. */
   useEffect(() => {

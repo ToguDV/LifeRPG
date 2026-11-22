@@ -108,6 +108,22 @@ describe('QuestNodePanel', () => {
     expect(screen.queryByText(/previous milestones/)).not.toBeInTheDocument()
   })
 
+  it('opens the milestone sheet in a centred modal dialog', async () => {
+    const user = renderChain(SOLO)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /Supplies/ }))
+
+    const dialog = screen.getByRole('dialog', { name: 'Supplies' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toContainElement(
+      screen.getByRole('region', { name: 'Supplies' }),
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Close panel' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
   it('takes focus when opened from the keyboard and returns it to the trigger on Escape', async () => {
     const user = renderChain()
     await user.tab()

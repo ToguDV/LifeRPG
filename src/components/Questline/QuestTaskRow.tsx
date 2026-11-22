@@ -20,7 +20,7 @@ export interface QuestTaskRowProps {
 }
 
 /**
- * One quest inside the drawer. The editor is the same floating form the
+ * One quest inside the milestone sheet. The editor is the same floating form the
  * daily list uses, so title, labels and description behave identically and
  * opening it never pushes the list down.
  */

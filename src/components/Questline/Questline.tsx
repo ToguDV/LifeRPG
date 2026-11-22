@@ -10,6 +10,7 @@ import { cx } from '../../lib/cx'
 import { useControllableState } from '../../lib/useControllableState'
 import { useToday } from '../../lib/useToday'
 import { Button } from '../Button/Button'
+import { Dialog } from '../Dialog/Dialog'
 import { Icon } from '../Icon/Icon'
 import type { TaskUpdate } from '../TaskList/TaskEditor'
 import { QuestNodePanel } from './QuestNodePanel'
@@ -174,6 +175,12 @@ export function Questline({
   const routeLabel = label.trim()
   const openIndex = nodes.findIndex((node) => node.id === openId)
   const openNode = openIndex >= 0 ? nodes[openIndex] : null
+  const panelIds = openNode
+    ? {
+        panel: `${baseId}-${openIndex}-${domFragment(openNode.id)}-panel`,
+        heading: `${baseId}-${openIndex}-${domFragment(openNode.id)}-heading`,
+      }
+    : null
 
   /* Queues the deletion notice; the announcement effect owns `status`. */
   const keepDraft = (nodeId: string) => {
@@ -401,29 +408,31 @@ export function Questline({
         onToggleNode={toggleNode}
       />
 
-      {openNode ? (
-        <QuestNodePanel
-          key={openNode.id}
-          node={openNode}
-          index={openIndex}
-          total={nodes.length}
-          state={states[openIndex]}
-          blockingTitles={getBlockingNodes(nodes, openIndex).map(
-            (blocking) => blocking.title,
-          )}
-          panelId={`${baseId}-${openIndex}-${domFragment(openNode.id)}-panel`}
-          headingId={`${baseId}-${openIndex}-${domFragment(openNode.id)}-heading`}
-          editing={editingId === openNode.id}
-          onEditingChange={(editing) => setEditingId(editing ? openNode.id : null)}
-          onClose={closePanel}
-          onUpdateNode={(patch) => updateNode(openNode.id, patch)}
-          onDeleteNode={() => deleteNode(openNode.id)}
-          onToggleTask={(taskId, done) => toggleTask(openNode.id, taskId, done)}
-          onAddTask={(title) => addTask(openNode.id, title)}
-          onUpdateTask={(taskId, update) => updateTask(openNode.id, taskId, update)}
-          onDeleteTask={(taskId) => deleteTask(openNode.id, taskId)}
-          tagOptions={tagOptions}
-        />
+      {openNode && panelIds ? (
+        <Dialog open onClose={closePanel} ariaLabelledby={panelIds.heading}>
+          <QuestNodePanel
+            key={openNode.id}
+            node={openNode}
+            index={openIndex}
+            total={nodes.length}
+            state={states[openIndex]}
+            blockingTitles={getBlockingNodes(nodes, openIndex).map(
+              (blocking) => blocking.title,
+            )}
+            panelId={panelIds.panel}
+            headingId={panelIds.heading}
+            editing={editingId === openNode.id}
+            onEditingChange={(editing) => setEditingId(editing ? openNode.id : null)}
+            onClose={closePanel}
+            onUpdateNode={(patch) => updateNode(openNode.id, patch)}
+            onDeleteNode={() => deleteNode(openNode.id)}
+            onToggleTask={(taskId, done) => toggleTask(openNode.id, taskId, done)}
+            onAddTask={(title) => addTask(openNode.id, title)}
+            onUpdateTask={(taskId, update) => updateTask(openNode.id, taskId, update)}
+            onDeleteTask={(taskId) => deleteTask(openNode.id, taskId)}
+            tagOptions={tagOptions}
+          />
+        </Dialog>
       ) : null}
 
       <div className={styles.addRow} ref={addRowRef}>

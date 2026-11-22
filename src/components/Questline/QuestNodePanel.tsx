@@ -201,27 +201,27 @@ export function QuestNodePanel({
   }
 
   /*
-    Escape backs out one layer at a time: the delete confirmation, the
-    editor popover (handled by `useDismiss`), then the panel itself. While an
-    IME is composing, Escape only dismisses the candidate list; it must not
-    tear the panel down and take the typed text with it.
+    Escape backs out one layer at a time: the confirmation, then the
+    milestone editor, the task editor and finally the sheet — those three
+    are dialogs and only the topmost one answers (see `Dialog`). The
+    confirmation has no dialog of its own, so it claims the key here before
+    the sheet does. While an IME is composing, Escape belongs to the IME.
   */
   const handlePanelKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Escape' || event.defaultPrevented) return
     if (event.isComposing || event.keyCode === 229) return
-    if (confirmDelete) {
-      event.preventDefault()
-      setConfirmDelete(false)
-      return
-    }
+    /* A picker or an editor opened above it owns the press. */
+    if (!confirmDelete || editing) return
     event.preventDefault()
-    onClose()
+    /* The sheet's dialog would close on the same press without this. */
+    event.stopImmediatePropagation()
+    setConfirmDelete(false)
   }
 
   /*
-    The listener sits on the document in the bubble phase: React's root runs
-    first, so a nested editor can consume Escape with `preventDefault`. It
-    only acts on keys pressed inside this panel.
+    A capture listener on the document, so the confirmation is decided
+    before the dialog's own listener. It only acts on keys pressed inside
+    this sheet.
   */
   useEffect(() => {
     keyDownRef.current = handlePanelKeyDown
@@ -232,8 +232,8 @@ export function QuestNodePanel({
       if (!panelRef.current?.contains(event.target as Node)) return
       keyDownRef.current(event)
     }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+    document.addEventListener('keydown', onKeyDown, true)
+    return () => document.removeEventListener('keydown', onKeyDown, true)
   }, [])
 
   return (
