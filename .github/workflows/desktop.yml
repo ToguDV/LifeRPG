@@ -135,6 +135,11 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
+    env:
+      # This job has no checkout, so `gh` finds no git remote to resolve the
+      # repository from and every release command fails. GH_REPO is the only
+      # thing that tells it where to publish.
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/download-artifact@v7
         with:
