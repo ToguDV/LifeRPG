@@ -32,7 +32,7 @@ E2E verification needs Chromium. The pinned Playwright version uses revision `ch
 | `pnpm lint` | ESLint: correctness and accessibility (`jsx-a11y`), no style rules. |
 | `pnpm test` | Vitest in watch mode. |
 | `pnpm test:run` | Vitest once, for verification. |
-| `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, the journal (add, delete, empty state, announcements, keyboard-only), overflow from 320 to 1440 px, keyboard/focus and trail. |
+| `pnpm test:e2e` | Audit in real Chromium: axe on the 8 themes × 2 surfaces, open states, the journal (add, edit, delete, empty state, announcements, keyboard-only), overflow from 320 to 1440 px, keyboard/focus and trail. |
 | `pnpm test:e2e:report` | Opens the HTML report of the last E2E run. |
 | `pnpm dev:desktop` | Opens the journal in Electron with Vite hot reload. |
 | `pnpm build:desktop` | Packages this OS into `release/` (NSIS on Windows; AppImage and `.deb` on Linux). |
@@ -68,10 +68,11 @@ The gallery is the review surface of the UI planning phase: a single page with e
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
 - **Support primitives**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider and Toast.
 - **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, a ruled frame inside the edge and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
-- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together.
+- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together. A row opens a centred editor over a blurred page — title, labels from the shared catalogue and description — without pushing the list; the questline tasks reuse the same form.
+- **The tag field**: `TagField` lists every label in use across the daily list and the route; a new tag joins the catalogue when the task is saved.
 - **The journey**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
 
-Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, delete, switch themes and toggle paper/panel.
+Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, edit and delete, switch themes and toggle paper/panel.
 
 ## Design system
 
@@ -116,7 +117,7 @@ No component and no `index.html` needs touching: the boot script is generated fr
 - “Skip to content” is the first focusable element and moves focus to `main#content`.
 - The tooltip is hoverable and is dismissed with `Escape` (WCAG 1.4.13); toasts pause on hover and on keyboard focus (WCAG 2.2.1).
 - `TaskRow` priority and overdue status do not rely on colour; `ProgressBar` requires `label` or `aria-label`; `RangeSlider` is announced as a group.
-- Focus is visible and returned to the trigger on closing with `Escape`.
+- Focus is visible and returned to the trigger on closing with `Escape`; the task editor dialog returns it to the pencil on save or cancel.
 - Closing on click outside and on loss of focus.
 - `Questline` derives locking and overdue from the state of the tasks; locked milestones open so the list can be prepared, but their checkboxes are disabled. Completing a milestone is announced in a `status` region.
 - `prefers-reduced-motion` disables animations and transitions.
@@ -158,7 +159,7 @@ LifeRPG/
       Button/ Checkbox/ Radio/ Switch/ TextInput/ Textarea/
       Select/ Combobox/ Slider/ Stepper/ DatePicker/ TimePicker/
       FileUploader/ Surface/ Card/ Icon/ Badge/ ProgressBar/ Tooltip/
-      Divider/ Toast/ EmptyState/ TaskList/ Questline/ Field/ Popover/
+      Divider/ Toast/ EmptyState/ TaskList/ Questline/ Field/ Popover/ Dialog/
       Ornaments/
     gallery/
       GalleryPage.tsx        single page with index, themes and surfaces

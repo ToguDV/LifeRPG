@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   QUESTS_KEY,
   TASKS_KEY,
+  collectTags,
   parseNodes,
   parseTasks,
 } from '../src/journal/journal-data'
@@ -11,6 +12,31 @@ describe('journal storage keys', () => {
     expect(TASKS_KEY).toBe('liferpg-journal-tasks-v1')
     expect(QUESTS_KEY).toBe('liferpg-journal-quests-v1')
     expect(TASKS_KEY).not.toBe(QUESTS_KEY)
+  })
+})
+
+describe('collectTags', () => {
+  it('offers one global list from the daily tasks and the route', () => {
+    const tasks = parseTasks([
+      { id: 'a', title: 'Fill the waterskin', done: false, tags: ['Water', 'Survival'] },
+      { id: 'b', title: 'Mend the cloak', done: false, tags: ['Kit'] },
+    ]) ?? []
+    const nodes = parseNodes([
+      {
+        id: 'pozo',
+        title: 'The blind well',
+        tasks: [
+          { id: 'farol', title: 'Lower the lantern', done: false, tags: ['Climb', 'water'] },
+        ],
+      },
+    ]) ?? []
+
+    expect(collectTags(tasks, nodes)).toEqual([
+      'Climb',
+      'Kit',
+      'Survival',
+      'Water',
+    ])
   })
 })
 
@@ -50,7 +76,7 @@ describe('parseTasks', () => {
         done: false,
         note: 'A long way down',
         due: 'Before dusk',
-        tag: 'Survival',
+        tags: ['Survival', ' survival ', '  Dawn  ', '', 12],
         overdue: true,
         priority: 'high',
         colour: 'red',
@@ -64,10 +90,54 @@ describe('parseTasks', () => {
       done: false,
       note: 'A long way down',
       due: 'Before dusk',
-      tag: 'Survival',
+      tags: ['Survival', 'Dawn'],
       overdue: true,
       priority: 'high',
     })
+  })
+
+  it('migrates the single v1 tag into a list of one', () => {
+    const [task] = parseTasks([
+      { id: 'a', title: 'Mend the cloak', done: false, tag: ' Kit ' },
+    ]) ?? []
+
+    expect(task.tags).toEqual(['Kit'])
+  })
+
+  it('prefers a tags list over the legacy tag key', () => {
+    const [task] = parseTasks([
+      {
+        id: 'a',
+        title: 'Mend the cloak',
+        done: false,
+        tags: ['Repair'],
+        tag: 'Kit',
+      },
+    ]) ?? []
+
+    expect(task.tags).toEqual(['Repair'])
+  })
+
+  it('caps the number of tags from a hand-edited journal', () => {
+    const [task] = parseTasks([
+      {
+        id: 'a',
+        title: 'Mend the cloak',
+        done: false,
+        tags: ['one', 'two', 'three', 'four', 'five', 'six', 'seven'],
+      },
+    ]) ?? []
+
+    expect(task.tags).toEqual(['one', 'two', 'three', 'four', 'five', 'six'])
+  })
+
+  it('shortens a runaway tag to the editor limit', () => {
+    const long = 'a tag longer than twenty-four characters'
+    const [task] = parseTasks([
+      { id: 'a', title: 'Mend the cloak', done: false, tags: [long] },
+    ]) ?? []
+
+    expect(task.tags?.[0]).toBe(long.slice(0, 24))
   })
 
   it('rejects duplicate ids so one edit cannot rewrite two rows', () => {
@@ -141,6 +211,32 @@ describe('parseNodes', () => {
     ])
 
     expect(nodes).toEqual([{ id: 'pozo', title: 'The blind well', tasks: [] }])
+  })
+
+  it('keeps a quest note and its tags', () => {
+    const nodes = parseNodes([
+      {
+        id: 'pozo',
+        title: 'The blind well',
+        tasks: [
+          {
+            id: 'farol',
+            title: 'Lower the lantern',
+            done: false,
+            note: 'Do not let it touch the water.',
+            tags: ['Climb', ' climb ', 'Light'],
+          },
+        ],
+      },
+    ])
+
+    expect(nodes?.[0].tasks[0]).toEqual({
+      id: 'farol',
+      title: 'Lower the lantern',
+      done: false,
+      note: 'Do not let it touch the water.',
+      tags: ['Climb', 'Light'],
+    })
   })
 
   it('keeps a milestone whose only problems are inside its quest list', () => {

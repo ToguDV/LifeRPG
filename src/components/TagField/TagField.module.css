@@ -1,0 +1,33 @@
+/* The legend and the checkbox list need more air than Field's default gap. */
+.group {
+  gap: var(--space-5);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  min-width: 0;
+  /*
+    A `fieldset` does not lay its `legend` out as a flex item, so the group
+    gap never opens between the title and this list: the margins do.
+  */
+  margin: var(--space-4) 0 var(--space-4);
+}
+
+.create {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.count {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--text-note);
+  line-height: var(--leading-note);
+  color: var(--ui-text-muted);
+}

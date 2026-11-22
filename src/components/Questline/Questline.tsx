@@ -11,6 +11,7 @@ import { useControllableState } from '../../lib/useControllableState'
 import { useToday } from '../../lib/useToday'
 import { Button } from '../Button/Button'
 import { Icon } from '../Icon/Icon'
+import type { TaskUpdate } from '../TaskList/TaskEditor'
 import { QuestNodePanel } from './QuestNodePanel'
 import { QuestRail } from './QuestRail'
 import {
@@ -47,6 +48,8 @@ export interface QuestlineProps {
   /** Uncontrolled seed. Ignored when `nodes` is provided. */
   defaultNodes?: QuestNode[]
   onChange?: (nodes: QuestNode[]) => void
+  /** The global tag catalogue offered by every task editor on the route. */
+  tagOptions?: readonly string[]
   /** Names the route in the visible header and in the rail's list. */
   label?: string
   addNodeLabel?: string
@@ -129,6 +132,7 @@ export function Questline({
   nodes: nodesProp,
   defaultNodes = [],
   onChange,
+  tagOptions = [],
   label = 'Milestone route',
   addNodeLabel = 'Add milestone',
   newNodeTitle = 'New milestone',
@@ -280,9 +284,17 @@ export function Questline({
       { id: createQuestId('task'), title, done: false },
     ])
 
-  const renameTask = (nodeId: string, taskId: string, title: string) =>
+  const updateTask = (nodeId: string, taskId: string, update: TaskUpdate) =>
     updateTasks(nodeId, (tasks) =>
-      tasks.map((task) => (task.id === taskId ? { ...task, title } : task)),
+      tasks.map((task) => {
+        if (task.id !== taskId) return task
+        const next: QuestTask = { ...task, title: update.title }
+        if (update.note) next.note = update.note
+        else delete next.note
+        if (update.tags?.length) next.tags = update.tags
+        else delete next.tags
+        return next
+      }),
     )
 
   const deleteTask = (nodeId: string, taskId: string) =>
@@ -408,8 +420,9 @@ export function Questline({
           onDeleteNode={() => deleteNode(openNode.id)}
           onToggleTask={(taskId, done) => toggleTask(openNode.id, taskId, done)}
           onAddTask={(title) => addTask(openNode.id, title)}
-          onRenameTask={(taskId, title) => renameTask(openNode.id, taskId, title)}
+          onUpdateTask={(taskId, update) => updateTask(openNode.id, taskId, update)}
           onDeleteTask={(taskId) => deleteTask(openNode.id, taskId)}
+          tagOptions={tagOptions}
         />
       ) : null}
 

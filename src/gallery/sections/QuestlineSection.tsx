@@ -6,6 +6,7 @@ import { Icon } from '../../components/Icon/Icon'
 import { Questline, type QuestNode } from '../../components/Questline/Questline'
 import { isQuestNodeComplete } from '../../components/Questline/questline-model'
 import { addDays, dateKey } from '../../lib/date'
+import { mergeTagOptions } from '../../lib/tags'
 import { DemoNote } from '../Demo'
 import type { SectionProps } from '../SectionProps'
 import styles from './sections.module.css'
@@ -87,6 +88,9 @@ function makeSeed(): QuestNode[] {
 export function QuestlineSection({ canvas }: SectionProps) {
   const [nodes, setNodes] = useState<QuestNode[]>(makeSeed)
 
+  const tagOptions = mergeTagOptions(
+    ...nodes.flatMap((node) => node.tasks.map((task) => task.tags ?? [])),
+  )
   const completed = nodes.filter(isQuestNodeComplete).length
   const done = nodes.reduce(
     (sum, node) => sum + node.tasks.filter((task) => task.done).length,
@@ -111,6 +115,7 @@ export function QuestlineSection({ canvas }: SectionProps) {
         <Questline
           nodes={nodes}
           onChange={setNodes}
+          tagOptions={tagOptions}
           label="Journey of the Hollow Mark"
           addNodeLabel="Add milestone"
         />

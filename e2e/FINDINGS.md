@@ -3,7 +3,7 @@
 **Command:** `pnpm test:e2e` · report: `pnpm test:e2e:report`
 **Tools:** Playwright 1.64.1 (Chromium `chromium-1248`, already cached in `~/.cache/ms-playwright`) and axe-core 4.14 via `@axe-core/playwright`.
 
-Current state: **36 tests green**. This file keeps the first pass and the harness rules; it is not a list of exceptions.
+Current state: **52 tests green**. This file keeps the first pass and the harness rules; it is not a list of exceptions.
 
 ---
 
@@ -29,6 +29,8 @@ Details of the original pass and of the measured ratios: `git log -p e2e/FINDING
 | --- | --- | --- |
 | A11Y-06 | `color-contrast` of the completed milestone marker in Nord + Paper: 4.39:1 (`--parch` on `--accent-paper`, 14 px). The matrix missed it while it audited in the middle of the theme transition; a layout change made the settled state deterministic | Fixed: Nord's `--ui-paper-accent-contrast` is `--stone-0` (5.13:1) |
 | A11Y-07 | `color-contrast` of `Field`'s “opcional” label in Pergamino + Paper: 4.32:1 (`--ui-text-muted` on the sunken sheet). axe left it in `incomplete` — “background colour could not be determined due to a pseudo element”: the old 1 px margin rule ran through the card. The frame removed that pseudo-element and made the node measurable | Fixed: the light-paper muted ink moves from 30/70 to 20/80 (4.59:1 on the sunken sheet) |
+| UX-01 | The questline panel's deferred focus ran after an editor popover had already opened, focused the panel behind it and dismissed the new popover. Reproduced as an order-dependent jsdom failure | Fixed: the deferred focus only takes over when the active element is still the element that opened the panel, or the body |
+| UX-02 | `useFloating` treated `maxWidth` as the viewport budget: at 320 px a 460 px editor was clamped to 320 px, its `min-width`, and rendered at `x = -8` | Fixed: the width budget is the smaller of `maxWidth` and the viewport, minus padding. The journal suite asserts the editor box at 320 px and still measures no horizontal overflow |
 
 ---
 

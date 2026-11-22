@@ -8,6 +8,8 @@ import { ProgressBar } from '../../components/ProgressBar/ProgressBar'
 import { Radio, RadioGroup } from '../../components/Radio/Radio'
 import { TaskList } from '../../components/TaskList/TaskList'
 import type { Task } from '../../components/TaskList/TaskRow'
+import type { TaskUpdate } from '../../components/TaskList/TaskEditor'
+import { mergeTagOptions } from '../../lib/tags'
 import { TextInput } from '../../components/TextInput/TextInput'
 import { useToast } from '../../components/Toast/Toast'
 import type { SectionProps } from '../SectionProps'
@@ -22,7 +24,7 @@ const INITIAL_TASKS: Task[] = [
     note: '— the ice is already creaking',
     done: false,
     due: 'at dawn',
-    tag: 'Survival',
+    tags: ['Survival', 'Dawn'],
     priority: 'high',
   },
   {
@@ -31,7 +33,7 @@ const INITIAL_TASKS: Task[] = [
     note: '— two still missing',
     done: false,
     due: 'before nightfall',
-    tag: 'Offering',
+    tags: ['Offering'],
     priority: 'normal',
   },
   {
@@ -40,7 +42,7 @@ const INITIAL_TASKS: Task[] = [
     note: '— borrowed from the smith',
     done: true,
     due: 'completed',
-    tag: 'Debt',
+    tags: ['Debt'],
     priority: 'low',
   },
   {
@@ -49,7 +51,7 @@ const INITIAL_TASKS: Task[] = [
     note: '— it burns every seventh night',
     done: false,
     due: 'day 17',
-    tag: 'Exploration',
+    tags: ['Exploration', 'Watch'],
     priority: 'normal',
     overdue: true,
   },
@@ -57,7 +59,7 @@ const INITIAL_TASKS: Task[] = [
     id: 'fish',
     title: 'Smoke the fish',
     done: true,
-    tag: 'Provisions',
+    tags: ['Provisions'],
     priority: 'low',
   },
 ]
@@ -75,6 +77,7 @@ export function ContextSection({ canvas }: SectionProps) {
   const [draft, setDraft] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
 
+  const tagOptions = mergeTagOptions(...tasks.map((task) => task.tags ?? []))
   const doneCount = tasks.filter((task) => task.done).length
   const openCount = tasks.length - doneCount
   const filtered = tasks.filter((task) => {
@@ -101,6 +104,25 @@ export function ContextSection({ canvas }: SectionProps) {
     }
   }
 
+  const updateTask = (id: string, update: TaskUpdate) => {
+    setTasks((previous) =>
+      previous.map((task) => {
+        if (task.id !== id) return task
+        const next: Task = { ...task, title: update.title }
+        if (update.note) next.note = update.note
+        else delete next.note
+        if (update.tags?.length) next.tags = update.tags
+        else delete next.tags
+        return next
+      }),
+    )
+    toast({
+      variant: 'success',
+      title: 'Line amended',
+      description: `“${update.title}” was rewritten.`,
+    })
+  }
+
   const addTask = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const title = draft.trim()
@@ -111,7 +133,7 @@ export function ContextSection({ canvas }: SectionProps) {
       title,
       done: false,
       due: 'today',
-      tag: 'New',
+      tags: ['New'],
       priority: 'normal',
     }
 
@@ -195,6 +217,8 @@ export function ContextSection({ canvas }: SectionProps) {
           <TaskList
             tasks={filtered}
             onToggle={toggleTask}
+            onUpdate={updateTask}
+            tagOptions={tagOptions}
             onDelete={deleteTask}
             ariaLabel="Journal tasks"
             emptyState={

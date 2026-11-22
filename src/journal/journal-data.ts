@@ -1,6 +1,7 @@
 import type { QuestNode, QuestTask } from '../components/Questline/Questline'
 import type { Task, TaskPriority } from '../components/TaskList/TaskRow'
 import { addDays, dateKey } from '../lib/date'
+import { mergeTagOptions, readTags } from '../lib/tags'
 
 export const TASKS_KEY = 'liferpg-journal-tasks-v1'
 export const QUESTS_KEY = 'liferpg-journal-quests-v1'
@@ -40,10 +41,13 @@ export function parseTasks(value: unknown): Task[] | null {
     const task: Task = { id, title, done: item.done }
     const note = text(item.note)
     const due = text(item.due)
-    const tag = text(item.tag)
+    /* v1 stored one tag per task: the old key becomes a list of one. */
+    const tags =
+      readTags(item.tags) ??
+      readTags(typeof item.tag === 'string' ? [item.tag] : undefined)
     if (note) task.note = note
     if (due) task.due = due
-    if (tag) task.tag = tag
+    if (tags) task.tags = tags
     if (item.overdue === true) task.overdue = true
     if (typeof item.priority === 'string' && PRIORITIES.includes(item.priority)) {
       task.priority = item.priority as TaskPriority
@@ -80,7 +84,13 @@ export function parseNodes(value: unknown): QuestNode[] | null {
       /* The same rule inside a milestone: a repeated quest id, first wins. */
       if (taskIds.has(taskId)) continue
       taskIds.add(taskId)
-      tasks.push({ id: taskId, title: taskTitle, done: rawTask.done })
+
+      const quest: QuestTask = { id: taskId, title: taskTitle, done: rawTask.done }
+      const questNote = text(rawTask.note)
+      const questTags = readTags(rawTask.tags)
+      if (questNote) quest.note = questNote
+      if (questTags) quest.tags = questTags
+      tasks.push(quest)
     }
 
     const node: QuestNode = { id, title, tasks }
@@ -91,6 +101,17 @@ export function parseNodes(value: unknown): QuestNode[] | null {
     nodes.push(node)
   }
   return nodes
+}
+
+/**
+ * Every tag in use, across the daily list and the route: the shared catalogue
+ * the tag picker offers in both editors.
+ */
+export function collectTags(tasks: Task[], nodes: QuestNode[]): string[] {
+  return mergeTagOptions(
+    ...tasks.map((task) => task.tags ?? []),
+    ...nodes.flatMap((node) => node.tasks.map((task) => task.tags ?? [])),
+  )
 }
 
 let sequence = 0
@@ -108,8 +129,9 @@ export function seedTasks(): Task[] {
     {
       id: 'seed-waterskin',
       title: 'Fill the waterskin at the stream',
+      note: 'The ice is already creaking.',
       due: 'Before dusk',
-      tag: 'Survival',
+      tags: ['Survival', 'Water'],
       priority: 'high',
       done: false,
     },
@@ -117,14 +139,14 @@ export function seedTasks(): Task[] {
       id: 'seed-planks',
       title: 'Deliver three planks to Alderic',
       due: 'Before nightfall',
-      tag: 'Offering',
+      tags: ['Offering'],
       done: false,
     },
     {
       id: 'seed-lantern',
       title: 'Return the brass lantern',
       due: 'Tomorrow',
-      tag: 'Debt',
+      tags: ['Debt'],
       priority: 'low',
       done: false,
     },
@@ -132,7 +154,7 @@ export function seedTasks(): Task[] {
       id: 'seed-cloak',
       title: 'Mend the torn cloak',
       due: 'Yesterday',
-      tag: 'Kit',
+      tags: ['Kit', 'Repair'],
       priority: 'high',
       overdue: true,
       done: false,
@@ -140,7 +162,7 @@ export function seedTasks(): Task[] {
     {
       id: 'seed-entry',
       title: 'Copy the route into the journal',
-      tag: 'Journal',
+      tags: ['Journal'],
       done: true,
     },
   ]
@@ -156,8 +178,14 @@ export function seedNodes(): QuestNode[] {
       title: 'The provisions',
       deadline: deadline(-5),
       tasks: [
-        { id: 'seed-waterskin', title: 'Fill the waterskin', done: true },
-        { id: 'seed-salt', title: 'Seal the salt in waxed cloth', done: true },
+        {
+          id: 'seed-waterskin',
+          title: 'Fill the waterskin',
+          note: 'The ice is already creaking.',
+          tags: ['Survival', 'Water'],
+          done: true,
+        },
+        { id: 'seed-salt', title: 'Seal the salt in waxed cloth', tags: ['Survival'], done: true },
         { id: 'seed-tinder', title: 'Change the tinder', done: true },
       ],
     },
@@ -166,8 +194,14 @@ export function seedNodes(): QuestNode[] {
       title: 'The blind well',
       deadline: deadline(3),
       tasks: [
-        { id: 'seed-rope', title: 'Tie the rope to the winch', done: true },
-        { id: 'seed-lower', title: 'Lower the brass lantern', done: false },
+        { id: 'seed-rope', title: 'Tie the rope to the winch', tags: ['Climb'], done: true },
+        {
+          id: 'seed-lower',
+          title: 'Lower the brass lantern',
+          note: 'Do not let it touch the water.',
+          tags: ['Climb', 'Light'],
+          done: false,
+        },
         { id: 'seed-raise', title: 'Raise the bucket', done: false },
       ],
     },

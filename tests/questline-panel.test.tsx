@@ -236,29 +236,32 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Supplies/ }))
     await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
-    const input = screen.getByRole('textbox', {
-      name: 'Title of “Fill the waterskin”',
-    })
+    const input = screen.getByRole('textbox', { name: 'Title' })
     await user.type(input, ' of the well')
     await user.keyboard('{Escape}')
 
-    expect(screen.queryByRole('textbox', { name: /Title of/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Edit task' })).not.toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }),
     ).toHaveFocus()
+
+    /* The next Escape backs out of the panel itself. */
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('region', { name: 'Supplies' })).not.toBeInTheDocument()
   })
 
-  it('backs out one layer per Escape', async () => {
+  it('lets the date picker consume Escape before the milestone editor', async () => {
     const user = renderChain(SOLO)
     await user.click(screen.getByRole('button', { name: /Supplies/ }))
     await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
-    await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
+
+    await user.click(screen.getByRole('button', { name: /deadline/i }))
+    const calendar = screen.getByRole('dialog', { name: 'Pick a date' })
+    expect(calendar).toBeVisible()
 
     await user.keyboard('{Escape}')
-    expect(screen.queryByRole('textbox', { name: /Title of/ })).not.toBeInTheDocument()
-    expect(
-      screen.getByRole('textbox', { name: 'Milestone name' }),
-    ).toBeVisible()
+    expect(screen.queryByRole('dialog', { name: 'Pick a date' })).not.toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Milestone name' })).toBeVisible()
 
     await user.keyboard('{Escape}')
     expect(
@@ -293,18 +296,16 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Supplies/ }))
     await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
-    const input = screen.getByRole('textbox', {
-      name: 'Title of “Fill the waterskin”',
-    })
+    const input = screen.getByRole('textbox', { name: 'Title' })
     await user.type(input, ' of the well')
 
     fireEvent.keyDown(input, { key: 'Escape', isComposing: true })
 
     expect(input).toHaveValue('Fill the waterskin of the well')
     await user.type(input, ' at dawn')
-    expect(
-      screen.getByRole('textbox', { name: /Title of/ }),
-    ).toHaveValue('Fill the waterskin of the well at dawn')
+    expect(screen.getByRole('textbox', { name: 'Title' })).toHaveValue(
+      'Fill the waterskin of the well at dawn',
+    )
   })
 
   it('validates a new task with no name', async () => {
@@ -326,17 +327,13 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Supplies/ }))
     await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
-    const input = screen.getByRole('textbox', {
-      name: 'Title of “Fill the waterskin”',
-    })
+    const input = screen.getByRole('textbox', { name: 'Title' })
     await user.clear(input)
-    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('The task needs a name.')
+    expect(screen.getByRole('alert')).toHaveTextContent('Write a title first.')
     expect(input).toHaveAttribute('aria-invalid', 'true')
-    expect(
-      screen.getByRole('textbox', { name: 'Title of “Fill the waterskin”' }),
-    ).toBeVisible()
+    expect(screen.getByRole('dialog', { name: 'Edit task' })).toBeVisible()
   })
 
   it('returns focus to the neighbouring row when a task is deleted', async () => {
@@ -367,12 +364,10 @@ describe('QuestNodePanel', () => {
     await user.click(screen.getByRole('button', { name: /Supplies/ }))
     await user.click(screen.getByRole('button', { name: 'Edit “Fill the waterskin”' }))
 
-    const input = screen.getByRole('textbox', {
-      name: 'Title of “Fill the waterskin”',
-    })
+    const input = screen.getByRole('textbox', { name: 'Title' })
     await user.clear(input)
     await user.type(input, 'Fill the big waterskin')
-    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     const renamed = screen.getByRole('button', {
       name: 'Edit “Fill the big waterskin”',

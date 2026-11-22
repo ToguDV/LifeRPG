@@ -61,6 +61,7 @@ export function QuestNodeEditor({
 
   return (
     <form id={editorId} className={styles.editor} onSubmit={submitNode} noValidate>
+      <h3 className={styles.editorTitle}>Edit milestone</h3>
       <TextInput
         label="Milestone name"
         autoFocus

@@ -49,9 +49,9 @@ export async function openMilestone(
   return { section, trigger, panel }
 }
 
-/** The panel's editor form: its id is the panel id plus `-editor`. */
+/** The milestone editor is now a floating dialog anchored to the pencil. */
 export function panelEditor(panel: Locator): Locator {
-  return panel.locator('form[id$="-editor"]')
+  return panel.page().getByRole('dialog', { name: /^Edit milestone/ })
 }
 
 /** The pencil/close button in the panel header is the only `aria-expanded` one. */

@@ -2,7 +2,9 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Badge } from '../Badge/Badge'
 import { Button } from '../Button/Button'
 import { Icon } from '../Icon/Icon'
+import { Dialog } from '../Dialog/Dialog'
 import { TextInput } from '../TextInput/TextInput'
+import type { TaskUpdate } from '../TaskList/TaskEditor'
 import {
   countQuestTasks,
   formatQuestNumber,
@@ -10,7 +12,6 @@ import {
   type QuestNode,
   type QuestNodePatch,
   type QuestNodeState,
-  type QuestTask,
 } from './questline-model'
 import { STATE_META } from './questline-state'
 import { QuestDeleteConfirm } from './QuestDeleteConfirm'
@@ -34,8 +35,10 @@ export interface QuestNodePanelProps {
   onDeleteNode: () => void
   onToggleTask: (taskId: string, done: boolean) => void
   onAddTask: (title: string) => void
-  onRenameTask: (taskId: string, title: string) => void
+  onUpdateTask: (taskId: string, update: TaskUpdate) => void
   onDeleteTask: (taskId: string) => void
+  /** The catalogue shared with the daily list. */
+  tagOptions: readonly string[]
 }
 
 export function QuestNodePanel({
@@ -53,8 +56,9 @@ export function QuestNodePanel({
   onDeleteNode,
   onToggleTask,
   onAddTask,
-  onRenameTask,
+  onUpdateTask,
   onDeleteTask,
+  tagOptions,
 }: QuestNodePanelProps) {
   const panelRef = useRef<HTMLElement>(null)
   const editToolRef = useRef<HTMLSpanElement>(null)
@@ -73,13 +77,8 @@ export function QuestNodePanel({
 
   const [newTitle, setNewTitle] = useState('')
   const [taskError, setTaskError] = useState<string | null>(null)
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
-  const [taskDraft, setTaskDraft] = useState('')
-  const [taskEditError, setTaskEditError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const [pendingFocus, setPendingFocus] = useState<{ taskId: string | null } | null>(
-    null,
-  )
+  const [pendingFocus, setPendingFocus] = useState<string | null>(null)
 
   /*
     The confirmation replaces the button that had the focus: hand it to
@@ -103,25 +102,28 @@ export function QuestNodePanel({
   */
   useEffect(() => {
     if (openedWithEditor.current) return
+    const origin = document.activeElement
     const frame = requestAnimationFrame(() => {
       const panel = panelRef.current
+      if (!panel) return
+      const active = document.activeElement
       /* A click inside the panel may have taken the focus before this frame. */
-      if (!panel || panel.contains(document.activeElement)) return
+      if (active && panel.contains(active)) return
+      /* Nor steal it from an editor popover opened since the panel mounted. */
+      if (active !== origin && active !== document.body) return
       panel.focus()
     })
     return () => cancelAnimationFrame(frame)
   }, [])
 
   /*
-    A row that leaves or enters edit mode takes its buttons with it. Focus
-    has to land on a control that still exists and stay on screen: the row's
-    idle button or, when the row is gone, the add field below the list.
+    A deleted row takes its buttons with it. Focus has to land on a control
+    that still exists and stay on screen: the neighbour's edit button or,
+    when the row was the last one, the add field below the list.
   */
   useEffect(() => {
     if (!pendingFocus) return
-    const row = pendingFocus.taskId
-      ? taskRowRefs.current.get(pendingFocus.taskId)
-      : undefined
+    const row = taskRowRefs.current.get(pendingFocus)
     const target =
       row?.querySelector<HTMLButtonElement>('button') ??
       addFormRef.current?.querySelector<HTMLInputElement>('input')
@@ -190,53 +192,19 @@ export function QuestNodePanel({
     pendingAddedTask.current = true
   }
 
-  const startTaskEdit = (task: QuestTask) => {
-    setEditingTaskId(task.id)
-    setTaskDraft(task.title)
-    setTaskEditError(null)
-  }
-
-  /* The row's edit form is unmounted: hand the focus back to its button. */
-  const cancelTaskEdit = () => {
-    const taskId = editingTaskId
-    setEditingTaskId(null)
-    setTaskDraft('')
-    setTaskEditError(null)
-    if (taskId) setPendingFocus({ taskId })
-  }
-
-  const saveTask = (taskId: string) => {
-    const title = taskDraft.trim()
-    if (!title) {
-      setTaskEditError('The task needs a name.')
-      return
-    }
-    onRenameTask(taskId, title)
-    setEditingTaskId(null)
-    setTaskDraft('')
-    setTaskEditError(null)
-    setPendingFocus({ taskId })
-  }
-
   /* Removing the focused row would drop the focus on the body: take it to the neighbour. */
   const removeTask = (taskId: string) => {
     const index = node.tasks.findIndex((task) => task.id === taskId)
     const neighbour = node.tasks[index + 1]?.id ?? node.tasks[index - 1]?.id ?? null
-    if (editingTaskId === taskId) {
-      setEditingTaskId(null)
-      setTaskDraft('')
-      setTaskEditError(null)
-    }
     onDeleteTask(taskId)
-    setPendingFocus({ taskId: neighbour })
+    setPendingFocus(neighbour)
   }
 
   /*
     Escape backs out one layer at a time: the delete confirmation, the
-    milestone editor, the task editor, then the panel itself. Pickers and the
-    task editor call `preventDefault` first, so their own Escape is not stolen.
-    While an IME is composing, Escape only dismisses the candidate list; it
-    must not tear the editor down and take the typed text with it.
+    editor popover (handled by `useDismiss`), then the panel itself. While an
+    IME is composing, Escape only dismisses the candidate list; it must not
+    tear the panel down and take the typed text with it.
   */
   const handlePanelKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Escape' || event.defaultPrevented) return
@@ -244,16 +212,6 @@ export function QuestNodePanel({
     if (confirmDelete) {
       event.preventDefault()
       setConfirmDelete(false)
-      return
-    }
-    if (editing) {
-      event.preventDefault()
-      finishEditing()
-      return
-    }
-    if (editingTaskId) {
-      event.preventDefault()
-      cancelTaskEdit()
       return
     }
     event.preventDefault()
@@ -341,14 +299,21 @@ export function QuestNodePanel({
         </div>
       </div>
 
-      {editing ? (
+      <Dialog
+        open={editing}
+        onClose={(restoreFocus) =>
+          restoreFocus ? finishEditing() : onEditingChange(false)
+        }
+        id={editorId}
+        ariaLabel={`Edit milestone “${node.title}”`}
+      >
         <QuestNodeEditor
           node={node}
-          editorId={editorId}
+          editorId={`${editorId}-form`}
           onUpdateNode={onUpdateNode}
           onDone={finishEditing}
         />
-      ) : null}
+      </Dialog>
 
       {locked ? (
         <p className={styles.lockNote}>
@@ -372,20 +337,12 @@ export function QuestNodePanel({
             key={task.id}
             task={task}
             locked={locked}
-            editing={editingTaskId === task.id}
-            draft={taskDraft}
-            error={taskEditError}
+            tagOptions={tagOptions}
             rowRef={(element) => {
               if (element) taskRowRefs.current.set(task.id, element)
               else taskRowRefs.current.delete(task.id)
             }}
-            onStartEdit={() => startTaskEdit(task)}
-            onDraftChange={(value) => {
-              setTaskDraft(value)
-              if (taskEditError) setTaskEditError(null)
-            }}
-            onSubmit={() => saveTask(task.id)}
-            onCancelEdit={cancelTaskEdit}
+            onUpdate={(update) => onUpdateTask(task.id, update)}
             onToggle={(done) => onToggleTask(task.id, done)}
             onDelete={() => removeTask(task.id)}
           />

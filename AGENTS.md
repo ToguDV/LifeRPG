@@ -38,7 +38,9 @@ pnpm build:desktop # NSIS (Windows) or AppImage + deb (Linux) into release/
 
 **Type.** Nothing is set below 14 px: `--text-xs` is the floor and `pnpm lint` fails on a smaller step or a raw size. Anything meant to be read stays at `--text-prose` (15 px), a note on `--text-note-sm` (16 px). A label recedes through tracking, weight or contrast, never through size; density comes from padding.
 
-**Surfaces and portals.** `Surface` gives material; `Card` when there is also a header, a wax seal and a list. Anything portalled (`Popover`, tooltips, toasts, menus) calls `useSurface()` and sets `data-surface` on the floating node or loses the material. The paper shadow is `--ui-paper-drop`. Do not put `overflow: hidden` on a card that may host a popover.
+**Surfaces and portals.** `Surface` gives material; `Card` when there is also a header, a wax seal and a list. Anything portalled (`Popover`, `Dialog`, tooltips, toasts, menus) calls `useSurface()` and sets `data-surface` on the floating node or loses the material. The paper shadow is `--ui-paper-drop`. Do not put `overflow: hidden` on a card that may host a popover.
+
+**Editors.** Forms that edit a row use the centred `Dialog` (scrim, blur, focus trap, scroll lock), never an inline form or an anchored `Popover`: opening one must not reflow the container. `Popover` stays for menus and pickers.
 
 **Forms.** `Field` for label, hint, error and required; `getFieldMessageId` for the ids; `useControllableState` for `value`/`onChange`/`defaultValue`. Errors with `role="alert"` and `aria-invalid`. Keep the native semantics of checkbox, radio, switch and range.
 

@@ -37,6 +37,24 @@ test.describe('journal · layout and state', () => {
         () => document.documentElement.scrollWidth - window.innerWidth,
       )
       expect(overflow, `horizontal overflow at ${width}px`).toBeLessThanOrEqual(0)
+
+      /* The centred editor has to fit the same narrow viewport. */
+      if (width === 320) {
+        await page
+          .getByRole('button', { name: 'Edit “Fill the waterskin at the stream”' })
+          .click()
+        const editor = page.getByRole('dialog', { name: 'Edit task' })
+        await expect(editor).toBeVisible()
+        const box = await editor.boundingBox()
+        expect(box?.x ?? -1).toBeGreaterThanOrEqual(0)
+        expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(width)
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth - window.innerWidth,
+          ),
+        ).toBeLessThanOrEqual(0)
+        await page.keyboard.press('Escape')
+      }
     }
   })
 
@@ -60,6 +78,73 @@ test.describe('journal · layout and state', () => {
     await page.reload()
     await expect(page.locator('main#content')).toBeVisible()
     await expect(page.getByRole('checkbox', { name: /Sharpen the axe/ })).toBeChecked()
+  })
+
+  test('a task can be edited, survives a reload and is announced', async ({ page }) => {
+    await gotoJournal(page)
+
+    const row = page.getByRole('list', { name: 'Tasks' }).getByRole('listitem').first()
+    const before = await row.boundingBox()
+
+    await page
+      .getByRole('button', { name: 'Edit “Fill the waterskin at the stream”' })
+      .click()
+
+    const dialog = page.getByRole('dialog', { name: 'Edit task' })
+    await expect(dialog).toBeVisible()
+    /* A centred editor must not move the list it belongs to. */
+    expect(await row.boundingBox()).toEqual(before)
+
+    const title = page.getByRole('textbox', { name: 'Title' })
+    await expect(title).toBeFocused()
+    await title.fill('Fill the waterskin at the ford')
+
+    /* The box is clipped, so the visible label is the click target. */
+    const tagList = dialog.getByRole('group', { name: 'Tags' })
+    await tagList.getByText('Water', { exact: true }).click()
+    await tagList.getByText('Kit', { exact: true }).click()
+    await dialog.getByRole('textbox', { name: 'New tag' }).fill('Ford')
+    await page.keyboard.press('Enter')
+    await expect(
+      tagList.getByRole('checkbox', { name: 'Ford', exact: true }),
+    ).toBeChecked()
+
+    await page
+      .getByRole('textbox', { name: /description/i })
+      .fill('The ice is thinner here.')
+
+    /* The editor is a real form on the page: axe can audit the open state. */
+    const results = await auditPage(page)
+    expectNoViolations(results.violations, 'journal · edit form')
+
+    await page.getByRole('button', { name: 'Save', exact: true }).click()
+    await expect(dialog).toHaveCount(0)
+    await expect(
+      page.getByRole('checkbox', { name: 'Check “Fill the waterskin at the ford”' }),
+    ).toBeVisible()
+    await expect(
+      page
+        .getByRole('status')
+        .filter({ hasText: 'Task updated: Fill the waterskin at the ford' }),
+    ).toHaveCount(1)
+
+    await page.reload()
+    await expect(page.locator('main#content')).toBeVisible()
+    await expect(
+      page.getByRole('checkbox', { name: 'Check “Fill the waterskin at the ford”' }),
+    ).toBeVisible()
+    await expect(page.getByText('Ford', { exact: true })).toBeVisible()
+    await expect(page.getByText('The ice is thinner here.')).toBeVisible()
+
+    /* Escape closes the editor and gives the focus back to the pencil. */
+    const edit = page.getByRole('button', {
+      name: 'Edit “Fill the waterskin at the ford”',
+    })
+    await edit.click()
+    await expect(page.getByRole('textbox', { name: 'Title' })).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(dialog).toHaveCount(0)
+    await expect(edit).toBeFocused()
   })
 
   test('a task can be added with the keyboard alone', async ({ page }) => {

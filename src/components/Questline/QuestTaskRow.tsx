@@ -1,8 +1,9 @@
-import { cx } from '../../lib/cx'
+import { useId, useRef, useState } from 'react'
 import { Button } from '../Button/Button'
 import { Checkbox } from '../Checkbox/Checkbox'
 import { Icon } from '../Icon/Icon'
-import { TextInput } from '../TextInput/TextInput'
+import { TaskEditorDialog } from '../TaskList/TaskEditorDialog'
+import type { TaskUpdate } from '../TaskList/TaskEditor'
 import type { QuestTask } from './questline-model'
 import styles from './QuestNodePanel.module.css'
 
@@ -10,114 +11,102 @@ export interface QuestTaskRowProps {
   task: QuestTask
   /** A locked milestone can prepare tasks but cannot tick them. */
   locked: boolean
-  editing: boolean
-  draft: string
-  error: string | null
+  /** The catalogue shared with the daily list. */
+  tagOptions: readonly string[]
   rowRef: (element: HTMLLIElement | null) => void
-  onStartEdit: () => void
-  onDraftChange: (value: string) => void
-  onSubmit: () => void
-  onCancelEdit: () => void
+  onUpdate: (update: TaskUpdate) => void
   onToggle: (done: boolean) => void
   onDelete: () => void
 }
 
-/** One quest inside the drawer: checkbox, idle tools or inline rename form. */
+/**
+ * One quest inside the drawer. The editor is the same floating form the
+ * daily list uses, so title, labels and description behave identically and
+ * opening it never pushes the list down.
+ */
 export function QuestTaskRow({
   task,
   locked,
-  editing,
-  draft,
-  error,
+  tagOptions,
   rowRef,
-  onStartEdit,
-  onDraftChange,
-  onSubmit,
-  onCancelEdit,
+  onUpdate,
   onToggle,
   onDelete,
 }: QuestTaskRowProps) {
+  const autoId = useId()
+  const editorId = `quest-task-editor-${autoId}`
+  const [editing, setEditing] = useState(false)
+  const editAnchor = useRef<HTMLSpanElement>(null)
+
+  const closeEditor = (restoreFocus?: boolean) => {
+    setEditing(false)
+    if (restoreFocus) {
+      editAnchor.current?.querySelector('button')?.focus()
+    }
+  }
+
   return (
-    <li ref={rowRef} className={styles.task}>
-      {editing ? (
-        <form
-          className={styles.taskEdit}
-          onSubmit={(event) => {
-            event.preventDefault()
-            onSubmit()
-          }}
-        >
-          <TextInput
-            aria-label={`Title of “${task.title}”`}
-            value={draft}
-            onChange={(event) => onDraftChange(event.target.value)}
-            error={error ?? undefined}
+    <li
+      ref={rowRef}
+      className={styles.task}
+      data-editing={editing ? 'true' : undefined}
+    >
+      <div className={styles.taskBody}>
+        <Checkbox
+          label={task.title}
+          checked={task.done}
+          disabled={locked}
+          strikeWhenChecked
+          onChange={(event) => onToggle(event.target.checked)}
+        />
+        {task.note || task.tags?.length ? (
+          <div className={styles.taskMeta}>
+            {task.note ? <span className={styles.taskNote}>{task.note}</span> : null}
+            {task.tags?.map((tag) => (
+              <span key={tag} className={styles.taskTag}>
+                <Icon name="tag" size="sm" aria-hidden="true" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className={styles.taskTools}>
+        <span ref={editAnchor}>
+          <Button
+            variant="ghost"
             size="sm"
-            autoFocus
-            fieldClassName={styles.taskEditField}
-            onKeyDown={(event) => {
-              /*
-                The first Escape of an IME composition cancels the candidate
-                list, not the rename: closing here would drop the draft.
-                React's synthetic event does not carry `isComposing`, so read
-                the native one.
-              */
-              const { isComposing, keyCode } = event.nativeEvent
-              if (isComposing || keyCode === 229) return
-              if (event.key === 'Escape') {
-                event.preventDefault()
-                onCancelEdit()
-              }
-            }}
+            iconOnly
+            aria-label={`Edit “${task.title}”`}
+            aria-haspopup="dialog"
+            aria-expanded={editing}
+            aria-controls={editing ? editorId : undefined}
+            iconLeft={<Icon name="edit" size="sm" />}
+            onClick={() => (editing ? closeEditor(true) : setEditing(true))}
           />
-          <div className={styles.taskTools}>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              iconOnly
-              aria-label="Save changes"
-              iconLeft={<Icon name="check" size="sm" />}
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              iconOnly
-              aria-label="Cancel edit"
-              iconLeft={<Icon name="close" size="sm" />}
-              onClick={onCancelEdit}
-            />
-          </div>
-        </form>
-      ) : (
-        <>
-          <Checkbox
-            label={task.title}
-            checked={task.done}
-            disabled={locked}
-            strikeWhenChecked
-            onChange={(event) => onToggle(event.target.checked)}
-          />
-          <div className={cx(styles.taskTools, styles.taskToolsIdle)}>
-            <Button
-              variant="ghost"
-              size="sm"
-              iconOnly
-              aria-label={`Edit “${task.title}”`}
-              iconLeft={<Icon name="edit" size="sm" />}
-              onClick={onStartEdit}
-            />
-            <Button
-              variant="ghost"
-              size="sm"
-              iconOnly
-              aria-label={`Delete “${task.title}”`}
-              iconLeft={<Icon name="trash" size="sm" />}
-              onClick={onDelete}
-            />
-          </div>
-        </>
-      )}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          iconOnly
+          aria-label={`Delete “${task.title}”`}
+          iconLeft={<Icon name="trash" size="sm" />}
+          onClick={onDelete}
+        />
+      </div>
+
+      <TaskEditorDialog
+        id={editorId}
+        open={editing}
+        task={task}
+        tagOptions={tagOptions}
+        onSave={(update) => {
+          onUpdate(update)
+          closeEditor(true)
+        }}
+        onClose={closeEditor}
+      />
     </li>
   )
 }

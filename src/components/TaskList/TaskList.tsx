@@ -3,11 +3,14 @@ import { cx } from '../../lib/cx'
 import { EmptyState } from '../EmptyState/EmptyState'
 import { TaskRow } from './TaskRow'
 import type { Task } from './TaskRow'
+import type { TaskUpdate } from './TaskEditor'
 import styles from './TaskList.module.css'
 
 export interface TaskListProps {
   tasks: Task[]
   onToggle: (id: string, done: boolean) => void
+  onUpdate?: (id: string, update: TaskUpdate) => void
+  tagOptions?: readonly string[]
   onDelete?: (id: string) => void
   ariaLabel?: string
   emptyState?: ReactNode
@@ -17,6 +20,8 @@ export interface TaskListProps {
 export function TaskList({
   tasks,
   onToggle,
+  onUpdate,
+  tagOptions = [],
   onDelete,
   ariaLabel = 'Tareas',
   emptyState,
@@ -39,7 +44,14 @@ export function TaskList({
   return (
     <ul className={cx(styles.list, className)} aria-label={ariaLabel}>
       {tasks.map((task) => (
-        <TaskRow key={task.id} task={task} onToggle={onToggle} onDelete={onDelete} />
+        <TaskRow
+          key={task.id}
+          task={task}
+          onToggle={onToggle}
+          onUpdate={onUpdate}
+          tagOptions={tagOptions}
+          onDelete={onDelete}
+        />
       ))}
     </ul>
   )

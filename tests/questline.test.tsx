@@ -103,10 +103,10 @@ describe('Questline', () => {
     expect(screen.getByRole('checkbox', { name: 'Seal the map' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Edit “Seal the map”' }))
-    const input = screen.getByRole('textbox', { name: 'Title of “Seal the map”' })
+    const input = screen.getByRole('textbox', { name: 'Title' })
     await user.clear(input)
     await user.type(input, 'Seal the pass map')
-    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(
       screen.getByRole('checkbox', { name: 'Seal the pass map' }),
@@ -306,12 +306,15 @@ describe('Questline · deletion and drafts', () => {
     const user = renderChain([{ id: 'provisiones', title: 'Supplies', tasks: [] }])
 
     await user.click(screen.getByRole('button', { name: 'Add milestone' }))
+    /* Saving closes the popover and keeps the draft; the panel stays open. */
+    await user.click(screen.getByRole('button', { name: 'Save milestone' }))
     await user.type(
       screen.getByRole('textbox', { name: /New task in “New milestone”/ }),
       'Seal the map',
     )
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
+    await user.click(screen.getByRole('button', { name: 'Edit milestone' }))
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(screen.getByRole('button', { name: /New milestone/ })).toBeInTheDocument()

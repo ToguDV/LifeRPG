@@ -10,6 +10,9 @@ export interface QuestTask {
   id: string
   title: string
   done: boolean
+  /** The same optional fields the daily list edits: note and labels. */
+  note?: string
+  tags?: string[]
 }
 
 export interface QuestNode {

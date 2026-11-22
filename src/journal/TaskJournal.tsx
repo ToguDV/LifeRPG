@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+} from 'react'
 import { Badge } from '../components/Badge/Badge'
 import { Button } from '../components/Button/Button'
 import { Card } from '../components/Card/Card'
@@ -6,22 +13,19 @@ import { EmptyState } from '../components/EmptyState/EmptyState'
 import { ProgressBar } from '../components/ProgressBar/ProgressBar'
 import { TaskList } from '../components/TaskList/TaskList'
 import type { Task } from '../components/TaskList/TaskRow'
+import type { TaskUpdate } from '../components/TaskList/TaskEditor'
 import { TextInput } from '../components/TextInput/TextInput'
-import { usePersistentState } from '../lib/usePersistentState'
-import {
-  TASKS_KEY,
-  createTaskId,
-  parseTasks,
-  seedTasks,
-} from './journal-data'
+import { createTaskId } from './journal-data'
 import styles from './TaskJournal.module.css'
 
-export function TaskJournal() {
-  const [tasks, setTasks] = usePersistentState<Task[]>(
-    TASKS_KEY,
-    seedTasks,
-    parseTasks,
-  )
+export interface TaskJournalProps {
+  tasks: Task[]
+  setTasks: Dispatch<SetStateAction<Task[]>>
+  /** The catalogue shared with the route. */
+  tagOptions: readonly string[]
+}
+
+export function TaskJournal({ tasks, setTasks, tagOptions }: TaskJournalProps) {
   const [draft, setDraft] = useState('')
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
@@ -83,6 +87,22 @@ export function TaskJournal() {
     )
   }
 
+  const updateTask = (id: string, update: TaskUpdate) => {
+    setTasks((previous) =>
+      previous.map((task) => {
+        if (task.id !== id) return task
+        const next: Task = { ...task, title: update.title }
+        /* Clearing a field must remove the key, not store an empty string. */
+        if (update.note) next.note = update.note
+        else delete next.note
+        if (update.tags?.length) next.tags = update.tags
+        else delete next.tags
+        return next
+      }),
+    )
+    setStatus(`Task updated: ${update.title}`)
+  }
+
   const deleteTask = (id: string) => {
     const index = tasks.findIndex((task) => task.id === id)
     const removed = tasks[index]
@@ -138,6 +158,8 @@ export function TaskJournal() {
         <TaskList
           tasks={tasks}
           onToggle={toggleTask}
+          onUpdate={updateTask}
+          tagOptions={tagOptions}
           onDelete={deleteTask}
           ariaLabel="Tasks"
           emptyState={<EmptyState icon="feather" title="No tasks yet" />}

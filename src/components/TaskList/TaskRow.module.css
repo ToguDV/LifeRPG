@@ -17,6 +17,10 @@
   background-color: var(--ui-field-bg);
 }
 
+.row[data-editing="true"] {
+  background-color: var(--ui-field-bg);
+}
+
 /* The single `<label>` covers the box and the body: the row stays clickable. */
 .control {
   display: grid;
@@ -174,7 +178,12 @@
   color: var(--ui-accent-strong);
 }
 
-.delete {
+.actions {
+  display: flex;
+  gap: var(--space-0-5);
+}
+
+.action {
   display: inline-grid;
   place-items: center;
   width: var(--space-7);
@@ -188,9 +197,15 @@
     background-color var(--duration-fast) var(--ease-out);
 }
 
-.row:hover .delete,
-.row:focus-within .delete {
+.row:hover .action,
+.row:focus-within .action,
+.row[data-editing="true"] .action {
   opacity: 1;
+}
+
+.edit:hover {
+  color: var(--ui-accent-strong);
+  background-color: var(--ui-accent-soft);
 }
 
 .delete:hover {
@@ -198,7 +213,7 @@
   background-color: var(--ui-danger-soft);
 }
 
-.delete:focus-visible {
+.action:focus-visible {
   opacity: 1;
   outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
   outline-offset: var(--focus-ring-offset-tight);
@@ -223,7 +238,7 @@
 }
 
 @media (hover: none) {
-  .delete {
+  .action {
     opacity: 1;
   }
 }

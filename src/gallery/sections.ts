@@ -78,7 +78,7 @@ export const SECTIONS = [
     title: 'In context',
     kicker: 'The journal',
     note: 'Every piece, one single task.',
-    components: ['TaskList', 'TaskRow', 'EmptyState'],
+    components: ['TaskList', 'TaskRow', 'TaskEditor', 'TagField', 'EmptyState'],
   },
   {
     id: 'questline',

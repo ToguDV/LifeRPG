@@ -1,6 +1,8 @@
-import { useId } from 'react'
+import { useId, useRef, useState } from 'react'
 import { cx } from '../../lib/cx'
 import { Icon } from '../Icon/Icon'
+import { TaskEditorDialog } from './TaskEditorDialog'
+import type { TaskUpdate } from './TaskEditor'
 import styles from './TaskRow.module.css'
 
 export type TaskPriority = 'low' | 'normal' | 'high'
@@ -12,13 +14,17 @@ export interface Task {
   done: boolean
   due?: string
   overdue?: boolean
-  tag?: string
+  tags?: string[]
   priority?: TaskPriority
 }
 
 export interface TaskRowProps {
   task: Task
   onToggle: (id: string, done: boolean) => void
+  /** Passing it adds the pencil; without it the row stays read-only. */
+  onUpdate?: (id: string, update: TaskUpdate) => void
+  /** The global tag catalogue offered by the editor. */
+  tagOptions?: readonly string[]
   onDelete?: (id: string) => void
   className?: string
 }
@@ -29,9 +35,17 @@ const PRIORITY_LABEL: Record<TaskPriority, string> = {
   high: 'High priority',
 }
 
-export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
+export function TaskRow({
+  task,
+  onToggle,
+  onUpdate,
+  tagOptions = [],
+  onDelete,
+  className,
+}: TaskRowProps) {
   const autoId = useId()
   const inputId = `task-${task.id}-${autoId}`
+  const editorId = `task-editor-${autoId}`
   const priority = task.priority ?? 'normal'
   const priorityId = `${inputId}-priority`
   const overdueId = `${inputId}-overdue`
@@ -45,11 +59,21 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
   const nameId = `${inputId}-name`
   const action = `${task.done ? 'Uncheck' : 'Check'} “${task.title}”`
 
+  const [editing, setEditing] = useState(false)
+  const editButton = useRef<HTMLButtonElement>(null)
+
+  const closeEditor = (restoreFocus?: boolean) => {
+    setEditing(false)
+    /* The pencil is still mounted: Escape and Save hand the focus back to it. */
+    if (restoreFocus) editButton.current?.focus()
+  }
+
   return (
     <li
       className={cx(styles.row, className)}
       data-done={task.done ? 'true' : 'false'}
       data-overdue={task.overdue ? 'true' : undefined}
+      data-editing={editing ? 'true' : undefined}
     >
       {/*
         One labelling mechanism: a single native `<label>` wraps the box and
@@ -98,29 +122,63 @@ export function TaskRow({ task, onToggle, onDelete, className }: TaskRowProps) {
             ) : null}
             {task.due ? <span className={styles.due}>{task.due}</span> : null}
           </span>
-          {task.note || task.tag ? (
+          {task.note || task.tags?.length ? (
             <span className={styles.meta}>
               {task.note ? <span className={styles.note}>{task.note}</span> : null}
-              {task.tag ? (
-                <span className={styles.tag}>
-                  <Icon name="tag" size="sm" aria-hidden="true" />
-                  {task.tag}
-                </span>
-              ) : null}
+              {task.tags?.length
+                ? task.tags.map((tag) => (
+                    <span key={tag} className={styles.tag}>
+                      <Icon name="tag" size="sm" aria-hidden="true" />
+                      {tag}
+                    </span>
+                  ))
+                : null}
             </span>
           ) : null}
         </span>
       </label>
 
-      {onDelete ? (
-        <button
-          type="button"
-          className={styles.delete}
-          aria-label={`Delete “${task.title}”`}
-          onClick={() => onDelete(task.id)}
-        >
-          <Icon name="trash" size="sm" />
-        </button>
+      {onUpdate || onDelete ? (
+        <div className={styles.actions}>
+          {onUpdate ? (
+            <button
+              ref={editButton}
+              type="button"
+              className={cx(styles.action, styles.edit)}
+              aria-label={`Edit “${task.title}”`}
+              aria-haspopup="dialog"
+              aria-expanded={editing}
+              aria-controls={editing ? editorId : undefined}
+              onClick={() => (editing ? closeEditor(true) : setEditing(true))}
+            >
+              <Icon name="edit" size="sm" />
+            </button>
+          ) : null}
+          {onDelete ? (
+            <button
+              type="button"
+              className={cx(styles.action, styles.delete)}
+              aria-label={`Delete “${task.title}”`}
+              onClick={() => onDelete(task.id)}
+            >
+              <Icon name="trash" size="sm" />
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {onUpdate ? (
+        <TaskEditorDialog
+          id={editorId}
+          open={editing}
+          task={task}
+          tagOptions={tagOptions}
+          onSave={(update) => {
+            onUpdate(task.id, update)
+            closeEditor(true)
+          }}
+          onClose={closeEditor}
+        />
       ) : null}
     </li>
   )

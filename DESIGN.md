@@ -400,6 +400,8 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
 - `aria-controls` is only emitted while the popup is open (`open ? id : undefined`): `Popover` unmounts on close and no hidden popups are rendered.
 - A `<header>` inside a portaled popup would create a second `banner`; overlay and picker headers are `<div>`.
 
+**Centred editors use `Dialog`, not `Popover`.** The panel is centred on both axes over a dark scrim with `backdrop-filter: blur(4px)`; it is `aria-modal`, traps `Tab`, locks the body scroll and gives the scrollbar width back, and closes on `Escape` (focus returns to the pencil) or on a click on the scrim. `Popover` stays for anchored menus and pickers; a picker nested inside a dialog keeps its own first `Escape`.
+
 ### 10.3 Select and Combobox
 
 - Select: focus stays on the trigger; the listbox is controlled with `aria-activedescendant` and arrow-key navigation, Home/End, Enter, Escape and typing (typeahead).

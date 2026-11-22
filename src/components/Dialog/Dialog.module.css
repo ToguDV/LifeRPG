@@ -1,0 +1,54 @@
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-popover);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background-color: var(--ui-scrim);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: scrim-in var(--duration-fast) var(--ease-out);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(32rem, 100%);
+  max-height: calc(100dvh - var(--space-8));
+  padding: var(--space-5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ui-text);
+  background-color: var(--ui-surface-raised);
+  background-image: var(--texture-grain-light);
+  background-blend-mode: soft-light;
+  border: var(--border-width) solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xl);
+  animation: dialog-in var(--duration-base) var(--ease-out);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-2)) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

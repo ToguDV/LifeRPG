@@ -1,0 +1,25 @@
+.form {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+/* ---------- centred panel shared by TaskList and Questline ---------- */
+
+.dialogTitle {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--ui-text);
+  overflow-wrap: anywhere;
+}

@@ -61,9 +61,17 @@ export function useFloating({
     const desiredWidth = matchWidth
       ? anchorRect.width
       : Math.max(minWidth ?? 0, measuredWidth)
+    /*
+      `maxWidth` is a design cap, not a promise that the viewport is wide
+      enough: a 460px panel on a 320px screen has to shrink to the screen,
+      or `min-width` ends up larger than the visible area and the surface
+      spills off the left edge.
+    */
+    const widthBudget =
+      Math.min(maxWidth ?? viewportWidth, viewportWidth) - viewportPadding * 2
     const clampedWidth = Math.min(
       Math.max(desiredWidth, minWidth ?? 0),
-      (maxWidth ?? viewportWidth) - viewportPadding * 2,
+      Math.max(widthBudget, 0),
     )
 
     const measuredHeight = floatingRect.height || 280
