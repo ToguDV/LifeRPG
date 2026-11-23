@@ -12,7 +12,7 @@
   not a background service, and a quest journal that reloads itself mid-edit
   is a bug, not an update.
 */
-const { existsSync, readFileSync } = require('node:fs')
+const { existsSync } = require('node:fs')
 const path = require('node:path')
 const { app, BrowserWindow } = require('electron')
 const { autoUpdater } = require('electron-updater')
@@ -60,6 +60,14 @@ function messageFor(error) {
   if (/sha512|checksum|integrity/i.test(raw)) {
     return 'The downloaded file does not match its seal. Try again.'
   }
+  /*
+    A .deb install goes through pkexec/sudo and `dpkg -i`; without a polkit
+    agent, a wrong password or a locked dpkg, the failure must not read like
+    a dead connection (the download already succeeded).
+  */
+  if (/dpkg|pkexec|polkit|apt-get|apt |sudo|permission denied|not authorized|exited with code/i.test(raw)) {
+    return 'The package manager could not install the update. Update from a terminal, or install the new .deb by hand.'
+  }
   if (/404|Cannot find latest|release/i.test(raw)) {
     return 'The archive holds no note for this version yet.'
   }
@@ -78,35 +86,10 @@ function messageFor(error) {
  *   unsupported · idle · checking · available · downloading · ready
  *   current · error
  */
-/*
-  `electron-builder` stamps `resources/package-type` for a .deb/rpm install.
-  electron-updater then picks `DebUpdater`, which runs `pkexec`/`sudo` through
-  a synchronous spawn on the main thread: in a desktop session without a
-  polkit agent that blocks and then fails with a message that reads like a
-  network error. Such an install updates itself through the package manager,
-  so the in-app channel stays closed instead of offering a broken button.
-*/
-function packageManagerType() {
-  if (!app.isPackaged) return null
-
-  const marker = path.join(process.resourcesPath, 'package-type')
-  if (!existsSync(marker)) return null
-
-  try {
-    const type = readFileSync(marker, 'utf8').trim()
-    return type === 'deb' || type === 'rpm' ? type : null
-  } catch {
-    return null
-  }
-}
-
 function createUpdater() {
   const currentVersion = app.getVersion()
-  const packageType = packageManagerType()
   const supported =
-    app.isPackaged &&
-    packageType === null &&
-    existsSync(path.join(process.resourcesPath, UPDATE_CONFIG))
+    app.isPackaged && existsSync(path.join(process.resourcesPath, UPDATE_CONFIG))
 
   /*
     The version whose installer is already on disk. It lives outside `state`
@@ -125,11 +108,9 @@ function createUpdater() {
     total: null,
     message: supported
       ? null
-      : packageType !== null
-        ? `This copy is installed as a .${packageType} package: update it from the release page.`
-        : app.isPackaged
-          ? 'This build carries no update channel.'
-          : 'This build cannot update itself.',
+      : app.isPackaged
+        ? 'This build carries no update channel.'
+        : 'This build cannot update itself.',
     releaseNotes: null,
     checkedAt: null,
   }
@@ -151,10 +132,21 @@ function createUpdater() {
 
   const fail = (error) => {
     console.error('[updater]', error)
+    /* A failed install must not leave the button latched. */
+    installing = false
 
-    /* A failed check does not undo a download that already finished. */
+    /*
+      A failed check does not undo a download that already finished: the
+      restart stays on offer, and the sentence says what went wrong (a
+      package-manager error, not a lost connection).
+    */
     if (downloadedVersion !== null) {
-      setState({ phase: 'ready', percent: 100, message: null, checkedAt: Date.now() })
+      setState({
+        phase: 'ready',
+        percent: 100,
+        message: messageFor(error),
+        checkedAt: Date.now(),
+      })
       return
     }
 
@@ -319,8 +311,14 @@ function createUpdater() {
       try {
         autoUpdater.quitAndInstall(false, true)
       } catch (error) {
-        installing = false
         fail(error)
+      } finally {
+        /*
+          `install` is synchronous: on success Electron quits on the next
+          tick, and on failure electron-updater dispatches an error (handled
+          above), so the latch is only needed to collapse a double click.
+        */
+        installing = false
       }
     })
 

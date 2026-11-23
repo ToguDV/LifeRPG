@@ -34,7 +34,7 @@ function describeStatus(state: UpdaterState): string {
     case 'downloading':
       return `Downloading ${state.percent ?? 0}%…`
     case 'ready':
-      return `Version ${state.version} is downloaded.`
+      return state.message ?? `Version ${state.version} is downloaded.`
     case 'error':
       return state.message ?? 'The update could not be checked.'
     case 'unsupported':

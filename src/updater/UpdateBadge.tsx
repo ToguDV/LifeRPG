@@ -130,9 +130,11 @@ export function UpdateBadge() {
         ? (state.message ?? 'The update could not be checked.')
         : phase === 'unsupported'
           ? (state.message ?? 'Updates are only in the desktop app.')
-          : phase === 'idle'
-            ? 'Not checked yet.'
-            : null
+          : phase === 'ready' && state.message
+            ? state.message
+            : phase === 'idle'
+              ? 'Not checked yet.'
+              : null
 
   const primary =
     phase === 'checking' || phase === 'downloading' || phase === 'unsupported'

@@ -300,6 +300,24 @@ describe('Update note', () => {
     expect(bridge.install).toHaveBeenCalledTimes(1)
   })
 
+  it('keeps the restart on offer when the install fails, and says why', async () => {
+    const { emit } = mountBridge()
+    renderSettings()
+    await settle()
+
+    const message =
+      'The package manager could not install the update. Update from a terminal, or install the new .deb by hand.'
+    await act(async () => {
+      emit({ phase: 'ready', version: '1.1.0', percent: 100, message })
+    })
+
+    const note = await screen.findByRole('dialog')
+    expect(within(note).getByText(message)).toBeVisible()
+    expect(
+      within(note).getByRole('button', { name: 'Restart and update' }),
+    ).toBeVisible()
+  })
+
   it('answers the desktop menu by opening the note and checking', async () => {
     const { bridge, requestCheck } = mountBridge()
     renderSettings()
