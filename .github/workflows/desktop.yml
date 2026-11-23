@@ -147,7 +147,7 @@ jobs:
       # thing that tells it where to publish.
       GH_REPO: ${{ github.repository }}
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: desktop-*
           path: installers
