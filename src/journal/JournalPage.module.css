@@ -109,6 +109,12 @@
   flex: none;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 .nav a {
   position: relative;
   padding-block: var(--space-1);

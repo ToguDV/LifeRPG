@@ -622,7 +622,7 @@
 }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1180px) {
+@media (max-width: 1200px) {
   .topLinks {
     display: none;
   }

@@ -3,12 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { JournalPage } from '../src/journal/JournalPage'
 import { TASKS_KEY } from '../src/journal/journal-data'
+import { ToastProvider } from '../src/components/Toast/Toast'
 import { ThemeProvider } from '../src/theme/ThemeProvider'
+import { UpdaterProvider } from '../src/updater/UpdaterProvider'
 
 function renderJournal() {
   return render(
     <ThemeProvider>
-      <JournalPage />
+      <ToastProvider>
+        <UpdaterProvider>
+          <JournalPage />
+        </UpdaterProvider>
+      </ToastProvider>
     </ThemeProvider>,
   )
 }

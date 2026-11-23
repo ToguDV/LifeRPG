@@ -164,6 +164,8 @@
   --theme-trigger-label-max: 7.5rem;
   /* both columns fit the longest theme note at --text-xs */
   --theme-menu-width: 24.5rem;
+  /* the update note: wide enough for a sentence, never wider than a phone */
+  --update-note-width: 24rem;
 
   --dropzone-min-height: 9.5rem;
   --textarea-min-height: 6rem;

@@ -44,7 +44,8 @@ The desktop app is the same renderer, packaged with Electron. `electron/main.cjs
 
 - `pnpm dev:desktop` starts Vite on 5174 and opens it in Electron.
 - `pnpm build:desktop` packages for the current OS: an NSIS installer on Windows; AppImage and `.deb` on Linux.
-- Releases are tag-driven: pushing a `v*` tag (the first release is `v0.1.0`) runs `.github/workflows/desktop.yml`, takes the packaged version from the tag and attaches the installers plus `SHA256SUMS.txt` to a GitHub Release. A manual run only leaves workflow artifacts.
+- Releases are tag-driven: pushing a `v*` tag (the first release is `v0.1.0`) runs `.github/workflows/desktop.yml`, takes the packaged version from the tag and attaches the installers, the update metadata (`latest*.yml` and the block maps) and `SHA256SUMS.txt` to a GitHub Release. A manual run only leaves workflow artifacts.
+- **Updates.** 0.2.0 is the first build that can update itself: installs of 0.1.0 predate the updater and need one manual download. The packaged app asks GitHub Releases for a new version four seconds after opening and then every four hours. When one exists, a note in the topbar offers the download and, once it is on disk, the restart; nothing is downloaded or installed unasked, and a release without the `latest*.yml` assets cannot update anybody. The AppImage updates itself; a `.deb`/`.rpm` install is upgraded from the release page, because electron-updater's `DebUpdater` needs root and blocks the main process. The switches that steer this — automatic checks and the note opening by itself — live in **Settings** (`/settings`, or File > Settings… in the desktop menu). The renderer only talks to the shell through `electron/preload.cjs`; the main process owns `electron/updater.cjs`.
 - Builds are unsigned, so Windows shows the SmartScreen warning. The uninstaller keeps the journal: on Linux it lives in `~/.config/LifeRPG`; on Windows, `%APPDATA%\LifeRPG`.
 - **AppImage on Ubuntu 24.04 and later.** That release restricts unprivileged user namespaces through AppArmor, and the window runs with `sandbox: true`, so the AppImage refuses to start. Allow it with `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`, or drop the same setting in `/etc/sysctl.d/` to keep it. `--no-sandbox` is not the fix.
 
@@ -56,7 +57,7 @@ The desktop app is the same renderer, packaged with Electron. `electron/main.cjs
 - **ESLint** (flat config: `@eslint/js` + `typescript-eslint` + `jsx-a11y` + hooks rules) with no style rules: it does not reformat the code.
 - **Vitest + Testing Library** on jsdom, for the interactions that originated the review bugs.
 - **Playwright + axe-core** on real Chromium for accessibility, overflow and keyboard verification (`pnpm test:e2e`).
-- **Electron + electron-builder** for the desktop build (see [Desktop](#desktop-electron)).
+- **Electron + electron-builder**, with **electron-updater** for the desktop build (see [Desktop](#desktop-electron)).
 - **Local fonts** in `public/fonts` (latin subset of Alegreya and Cinzel; the reference mockup keeps its own families in `design/fonts`).
 - Popovers, calendars, wheels and menus of our own; no date or component dependencies.
 
@@ -145,6 +146,8 @@ LifeRPG/
   vitest.config.ts           Vitest + jsdom + Testing Library setup
   playwright.config.ts       E2E: Vite on 4317, Chromium, traces on failure
   electron/main.cjs          main process: app:// protocol, window and menu
+  electron/updater.cjs       electron-updater state machine and IPC handlers
+  electron/preload.cjs       the only bridge the renderer sees: `window.liferpg`
   electron-builder.yml       packaging: NSIS, AppImage and .deb
   build/                     icon source; build/icon.png is generated
   .github/workflows/         CI and tag-driven desktop releases
@@ -152,8 +155,10 @@ LifeRPG/
   e2e/                       axe (8 themes × 2 surfaces), overflow and keyboard
   e2e/FINDINGS.md            open findings from the first pass
   src/
-    App.tsx                  pathname switch: journal at `/`, codex at `/gallery`
+    App.tsx                  pathname switch: journal `/`, codex `/gallery`, settings `/settings`
     journal/                 first screen: tasks + questline, localStorage
+    settings/                Settings screen: update switches and status
+    updater/                 update state/provider, topbar note and the preload types
     main.tsx
     components/
       Button/ Checkbox/ Radio/ Switch/ TextInput/ Textarea/

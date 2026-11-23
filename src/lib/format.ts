@@ -36,6 +36,11 @@ export function formatTimeParts(hours: number, minutes: number): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
 }
 
+/** “12 January 2026 · 14:32”: a full date with the clock, for a stamp. */
+export function formatMoment(date: Date): string {
+  return `${formatDate(date)} · ${formatTimeParts(date.getHours(), date.getMinutes())}`
+}
+
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   const units = ['KB', 'MB', 'GB', 'TB']

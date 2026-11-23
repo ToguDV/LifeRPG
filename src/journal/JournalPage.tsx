@@ -5,6 +5,7 @@ import { formatDate } from '../lib/format'
 import { usePersistentState } from '../lib/usePersistentState'
 import { useToday } from '../lib/useToday'
 import { ThemePicker } from '../theme/ThemePicker'
+import { UpdateBadge } from '../updater/UpdateBadge'
 import { QuestJournal } from './QuestJournal'
 import { TaskJournal } from './TaskJournal'
 import {
@@ -59,7 +60,9 @@ export function JournalPage() {
             <div className={styles.topTools}>
               <nav className={styles.nav} aria-label="Main">
                 <a href="/gallery">Codex</a>
+                <a href="/settings">Settings</a>
               </nav>
+              <UpdateBadge />
               <ThemePicker />
             </div>
           </div>

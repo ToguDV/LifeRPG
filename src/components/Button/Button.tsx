@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 import { cx } from '../../lib/cx'
 import { Icon } from '../Icon/Icon'
 import styles from './Button.module.css'
@@ -14,6 +14,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconLeft?: ReactNode
   iconRight?: ReactNode
   iconOnly?: boolean
+  /**
+   * React 19 treats `ref` as a regular prop; declaring it here lets a caller
+   * focus an action (the update note focuses its primary button on open).
+   */
+  ref?: Ref<HTMLButtonElement>
 }
 
 export function Button({
@@ -28,6 +33,7 @@ export function Button({
   children,
   disabled,
   type = 'button',
+  ref,
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading
@@ -35,6 +41,7 @@ export function Button({
   return (
     <button
       {...rest}
+      ref={ref}
       type={type}
       className={cx(
         styles.button,

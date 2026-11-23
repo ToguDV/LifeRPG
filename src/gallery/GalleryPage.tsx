@@ -1,6 +1,7 @@
 import { useState, type ComponentType } from 'react'
 import { Icon } from '../components/Icon/Icon'
 import { ThemePicker } from '../theme/ThemePicker'
+import { UpdateBadge } from '../updater/UpdateBadge'
 import type { SurfaceValue } from '../components/Surface/surface-context'
 import { Atmosphere } from '../components/Atmosphere/Atmosphere'
 import { cx } from '../lib/cx'
@@ -104,6 +105,7 @@ export function GalleryPage() {
 
             <nav className={styles.topLinks} aria-label="Main sections">
               <a href="/">Journal</a>
+              <a href="/settings">Settings</a>
               {TOP_LINKS.map((link) => (
                 <a key={link.id} href={`#${link.id}`}>
                   {link.label}
@@ -113,6 +115,7 @@ export function GalleryPage() {
 
             <div className={styles.topTools}>
               <SurfaceToggle value={canvas} onChange={setCanvas} />
+              <UpdateBadge />
               <ThemePicker />
             </div>
           </div>

@@ -8,13 +8,22 @@ directories:
   buildResources: build
   output: release
 
-# No runtime node_modules: React is bundled by Vite and the main process has
-# no dependencies. The asar holds the built renderer and the Electron entry.
+# The packaged renderer is prebuilt by Vite, so `react`/`react-dom` live in
+# devDependencies and are not shipped: the only runtime dependency is
+# `electron-updater`, which the main process requires from the asar and which
+# electron-builder collects from `dependencies`.
 files:
   - dist/**
   - electron/**
   - package.json
-  - '!node_modules/**'
+
+# `electron-updater` reads `app-update.yml` from `resources/` (written by the
+# targets below) and then fetches `latest.yml` / `latest-linux.yml` from the
+# release. Both are generated on every package run, publishing or not.
+publish:
+  provider: github
+  owner: ToguDV
+  repo: LifeRPG
 
 asar: true
 npmRebuild: false

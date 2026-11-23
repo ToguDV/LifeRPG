@@ -10,7 +10,17 @@
 const { mkdirSync } = require('node:fs')
 const path = require('node:path')
 const { pathToFileURL } = require('node:url')
-const { app, BrowserWindow, Menu, net, protocol, session, shell } = require('electron')
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  net,
+  protocol,
+  session,
+  shell,
+} = require('electron')
+const { createUpdater } = require('./updater.cjs')
 
 // Must match `appId` in electron-builder.yml.
 const APP_ID = 'com.togudv.liferpg'
@@ -155,6 +165,19 @@ function applyContentSecurityPolicy() {
 }
 
 let mainWindow = null
+const updater = createUpdater()
+
+/*
+  The renderer is a sandboxed page with no Node: everything it can ask the
+  shell to do is named here, once. `install` stays behind the updater's own
+  `ready` check: the page cannot restart the app on a whim.
+*/
+function registerUpdaterIpc() {
+  ipcMain.handle('liferpg:updater:get-state', () => updater.snapshot())
+  ipcMain.handle('liferpg:updater:check', () => updater.check())
+  ipcMain.handle('liferpg:updater:download', () => updater.download())
+  ipcMain.handle('liferpg:updater:install', () => updater.install())
+}
 
 function openRoute(route) {
   if (!mainWindow) return
@@ -170,6 +193,13 @@ function buildMenu() {
       {
         label: 'File',
         submenu: [
+          /*
+            No CmdOrCtrl+, accelerator: `openRoute` reloads the document, and
+            a shortcut would throw away an open editor's draft without a
+            pointer ever touching the native menu.
+          */
+          { label: 'Settings…', click: () => openRoute('/settings') },
+          { type: 'separator' },
           {
             label: 'Open data folder',
             click: () => {
@@ -212,6 +242,8 @@ function buildMenu() {
         submenu: [
           { label: 'Component Codex', click: () => openRoute('/gallery') },
           { type: 'separator' },
+          { label: 'Check for updates…', click: () => updater.requestCheck() },
+          { type: 'separator' },
           {
             label: 'LifeRPG on GitHub',
             click: () => openExternal('https://github.com/ToguDV/LifeRPG'),
@@ -238,6 +270,8 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: true,
       spellcheck: true,
+      // The only bridge: `window.liferpg` (see preload.cjs).
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   })
 
@@ -283,6 +317,8 @@ if (!app.requestSingleInstanceLock()) {
       })
       session.defaultSession.setPermissionCheckHandler(() => false)
       applyContentSecurityPolicy()
+      registerUpdaterIpc()
+      updater.listen()
 
       buildMenu()
       createWindow()

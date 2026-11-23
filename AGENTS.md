@@ -28,6 +28,7 @@ pnpm build:desktop # NSIS (Windows) or AppImage + deb (Linux) into release/
 - `src/lib/` — `useControllableState`, `useFloating`, `useDismiss`, `cx`, dates and formatting.
 - `src/gallery/` — the gallery is the review surface at `/gallery`. Every demo sheet is a `Card size="lg"` with the component name in the `Badge` of the `kicker`.
 - `src/journal/` — the first official screen at `/`: task list and questline, stored in `localStorage`.
+- `src/settings/` and `src/updater/` — the `/settings` screen and the desktop update state, note and bridge types; `electron/preload.cjs` is the only bridge the renderer sees.
 - `electron/` — Electron main process: `app://liferpg` protocol for `dist/`, window and menu. `electron-builder.yml` packages it; `.github/workflows/desktop.yml` releases tags.
 - `tests/` (jsdom, one subject per file) and `e2e/` (real Chromium).
 - `DESIGN.md` — the visual why · `README.md` — usage and structure · `design/mockup.html` — original reference.
@@ -64,6 +65,7 @@ pnpm build:desktop # NSIS (Windows) or AppImage + deb (Linux) into release/
 - **`design/mockup.html`** is the original reference: adjust it only to keep it working, not to mirror the app.
 - **No Storybook** and no UI, Tailwind or date library; local fonts, no CDN. Do not add dependencies without justifying it.
 - **Desktop protocol.** The packaged renderer is served from `dist/` over `app://liferpg`, not `file://`: Chromium refuses ES modules from a file origin. Extensionless paths fall back to `index.html`, so `/gallery` works in-app, and `release/` is gitignored.
+- **Update metadata.** `electron-updater` needs `app-update.yml` in the package and the release's `latest*.yml`; `--publish never` still writes both, and a release without them updates nobody.
 
 ## Manual verification
 
