@@ -117,7 +117,8 @@ jobs:
 
       # The installers alone cannot update anybody: `electron-updater` fetches
       # `latest.yml` (Windows) / `latest-linux.yml` (Linux) and their block
-      # maps from the same release. `--publish never` still writes them.
+      # maps from the same release. `--publish never` still writes them;
+      # `latest*.yml` keeps electron-builder's debug file out of the upload.
       - name: Upload installers and update metadata
         uses: actions/upload-artifact@v7
         with:
@@ -126,7 +127,7 @@ jobs:
             release/*.exe
             release/*.AppImage
             release/*.deb
-            release/*.yml
+            release/latest*.yml
             release/*.blockmap
           if-no-files-found: error
           retention-days: 14
