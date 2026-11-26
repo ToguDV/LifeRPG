@@ -15,6 +15,7 @@ import { TaskList } from '../components/TaskList/TaskList'
 import type { Task } from '../components/TaskList/TaskRow'
 import type { TaskUpdate } from '../components/TaskList/TaskEditor'
 import { TextInput } from '../components/TextInput/TextInput'
+import { applyVisibleOrder } from '../lib/reorder'
 import { createTaskId } from './journal-data'
 import styles from './TaskJournal.module.css'
 
@@ -111,6 +112,13 @@ export function TaskJournal({ tasks, setTasks, tagOptions }: TaskJournalProps) {
     if (removed) setStatus(`Task deleted: ${removed.title}`)
   }
 
+  /* The order of the array is the order the journal remembers. */
+  const reorderTasks = (order: string[]) => {
+    setTasks((previous) =>
+      applyVisibleOrder(previous, order, (task) => task.id),
+    )
+  }
+
   return (
     <Card
       size="lg"
@@ -161,6 +169,7 @@ export function TaskJournal({ tasks, setTasks, tagOptions }: TaskJournalProps) {
           onUpdate={updateTask}
           tagOptions={tagOptions}
           onDelete={deleteTask}
+          onReorder={reorderTasks}
           ariaLabel="Tasks"
           emptyState={<EmptyState icon="feather" title="No tasks yet" />}
         />

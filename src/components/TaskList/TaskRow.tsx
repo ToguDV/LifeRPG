@@ -1,4 +1,9 @@
-import { useId, useRef, useState } from 'react'
+import {
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react'
 import { cx } from '../../lib/cx'
 import { Icon } from '../Icon/Icon'
 import { TaskEditorDialog } from './TaskEditorDialog'
@@ -18,6 +23,17 @@ export interface Task {
   priority?: TaskPriority
 }
 
+/**
+ * The grip and the visual states of a sortable row. `TaskList` owns the
+ * gesture and the hit testing; the row only draws the handle and the target.
+ */
+export interface TaskSortable {
+  /** The shared hidden sentence that explains the arrow keys. */
+  instructionsId: string
+  dragging: boolean
+  onKeyDown: (event: ReactKeyboardEvent<HTMLButtonElement>, id: string) => void
+}
+
 export interface TaskRowProps {
   task: Task
   onToggle: (id: string, done: boolean) => void
@@ -26,6 +42,8 @@ export interface TaskRowProps {
   /** The global tag catalogue offered by the editor. */
   tagOptions?: readonly string[]
   onDelete?: (id: string) => void
+  /** Passing it adds the grip and the sortable states. */
+  sortable?: TaskSortable
   className?: string
 }
 
@@ -41,6 +59,7 @@ export function TaskRow({
   onUpdate,
   tagOptions = [],
   onDelete,
+  sortable,
   className,
 }: TaskRowProps) {
   const autoId = useId()
@@ -71,10 +90,27 @@ export function TaskRow({
   return (
     <li
       className={cx(styles.row, className)}
+      data-task-id={task.id}
       data-done={task.done ? 'true' : 'false'}
       data-overdue={task.overdue ? 'true' : undefined}
       data-editing={editing ? 'true' : undefined}
+      data-sortable={sortable ? 'true' : undefined}
+      data-dragging={sortable?.dragging ? 'true' : undefined}
     >
+      {sortable ? (
+        <button
+          type="button"
+          className={styles.handle}
+          data-reorder-handle
+          aria-label={`Reorder “${task.title}”`}
+          aria-describedby={sortable.instructionsId}
+          title="Drag to reorder, or use the up and down arrow keys"
+          onKeyDown={(event) => sortable.onKeyDown(event, task.id)}
+        >
+          <Icon name="drag" size="sm" />
+        </button>
+      ) : null}
+
       {/*
         One labelling mechanism: a single native `<label>` wraps the box and
         the row body, so the whole row stays clickable. The checkbox name is

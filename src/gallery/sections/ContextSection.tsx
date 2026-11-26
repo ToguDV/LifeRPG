@@ -9,6 +9,7 @@ import { Radio, RadioGroup } from '../../components/Radio/Radio'
 import { TaskList } from '../../components/TaskList/TaskList'
 import type { Task } from '../../components/TaskList/TaskRow'
 import type { TaskUpdate } from '../../components/TaskList/TaskEditor'
+import { applyVisibleOrder } from '../../lib/reorder'
 import { mergeTagOptions } from '../../lib/tags'
 import { TextInput } from '../../components/TextInput/TextInput'
 import { useToast } from '../../components/Toast/Toast'
@@ -102,6 +103,13 @@ export function ContextSection({ canvas }: SectionProps) {
         description: `“${task.title}” no longer takes up a line.`,
       })
     }
+  }
+
+  /* The filter decides what is dragged; hidden tasks keep their slots. */
+  const reorderTasks = (order: string[]) => {
+    setTasks((previous) =>
+      applyVisibleOrder(previous, order, (task) => task.id),
+    )
   }
 
   const updateTask = (id: string, update: TaskUpdate) => {
@@ -220,6 +228,7 @@ export function ContextSection({ canvas }: SectionProps) {
             onUpdate={updateTask}
             tagOptions={tagOptions}
             onDelete={deleteTask}
+            onReorder={reorderTasks}
             ariaLabel="Journal tasks"
             emptyState={
               <EmptyState
@@ -239,6 +248,11 @@ export function ContextSection({ canvas }: SectionProps) {
             }
           />
         </div>
+
+        <p className={styles.taskNote}>
+          Drag a task by its row (or by the grip) to reorder it; the up and
+          down arrow keys do the same from the keyboard.
+        </p>
       </div>
     </Card>
   )

@@ -474,6 +474,15 @@ There are no “neon” shadows and no glassmorphism. Depth comes from layers, b
 - **A single `STATE_META`** (`questline-state.ts`) gives icon, accessible word, label and badge variant to the four states; the rail and the panel can no longer diverge (that is how it slipped in that the active state had no word). The components are split across `QuestRail`, `QuestStop`, `QuestNodePanel`, `QuestNodeEditor`, `QuestTaskRow` and `QuestDeleteConfirm`.
 - **The goal** is the last milestone: its status line carries “Goal” and the flag icon. It is a reading of the end of the route, not a model field, and it moves if the last milestone is added or removed.
 
+### 10.10 TaskList reordering
+
+- **Opt-in.** `TaskList` adds a grip only when the consumer passes `onReorder`; without it the row is unchanged. The order of the `tasks` array *is* the order of the list, so there is no `position` field to keep in sync and the journal's `localStorage` array remembers it.
+- **The whole row is the drag surface.** Most of a task is a `<label>` that toggles its checkbox, so a drag and a click have to be told apart. The gesture listens on the window and only starts after a 4 px threshold; the click that would follow a real drag is eaten once, so dropping a row never checks it. Buttons and fields keep their own gestures; the grip is the exception and stays a handle. On touch a finger only drags from the grip: the row body would need `touch-action: none`, and the page would stop scrolling.
+- **The list makes room, gradually.** The pressed row keeps its slot as a soft gap while a floating slip (`TaskDragPreview`, portalled and `aria-hidden`, with `data-surface`) follows the pointer. When the pointer crosses another row's captured midpoint, the list reorders a local preview and a FLIP pass glides the rows into their new slots; the parent's array is untouched until the drop. No border is drawn: the gap and the moving rows carry the feedback. Escape, a lost pointer or a window blur cancels and the same FLIP returns the list. The page scrolls itself when the pointer reaches 64 px from the viewport edge.
+- **Keyboard.** The grip is a `<button>` named `Reorder “title”`, described by one shared hidden sentence. `ArrowUp`/`ArrowDown` move the row one slot and keep the focus on the handle; at the first or last row the announcement says so instead of wrapping. Every move writes a `role="status"` sentence (`Moved “X” to position 2 of 5.`), so the order is never conveyed by position alone.
+- **Filtered lists.** `onReorder` receives the visible rows in their new order, not the whole collection. `applyVisibleOrder` (in `src/lib/reorder.ts`) refills the visible slots and leaves hidden tasks where they were: dragging what is on screen never reshuffles what is hidden.
+- **No dependency.** The gesture is local to `TaskList`, the order maths is pure (`moveBeside`, `moveOneStep`, `sameOrder`, `applyVisibleOrder`) and tested in jsdom; the gesture, the FLIP and the painted slip are verified in Chromium.
+
 ---
 
 ## 11. Gallery
@@ -528,6 +537,7 @@ The gallery is the system's review surface; Storybook is not used.
 - The skip link is the first focusable element and moves focus to `main#content`; programmatic focus does not depend on the browser moving the sequence.
 - `ProgressBar` requires a name by types: a visible `label` or an `aria-label`; the percentage is value text and cannot be the name.
 - `TaskRow` mirrors priority and overdue in `visually-hidden` text, linked with `aria-describedby`; colour stops being the only signal (WCAG 1.4.1).
+- `TaskList` reordering is operable from the keyboard: the grip is a button, the arrow keys move the row and the `role="status"` region names the new position; the faded row and the drop line are never the only signal.
 - Toasts pause on hover and on keyboard focus (WCAG 2.2.1); the viewport remains a single `aria-live="polite"` region so announcements are not duplicated.
 - `Questline` exposes `aria-expanded` / `aria-controls` on each milestone, opens the sheet as an `aria-modal` dialog that traps `Tab`, names it with its heading, focuses it on opening and returns focus to the trigger on closing. Each milestone carries its number and its state in `visually-hidden` text; transitions are announced by id in a `status` region (“Milestone “X” completed”, ““Y” unlocked/locked”).
 - Locked milestones disable the checkbox (not the preparation CRUD) and explain the reason in a visible note; the state does not depend on colour: the marker changes shape and the note carries a lock.

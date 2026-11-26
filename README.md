@@ -69,11 +69,11 @@ The gallery is the review surface of the UI planning phase: a single page with e
 - **13 controls**: the 12 requested ones (Button, Checkbox, Radio, Switch, TextInput, Textarea, Select, Combobox, Slider, Stepper, Date/Time Picker and FileUploader) plus `RangeSlider`.
 - **Support primitives**: Surface, Card, WaxSeal, Icon, Badge, ProgressBar, Tooltip, Divider and Toast.
 - **Containers**: `Card` with three heights (card, folio, page), paper ornaments (stacked, aged sheets, a ruled frame inside the edge and wax seal) and, on paper, the title on a wax ribbon that crosses the top edge.
-- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together. A row opens a centred editor over a blurred page — title, labels from the shared catalogue and description — without pushing the list; the questline tasks reuse the same form.
+- **Task composites**: TaskRow, TaskList, EmptyState and a closing demo “The journal at work” that uses everything together. A row opens a centred editor over a blurred page — title, labels from the shared catalogue and description — without pushing the list; the questline tasks reuse the same form. Rows can be dragged from anywhere, by pointer, with a floating slip and an animated gap; the arrow keys on the grip do the same from the keyboard, and the journal stores the order in `localStorage`.
 - **The tag field**: `TagField` lists every label in use across the daily list and the route; a new tag joins the catalogue when the task is saved.
 - **The journey**: `Questline` chains milestones with tasks and a deadline; the trail inks in when a milestone is completed and the line stays connected when the rail wraps. Milestones and tasks are created, edited and deleted in place.
 
-Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, edit and delete, switch themes and toggle paper/panel.
+Everything is interactive: type, filter, open calendars and wheels, drop files, check tasks, reorder them, edit and delete, switch themes and toggle paper/panel.
 
 ## Design system
 
@@ -118,6 +118,7 @@ No component and no `index.html` needs touching: the boot script is generated fr
 - “Skip to content” is the first focusable element and moves focus to `main#content`.
 - The tooltip is hoverable and is dismissed with `Escape` (WCAG 1.4.13); toasts pause on hover and on keyboard focus (WCAG 2.2.1).
 - `TaskRow` priority and overdue status do not rely on colour; `ProgressBar` requires `label` or `aria-label`; `RangeSlider` is announced as a group.
+- `TaskList` reordering does not depend on dragging: the grip takes focus and `ArrowUp`/`ArrowDown` move the row, with the new position announced in a `status` region.
 - Focus is visible and returned to the trigger on closing with `Escape`; the task editor dialog returns it to the pencil on save or cancel.
 - Closing on click outside and on loss of focus.
 - `Questline` derives locking and overdue from the state of the tasks; locked milestones open so the list can be prepared, but their checkboxes are disabled. Completing a milestone is announced in a `status` region.

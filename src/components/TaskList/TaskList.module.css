@@ -4,6 +4,11 @@
   border-top: var(--border-width) solid var(--ui-divider-soft);
 }
 
+/* A drag owns the gesture: no text selection fights the moving row. */
+.list[data-dragging="true"] {
+  user-select: none;
+}
+
 .emptyWrap {
   border-top: var(--border-width) solid var(--ui-divider-soft);
 }

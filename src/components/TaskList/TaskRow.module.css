@@ -6,7 +6,15 @@
   padding: var(--space-3) var(--space-2);
   border-bottom: var(--border-width) solid var(--ui-divider-soft);
   border-radius: var(--radius-xs);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+/* The grip takes the first column only when the list can be reordered. */
+.row[data-sortable="true"] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  cursor: grab;
 }
 
 .row:last-child {
@@ -21,6 +29,51 @@
   background-color: var(--ui-field-bg);
 }
 
+/*
+  The grip is the keyboard control and the touch handle. The row body is
+  draggable with a mouse or a pen, but a finger on the body must still scroll
+  the page: only the grip carries `touch-action: none` and starts a touch drag.
+*/
+.handle {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  margin-top: calc(var(--space-1) * -1);
+  border-radius: var(--radius-circle);
+  color: var(--ui-text-muted);
+  cursor: grab;
+  touch-action: none;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.handle:hover {
+  color: var(--ui-accent-strong);
+  background-color: var(--ui-accent-soft);
+}
+
+.handle:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--ui-focus);
+  outline-offset: var(--focus-ring-offset-tight);
+}
+
+/*
+  The carried row keeps its slot as a soft gap: the floating slip carries the
+  content and the rows around it glide thanks to the list's FLIP. Nothing is
+  drawn on top of the row, so no bright line cuts the list.
+*/
+.row[data-dragging="true"] {
+  background-color: var(--ui-accent-soft);
+  border-radius: var(--radius-xs);
+  cursor: grabbing;
+}
+
+.row[data-dragging="true"] > * {
+  opacity: 0;
+}
+
 /* The single `<label>` covers the box and the body: the row stays clickable. */
 .control {
   display: grid;
@@ -29,6 +82,20 @@
   gap: 0 var(--space-2);
   min-width: 0;
   cursor: pointer;
+}
+
+/* A sortable row is dragged from anywhere; the checkbox stays a checkbox. */
+.row[data-sortable="true"] .control {
+  cursor: grab;
+}
+
+.row[data-sortable="true"] .box {
+  cursor: pointer;
+}
+
+.row[data-dragging="true"] .control,
+.row[data-dragging="true"] .box {
+  cursor: grabbing;
 }
 
 .input {
@@ -190,6 +257,7 @@
   height: var(--space-7);
   border-radius: var(--radius-circle);
   color: var(--ui-text-muted);
+  cursor: pointer;
   opacity: 0;
   transition:
     opacity var(--duration-fast) var(--ease-out),
@@ -240,5 +308,9 @@
 @media (hover: none) {
   .action {
     opacity: 1;
+  }
+
+  .handle {
+    color: var(--ui-text);
   }
 }

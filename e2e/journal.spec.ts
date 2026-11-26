@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { TASKS_KEY } from '../src/journal/journal-data'
 import { THEMES } from '../src/theme/themes'
 import {
@@ -12,6 +12,49 @@ async function gotoJournal(page: Page): Promise<void> {
   await page.goto('/')
   await expect(page.locator('main#content')).toBeVisible()
   await page.evaluate(() => document.fonts.ready.then(() => true))
+}
+
+/** The row order, read from the accessible name of each grip. */
+function taskOrder(page: Page): Promise<(string | null)[]> {
+  return page
+    .getByRole('list', { name: 'Tasks' })
+    .getByRole('button', { name: /^Reorder / })
+    .evaluateAll((buttons) =>
+      buttons.map((button) => button.getAttribute('aria-label')),
+    )
+}
+
+const SEED_ORDER = [
+  'Reorder “Fill the waterskin at the stream”',
+  'Reorder “Deliver three planks to Alderic”',
+  'Reorder “Return the brass lantern”',
+  'Reorder “Mend the torn cloak”',
+  'Reorder “Copy the route into the journal”',
+]
+
+/** Drags from the middle of `source`, dropping above or below `target`. */
+async function dragTask(
+  page: Page,
+  source: Locator,
+  target: Locator,
+  side: 'before' | 'after',
+  beforeDrop?: () => Promise<void>,
+): Promise<void> {
+  const from = await source.boundingBox()
+  const to = await target.boundingBox()
+  expect(from).not.toBeNull()
+  expect(to).not.toBeNull()
+  if (!from || !to) return
+
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(
+    to.x + to.width / 2,
+    side === 'before' ? to.y + 2 : to.y + to.height - 2,
+    { steps: 12 },
+  )
+  await beforeDrop?.()
+  await page.mouse.up()
 }
 
 test.describe('journal · 8 themes', () => {
@@ -78,6 +121,134 @@ test.describe('journal · layout and state', () => {
     await page.reload()
     await expect(page.locator('main#content')).toBeVisible()
     await expect(page.getByRole('checkbox', { name: /Sharpen the axe/ })).toBeChecked()
+  })
+
+  test('a task can be dragged by its row and the order is remembered', async ({
+    page,
+  }) => {
+    await gotoJournal(page)
+    expect(await taskOrder(page)).toEqual(SEED_ORDER)
+
+    const list = page.getByRole('list', { name: 'Tasks' })
+    /* The drag starts on the title, not on the grip: the whole row carries it. */
+    const title = page.getByText('Fill the waterskin at the stream', {
+      exact: true,
+    })
+    await dragTask(
+      page,
+      title,
+      list.getByRole('listitem').nth(2),
+      'after',
+      async () => {
+        /* A lifted slip follows the pointer; the row itself is the empty slot. */
+        const slip = page.locator('[data-drag-preview]')
+        await expect(slip).toBeVisible()
+        await expect(slip).toHaveAttribute('aria-hidden', 'true')
+        await expect(slip).toContainText('Fill the waterskin at the stream')
+        await expect(
+          page.locator('[data-task-id="seed-waterskin"]'),
+        ).toHaveAttribute('data-dragging', 'true')
+      },
+    )
+    await expect(page.locator('[data-drag-preview]')).toHaveCount(0)
+
+    await expect(
+      page
+        .getByRole('status')
+        .filter({
+          hasText:
+            'Moved “Fill the waterskin at the stream” to position 3 of 5.',
+        }),
+    ).toHaveCount(1)
+    expect(await taskOrder(page)).toEqual([
+      SEED_ORDER[1],
+      SEED_ORDER[2],
+      SEED_ORDER[0],
+      SEED_ORDER[3],
+      SEED_ORDER[4],
+    ])
+
+    /* Dragging the row must not also toggle the checkbox it was pressed on. */
+    await expect(
+      page.getByRole('checkbox', {
+        name: 'Check “Fill the waterskin at the stream”',
+      }),
+    ).not.toBeChecked()
+
+    await page.reload()
+    await expect(page.locator('main#content')).toBeVisible()
+    expect(await taskOrder(page)).toEqual([
+      SEED_ORDER[1],
+      SEED_ORDER[2],
+      SEED_ORDER[0],
+      SEED_ORDER[3],
+      SEED_ORDER[4],
+    ])
+    await expect(
+      page.getByRole('checkbox', {
+        name: 'Check “Fill the waterskin at the stream”',
+      }),
+    ).not.toBeChecked()
+
+    /* The click suppression belongs to the drag, not to the next real click. */
+    await page.getByText('Fill the waterskin at the stream', { exact: true }).click()
+    await expect(
+      page.getByRole('checkbox', {
+        name: 'Uncheck “Fill the waterskin at the stream”',
+      }),
+    ).toBeChecked()
+  })
+
+  test('the grip still carries the row on its own', async ({ page }) => {
+    await gotoJournal(page)
+
+    const list = page.getByRole('list', { name: 'Tasks' })
+    const grip = page.getByRole('button', {
+      name: 'Reorder “Return the brass lantern”',
+    })
+    await dragTask(page, grip, list.getByRole('listitem').nth(0), 'before')
+
+    expect(await taskOrder(page)).toEqual([
+      SEED_ORDER[2],
+      SEED_ORDER[0],
+      SEED_ORDER[1],
+      SEED_ORDER[3],
+      SEED_ORDER[4],
+    ])
+    await expect(
+      page.getByRole('checkbox', { name: 'Check “Return the brass lantern”' }),
+    ).not.toBeChecked()
+  })
+
+  test('a task can be reordered with the arrow keys alone', async ({ page }) => {
+    await gotoJournal(page)
+
+    const grip = page.getByRole('button', {
+      name: 'Reorder “Fill the waterskin at the stream”',
+    })
+    await grip.focus()
+    await page.keyboard.press('ArrowDown')
+
+    /* The grip travels with its row, so the focus is not lost. */
+    await expect(grip).toBeFocused()
+    await expect(
+      page
+        .getByRole('status')
+        .filter({
+          hasText:
+            'Moved “Fill the waterskin at the stream” to position 2 of 5.',
+        }),
+    ).toHaveCount(1)
+    expect(await taskOrder(page)).toEqual([
+      SEED_ORDER[1],
+      SEED_ORDER[0],
+      SEED_ORDER[2],
+      SEED_ORDER[3],
+      SEED_ORDER[4],
+    ])
+
+    await page.keyboard.press('ArrowUp')
+    expect(await taskOrder(page)).toEqual(SEED_ORDER)
   })
 
   test('a task can be edited, survives a reload and is announced', async ({ page }) => {

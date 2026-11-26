@@ -101,6 +101,14 @@
   min-width: 0;
 }
 
+.taskNote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: var(--text-note-sm);
+  line-height: var(--leading-note);
+  color: var(--ui-text-muted);
+}
+
 /* ---------- questline demo ---------- */
 .questDemo {
   display: flex;
